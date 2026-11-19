@@ -27,3 +27,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-014 | P0 | 0 | Vercel/Docker dashboard parity | Root homepage and health endpoints work in both environments; docs and tests updated | IN PROGRESS |
 | SS-015 | P0 | 1 | Dashboard offline HTML analyzer | Paste saved HTML, select inventory/directory, view JSON in both runtimes; no outbound fetch | IN PROGRESS |
 | SS-016 | P0 | 1 | Explainable results and demo fixtures | Human-readable static findings, examples, raw JSON preserved | IN PROGRESS |
+| SS-017 | P0 | 2 | Opt-in authorized HTTPS capture | Docker-only, default-off, public-address DNS pinning, TLS validation, no redirects, size/time limits | IN PROGRESS |
+| SS-018 | P0 | 2 | Authenticated capture jobs | Authentication, rate limits, queue and audit log before any public exposure | BACKLOG |

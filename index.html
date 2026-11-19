@@ -46,6 +46,7 @@
       <textarea id="html" required placeholder="Paste the HTML source here…" spellcheck="false"></textarea>
       <p class="hint">Maximum HTML size: 500 KiB. Results are not stored.</p>
       <button type="submit">Analyze HTML</button>
+      <button type="button" class="secondary" id="capture-live">Capture authorized HTTPS page (Docker only)</button>
       <button type="button" class="secondary" id="demo-inventory">Load inventory example</button>
       <button type="button" class="secondary" id="demo-directory">Load directory example</button>
     </form>
@@ -57,6 +58,20 @@
   <footer><p>Service health: <span id="health" role="status">Checking…</span> · <a href="/api/health">API health JSON</a> · <a href="https://github.com/drakeg/madmallard-sitescout">Source repository</a></p></footer>
 </main>
 <script>
+  document.getElementById('capture-live').addEventListener('click',async()=>{
+    const results=document.getElementById('results');
+    const url=document.getElementById('url').value;
+    if(!url){results.textContent='Enter a public HTTPS URL first.';return}
+    if(!confirm('Confirm you are authorized to inspect this public website. Live capture is available only when enabled on a trusted Docker host.'))return;
+    results.textContent='Capturing authorized page…';
+    renderSummary(null);
+    try{
+      const response=await fetch('/api/capture',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url,mode:document.getElementById('mode').value})});
+      const data=await response.json();
+      results.textContent=JSON.stringify(response.ok?data.result:data,null,2);
+      if(response.ok)renderSummary(data.result.summary);
+    }catch(error){results.textContent='Capture unavailable: '+error.message}
+  });
   const demoInventory='<title>Sample Cafe</title><h1>Welcome</h1><a href="/menu">Menu</a><img src="/coffee.jpg"><form action="/contact"><input name="email" required></form>';
   const demoDirectory='<h1>Sample Directory</h1><a href="https://cafe.example/">Cafe</a><a href="https://bakery.example/">Bakery</a>';
   for(const [id,mode,html,url] of [

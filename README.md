@@ -51,3 +51,7 @@ Open the dashboard, select **Website inventory** or **Directory candidates**, pr
 ### Explainable results and examples
 
 The dashboard includes two self-contained example HTML snippets, one for a page inventory and one for directory discovery. Selecting either loads and submits the example; no external site is fetched. Findings describe only what static HTML supports (such as missing titles, headings and image alternatives) and explicitly distinguish untested behavior. The JSON result remains available for inspection.
+
+### Opt-in live capture (Docker only)
+
+On a **trusted, access-controlled Docker host**, set `SITESCOUT_CAPTURE_ENABLED=true` in your environment and rebuild the container. The dashboard then offers an explicit-confirmation capture action for authorized **public HTTPS** pages. The Docker-only `POST /api/capture` endpoint is disabled by default and is **not available on Vercel**. It resolves DNS, rejects non-public addresses, pins the resolved public IP for the TLS connection, validates certificates, follows no redirects, limits HTML to 500 KiB and times out after eight seconds. It does not run JavaScript, crawl links, store data or bypass authentication. **Do not expose an enabled capture endpoint to the public Internet**; add authentication and rate limiting before any shared deployment.
