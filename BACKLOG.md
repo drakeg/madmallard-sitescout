@@ -20,3 +20,8 @@ Priority order: P0 > P1 > P2. Track implementation in GitHub Issues; this file i
 
 ## Non-goals for MVP
 Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only runtime integrations, production deployment of unreviewed generated code.
+
+## Deployment recovery (current)
+| ID | Priority | Sprint | Story | Acceptance criteria | Status |
+|---|---|---|---|---|---|
+| SS-014 | P0 | 0 | Vercel/Docker dashboard parity | Root homepage and health endpoints work in both environments; docs and tests updated | IN PROGRESS |
