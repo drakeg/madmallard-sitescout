@@ -47,3 +47,7 @@ For Docker, use `docker compose up -d --build` and visit `http://127.0.0.1:8087/
 ## Browser-based offline analysis
 
 Open the dashboard, select **Website inventory** or **Directory candidates**, provide the original source URL, and paste saved HTML (maximum 500 KiB). The dashboard POSTs to `/api/analyze` and renders structured JSON. Both Vercel and Docker use the same pure Python parser. **No arbitrary URL fetching, external API calls, persistent storage, or prospect outreach occurs.** This is an early-stage inspection tool, not a live crawler.
+
+### Explainable results and examples
+
+The dashboard includes two self-contained example HTML snippets, one for a page inventory and one for directory discovery. Selecting either loads and submits the example; no external site is fetched. Findings describe only what static HTML supports (such as missing titles, headings and image alternatives) and explicitly distinguish untested behavior. The JSON result remains available for inspection.

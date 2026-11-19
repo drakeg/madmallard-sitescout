@@ -27,3 +27,5 @@ Web content is untrusted. Browser and code execution jobs require isolation, lim
 
 ## Offline analysis API
 `POST /api/analyze` accepts JSON `{"mode":"inventory|directory","url":"https://…","html":"…"}` and returns `{"result":…}` or `{"error":…}`. Shared implementation in `app/analyze.py` and `app/http_api.py` runs on Vercel Python Functions and the Docker HTTP server. The request is size-limited and performs no network I/O.
+
+`app/findings.py` generates deterministic, explainable summaries of parsed HTML. Browser rendering uses DOM `textContent` for untrusted values, never injected HTML. Example inputs are embedded locally in the dashboard and are not live crawls.

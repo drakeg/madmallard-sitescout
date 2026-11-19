@@ -1,6 +1,7 @@
 """Pure offline HTML analysis shared by Vercel and Docker."""
 from app.directory import directory_candidates
 from app.inventory import inventory
+from app.findings import summarize
 
 MAX_HTML_BYTES = 512_000
 
@@ -17,7 +18,11 @@ def analyze(payload):
     if not isinstance(url, str) or len(url) > 2048:
         raise ValueError("A valid source URL is required")
     if mode == "inventory":
-        return inventory(html, url)
+        result = inventory(html, url)
+        result["summary"] = summarize(result, mode)
+        return result
     if mode == "directory":
-        return directory_candidates(html, url)
+        result = directory_candidates(html, url)
+        result["summary"] = summarize(result, mode)
+        return result
     raise ValueError("Unknown analysis mode")
