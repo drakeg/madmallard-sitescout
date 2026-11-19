@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Mad Mallard SiteScout — website discovery, analysis, and redesign workspace.">
+  <title>Mad Mallard SiteScout</title>
+  <style>
+    :root{color-scheme:dark;font-family:system-ui,-apple-system,sans-serif;background:#101c2a;color:#edf4fa}
+    *{box-sizing:border-box}body{margin:0}header{padding:3rem max(1.5rem,calc((100vw - 1080px)/2));background:linear-gradient(120deg,#19384a,#122235)}
+    .eyebrow{color:#78e0c1;letter-spacing:.13em;text-transform:uppercase;font-size:.8rem;font-weight:700}
+    h1{font-size:clamp(2.2rem,5vw,4rem);margin:.5rem 0}p{line-height:1.6;color:#b8c8d6}header p{max-width:680px}
+    main{max-width:1128px;padding:2rem 1.5rem 4rem;margin:auto}h2{font-size:1.35rem}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:1rem}
+    article{background:#1b2d3f;border:1px solid #375064;border-radius:14px;padding:1.4rem}
+    article h3{margin-top:0}a{color:#84e5d1}a:focus-visible{outline:3px solid #fff;outline-offset:4px}
+    .status{display:inline-block;padding:.35rem .65rem;border-radius:30px;background:#31485c;color:#e2edf6;font-size:.8rem}
+    footer{border-top:1px solid #375064;padding-top:1.5rem;margin-top:2rem;color:#b8c8d6}
+  </style>
+</head>
+<body>
+<header>
+  <div class="eyebrow">Mad Mallard Solutions · Development workspace</div>
+  <h1>SiteScout</h1>
+  <p>Discover website opportunities, understand existing sites, and build better replacements. The platform is under active development.</p>
+</header>
+<main>
+  <h2>Project workspace</h2>
+  <div class="grid">
+    <article><span class="status">Prototype available</span><h3>Directory discovery</h3><p>Extract potential business websites from saved directory pages for review.</p></article>
+    <article><span class="status">Prototype available</span><h3>Website inventory</h3><p>Inspect saved page content, links, forms, and images with the local Python tools.</p></article>
+    <article><span class="status">Pilot underway</span><h3>Optimist Hall pilot</h3><p>Use the pilot directory to test discovery and qualification workflows.</p></article>
+    <article><span class="status">Planned</span><h3>AI redesign studio</h3><p>Generate responsive designs, functional sites, and testable previews using container-based workers.</p></article>
+  </div>
+  <footer><p>Service health: <span id="health" role="status">Checking…</span> · <a href="/api/health">API health JSON</a> · <a href="https://github.com/drakeg/madmallard-sitescout">Source repository</a></p></footer>
+</main>
+<script>
+  fetch('/api/health',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Unavailable');return r.json()})
+    .then(d=>{document.getElementById('health').textContent=d.status==='ok'?'Online':'Unavailable'})
+    .catch(()=>{document.getElementById('health').textContent='Unavailable'});
+</script>
+</body>
+</html>
