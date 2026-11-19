@@ -5,3 +5,4 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 ## [Unreleased]
 ### Added
 - Sprint 0 engineering scaffold, health endpoint, Docker Compose, CI, governance and release documentation.
+- Added offline HTML inventory CLI, demo fixture, and tests for Sprint 1.

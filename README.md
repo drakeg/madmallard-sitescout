@@ -23,3 +23,10 @@ Sprint 0 scaffold. The service is a health/status API, **not yet a website gener
 
 ## Candidate GitHub tools
 [Open Lovable](https://github.com/firecrawl/open-lovable), [OpenPage](https://github.com/buildingopen/openpage), [Onlook](https://github.com/onlook-dev/onlook), [OpenCode](https://github.com/anomalyco/opencode), [Ollama](https://github.com/ollama/ollama), [Astro](https://github.com/withastro/astro), [Playwright](https://github.com/microsoft/playwright), [axe-core](https://github.com/dequelabs/axe-core). **Candidates only**: no license/runtime approval implied.
+
+## Sprint 1: saved-page inventory
+Analyze an HTML page you are authorized to inspect, with **no network access**:
+```sh
+python3 -m app.inventory fixtures/demo.html --url https://example.com/
+```
+Outputs JSON describing title, headings, links, images, forms and unresolved functionality. It does not crawl websites, execute JavaScript, or verify external services.
