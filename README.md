@@ -37,3 +37,9 @@ The public [Optimist Hall tenant directory](https://www.optimisthall.com/tenants
 python3 -m app.directory fixtures/food-hall-directory.html --url https://www.optimisthall.com/tenants
 ```
 All results are unverified external links requiring review; no network requests are made.
+
+## Web dashboard deployment
+
+The root `index.html` is the static dashboard for Vercel; `api/health.py` is its Python serverless health function. `vercel.json` aliases `/health` to `/api/health`. Deploy the repository root as an **Other** framework with no custom output directory or build command. Verify `/`, `/api/health`, and `/health` after deployment. Vercel does not run the local Docker/AI worker containers.
+
+For Docker, use `docker compose up -d --build` and visit `http://127.0.0.1:8087/` (or configure `SITESCOUT_BIND=0.0.0.0` for trusted LAN access). The same dashboard and health routes are served by the Python container. Do not expose unauthenticated future worker controls to the public internet.

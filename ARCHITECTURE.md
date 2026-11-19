@@ -19,3 +19,8 @@ Visual design 25%, functional completeness 30%, self-hosting/local AI 20%, maint
 
 ## Trust boundaries
 Web content is untrusted. Browser and code execution jobs require isolation, limited egress, no production secrets and bounded retries. Generated sites are labeled unofficial previews until authorized. All external outreach is approval-gated.
+
+## Dual deployment surfaces
+- **Vercel:** repository-root static `index.html` plus stateless `api/health.py`; no Docker, Ollama, or browser worker on Vercel.
+- **Docker Compose:** `app.server` serves the same dashboard and health contract; local Python analysis and future container workers run here.
+- No job submission or AI generation is advertised as operational until implemented, secured, and tested.

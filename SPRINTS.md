@@ -22,3 +22,6 @@ Clear user outcome, dependencies, testable acceptance criteria, security/license
 
 ## Definition of done
 Code reviewed, CI green, tests pass, docs and release notes updated, no unreviewed paid dependencies or outbound communications.
+
+## Sprint 0 deployment recovery
+SS-014: restore the Vercel homepage, add a serverless health route, and retain Docker dashboard parity. Exit requires green unit tests, container smoke tests, and a verified Vercel deployment URL. No AI generation capability is implied by this milestone.
