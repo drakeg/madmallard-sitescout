@@ -1,0 +1,22 @@
+# Product Backlog
+
+Priority order: P0 > P1 > P2. Track implementation in GitHub Issues; this file is the roadmap index. Status values: TODO / IN PROGRESS / DONE.
+
+| ID | Priority | Sprint | Story | Acceptance criteria | Status |
+|---|---|---|---|---|---|
+| SS-001 | P0 | 0 | Project scaffold | Health endpoint, Compose, tests and CI | IN PROGRESS |
+| SS-002 | P0 | 0 | Engineering governance | AGENTS, contributing, security, releases, PR template | IN PROGRESS |
+| SS-003 | P0 | 1 | Site inventory | Extract page list, internal links and contact/booking journeys from authorized fixtures | TODO |
+| SS-004 | P0 | 1 | Functional requirements | Structured inventory of forms and integrations, unknowns flagged | TODO |
+| SS-005 | P0 | 2 | Builder license audit | SPDX, commercial restrictions, required hosted services and model terms documented | TODO |
+| SS-006 | P0 | 2 | Builder benchmark | Same 3 demo briefs, objective scoring, screenshots, repeatable costs | TODO |
+| SS-007 | P0 | 3 | Design directions | Three genuinely different responsive concepts per brief | TODO |
+| SS-008 | P0 | 4 | Functional code generation | Builds reproducibly, navigates, and submits forms to a test endpoint | TODO |
+| SS-009 | P0 | 5 | Visual/browser QA | Desktop/mobile screenshots, E2E tests and accessibility gates | TODO |
+| SS-010 | P1 | 6 | Prospect discovery | Permitted source, dedupe and opt-out handling | TODO |
+| SS-011 | P1 | 7 | Preview approvals | Human review before publication or outreach | TODO |
+| SS-012 | P1 | 7 | CRM | Reply tracking, suppression and communication audit | TODO |
+| SS-013 | P1 | 8 | Customer delivery | Export, handoff and rollback instructions | TODO |
+
+## Non-goals for MVP
+Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only runtime integrations, production deployment of unreviewed generated code.
