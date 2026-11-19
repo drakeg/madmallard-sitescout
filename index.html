@@ -16,6 +16,7 @@
     article h3{margin-top:0}a{color:#84e5d1}a:focus-visible{outline:3px solid #fff;outline-offset:4px}
     .status{display:inline-block;padding:.35rem .65rem;border-radius:30px;background:#31485c;color:#e2edf6;font-size:.8rem}
     label{display:block;margin:.8rem 0 .35rem;font-weight:600}input,textarea,select,button{font:inherit;width:100%;padding:.7rem;border-radius:8px;border:1px solid #7890a4;background:#102337;color:#fff}textarea{min-height:170px;resize:vertical}button{width:auto;cursor:pointer;background:#67d7b8;color:#09212b;font-weight:700;margin-top:1rem;border:0}button:hover{background:#8de8d0}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#081623;padding:1rem;border-radius:10px;max-height:500px;overflow:auto} .hint{font-size:.9rem}
+    .findings{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.7rem;margin:1rem 0}.finding{border-left:4px solid #76dbc1;background:#1b2d3f;padding:1rem;border-radius:8px}.finding.warning{border-left-color:#ffd180}.finding h4{margin:.2rem 0}.finding p{margin:.3rem 0}.metrics{display:flex;flex-wrap:wrap;gap:1rem}.metrics strong{display:block;font-size:1.4rem}.metrics div{padding:.7rem;background:#1b2d3f;border-radius:8px}.secondary{background:#31485c;color:#fff;margin-right:.5rem}
     footer{border-top:1px solid #375064;padding-top:1.5rem;margin-top:2rem;color:#b8c8d6}
   </style>
 </head>
@@ -45,23 +46,73 @@
       <textarea id="html" required placeholder="Paste the HTML source here…" spellcheck="false"></textarea>
       <p class="hint">Maximum HTML size: 500 KiB. Results are not stored.</p>
       <button type="submit">Analyze HTML</button>
+      <button type="button" class="secondary" id="demo-inventory">Load inventory example</button>
+      <button type="button" class="secondary" id="demo-directory">Load directory example</button>
     </form>
-    <h3>Results</h3>
+    <h3>Findings</h3>
+    <div id="summary" aria-live="polite"></div>
+    <h3>Raw results</h3>
     <pre id="results" role="status" aria-live="polite">No analysis yet.</pre>
   </section>
   <footer><p>Service health: <span id="health" role="status">Checking…</span> · <a href="/api/health">API health JSON</a> · <a href="https://github.com/drakeg/madmallard-sitescout">Source repository</a></p></footer>
 </main>
 <script>
+  const demoInventory='<title>Sample Cafe</title><h1>Welcome</h1><a href="/menu">Menu</a><img src="/coffee.jpg"><form action="/contact"><input name="email" required></form>';
+  const demoDirectory='<h1>Sample Directory</h1><a href="https://cafe.example/">Cafe</a><a href="https://bakery.example/">Bakery</a>';
+  for(const [id,mode,html,url] of [
+    ['demo-inventory','inventory',demoInventory,'https://example.org/'],
+    ['demo-directory','directory',demoDirectory,'https://example.org/tenants']
+  ]){
+    document.getElementById(id).addEventListener('click',()=>{
+      document.getElementById('mode').value=mode;
+      document.getElementById('url').value=url;
+      document.getElementById('html').value=html;
+      document.getElementById('analyzer').requestSubmit();
+    });
+  }
+  function renderSummary(summary){
+    const target=document.getElementById('summary');
+    target.replaceChildren();
+    if(!summary)return;
+    const heading=document.createElement('h4');
+    heading.textContent=summary.headline;
+    target.append(heading);
+    const metrics=document.createElement('div');
+    metrics.className='metrics';
+    for(const metric of summary.metrics){
+      const item=document.createElement('div');
+      const value=document.createElement('strong');
+      value.textContent=String(metric.value);
+      item.append(value,document.createTextNode(metric.label));
+      metrics.append(item);
+    }
+    target.append(metrics);
+    const findings=document.createElement('div');
+    findings.className='findings';
+    for(const finding of summary.findings){
+      const item=document.createElement('div');
+      item.className='finding '+(finding.severity==='warning'?'warning':'');
+      const title=document.createElement('h4');
+      title.textContent=finding.title;
+      const detail=document.createElement('p');
+      detail.textContent=finding.detail;
+      item.append(title,detail);
+      findings.append(item);
+    }
+    target.append(findings);
+  }
   document.getElementById('analyzer').addEventListener('submit',async event=>{
     event.preventDefault();
     const results=document.getElementById('results');
     const html=document.getElementById('html').value;
     if(new TextEncoder().encode(html).length>512000){results.textContent='HTML exceeds 500 KiB limit';return}
     results.textContent='Analyzing…';
+    renderSummary(null);
     try {
       const response=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:document.getElementById('mode').value,url:document.getElementById('url').value,html})});
       const data=await response.json();
       results.textContent=JSON.stringify(response.ok?data.result:data,null,2);
+      if(response.ok)renderSummary(data.result.summary);
     }catch(error){results.textContent='Analysis unavailable: '+error.message}
   });
   fetch('/api/health',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Unavailable');return r.json()})

@@ -28,3 +28,5 @@ SS-014: restore the Vercel homepage, add a serverless health route, and retain D
 
 ## Sprint 1 increment
 SS-015 provides a usable browser workflow for the existing offline parsers, sharing a size-limited POST API across Vercel and Docker. Next: human-readable findings, test fixtures in the UI, and authorized capture via a separately secured worker.
+
+SS-016 increment: explainable findings, example inputs and safe browser rendering. Acceptance: warning rules are tested and clearly avoid asserting live behavior or automated outreach.
