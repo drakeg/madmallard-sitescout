@@ -24,3 +24,6 @@ Web content is untrusted. Browser and code execution jobs require isolation, lim
 - **Vercel:** repository-root static `index.html` plus stateless `api/health.py`; no Docker, Ollama, or browser worker on Vercel.
 - **Docker Compose:** `app.server` serves the same dashboard and health contract; local Python analysis and future container workers run here.
 - No job submission or AI generation is advertised as operational until implemented, secured, and tested.
+
+## Offline analysis API
+`POST /api/analyze` accepts JSON `{"mode":"inventory|directory","url":"https://…","html":"…"}` and returns `{"result":…}` or `{"error":…}`. Shared implementation in `app/analyze.py` and `app/http_api.py` runs on Vercel Python Functions and the Docker HTTP server. The request is size-limited and performs no network I/O.

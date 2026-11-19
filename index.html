@@ -15,6 +15,7 @@
     article{background:#1b2d3f;border:1px solid #375064;border-radius:14px;padding:1.4rem}
     article h3{margin-top:0}a{color:#84e5d1}a:focus-visible{outline:3px solid #fff;outline-offset:4px}
     .status{display:inline-block;padding:.35rem .65rem;border-radius:30px;background:#31485c;color:#e2edf6;font-size:.8rem}
+    label{display:block;margin:.8rem 0 .35rem;font-weight:600}input,textarea,select,button{font:inherit;width:100%;padding:.7rem;border-radius:8px;border:1px solid #7890a4;background:#102337;color:#fff}textarea{min-height:170px;resize:vertical}button{width:auto;cursor:pointer;background:#67d7b8;color:#09212b;font-weight:700;margin-top:1rem;border:0}button:hover{background:#8de8d0}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#081623;padding:1rem;border-radius:10px;max-height:500px;overflow:auto} .hint{font-size:.9rem}
     footer{border-top:1px solid #375064;padding-top:1.5rem;margin-top:2rem;color:#b8c8d6}
   </style>
 </head>
@@ -32,9 +33,37 @@
     <article><span class="status">Pilot underway</span><h3>Optimist Hall pilot</h3><p>Use the pilot directory to test discovery and qualification workflows.</p></article>
     <article><span class="status">Planned</span><h3>AI redesign studio</h3><p>Generate responsive designs, functional sites, and testable previews using container-based workers.</p></article>
   </div>
+  <section aria-labelledby="analyzer-title">
+    <h2 id="analyzer-title">Analyze saved HTML</h2>
+    <p>Paste HTML from a page you are authorized to inspect. No website is fetched, and no outreach is sent.</p>
+    <form id="analyzer">
+      <label for="mode">Analysis type</label>
+      <select id="mode"><option value="inventory">Website inventory</option><option value="directory">Directory candidates</option></select>
+      <label for="url">Original page URL</label>
+      <input id="url" type="url" placeholder="https://example.com/" required maxlength="2048">
+      <label for="html">Saved page HTML</label>
+      <textarea id="html" required placeholder="Paste the HTML source here…" spellcheck="false"></textarea>
+      <p class="hint">Maximum HTML size: 500 KiB. Results are not stored.</p>
+      <button type="submit">Analyze HTML</button>
+    </form>
+    <h3>Results</h3>
+    <pre id="results" role="status" aria-live="polite">No analysis yet.</pre>
+  </section>
   <footer><p>Service health: <span id="health" role="status">Checking…</span> · <a href="/api/health">API health JSON</a> · <a href="https://github.com/drakeg/madmallard-sitescout">Source repository</a></p></footer>
 </main>
 <script>
+  document.getElementById('analyzer').addEventListener('submit',async event=>{
+    event.preventDefault();
+    const results=document.getElementById('results');
+    const html=document.getElementById('html').value;
+    if(new TextEncoder().encode(html).length>512000){results.textContent='HTML exceeds 500 KiB limit';return}
+    results.textContent='Analyzing…';
+    try {
+      const response=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode:document.getElementById('mode').value,url:document.getElementById('url').value,html})});
+      const data=await response.json();
+      results.textContent=JSON.stringify(response.ok?data.result:data,null,2);
+    }catch(error){results.textContent='Analysis unavailable: '+error.message}
+  });
   fetch('/api/health',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error('Unavailable');return r.json()})
     .then(d=>{document.getElementById('health').textContent=d.status==='ok'?'Online':'Unavailable'})
     .catch(()=>{document.getElementById('health').textContent='Unavailable'});
