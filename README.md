@@ -30,3 +30,10 @@ Analyze an HTML page you are authorized to inspect, with **no network access**:
 python3 -m app.inventory fixtures/demo.html --url https://example.com/
 ```
 Outputs JSON describing title, headings, links, images, forms and unresolved functionality. It does not crawl websites, execute JavaScript, or verify external services.
+
+## Optimist Hall pilot
+The public [Optimist Hall tenant directory](https://www.optimisthall.com/tenants) is the real-world reference for our directory workflow. See [docs/OPTIMIST_HALL_PILOT.md](docs/OPTIMIST_HALL_PILOT.md). Try the offline extractor on a **synthetic** fixture:
+```sh
+python3 -m app.directory fixtures/food-hall-directory.html --url https://www.optimisthall.com/tenants
+```
+All results are unverified external links requiring review; no network requests are made.
