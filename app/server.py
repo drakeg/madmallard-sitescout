@@ -1,5 +1,8 @@
 """Local Docker dashboard and health endpoint."""
 import json
+import os
+from app.capture import capture
+from app.analyze import analyze
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlsplit
@@ -12,6 +15,21 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         if urlsplit(self.path).path == "/api/analyze":
             respond(self)
+        elif urlsplit(self.path).path == "/api/capture":
+            if os.environ.get("SITESCOUT_CAPTURE_ENABLED") != "true":
+                send_json(self, 403, {"error": "Live capture is disabled. Enable explicitly on a trusted Docker host."})
+                return
+            try:
+                length = int(self.headers.get("Content-Length", "0"))
+                if not 0 < length <= 4096:
+                    raise ValueError("Invalid request size")
+                payload = json.loads(self.rfile.read(length))
+                url = payload.get("url")
+                mode = payload.get("mode", "inventory")
+                html = capture(url)
+                send_json(self, 200, {"result": analyze({"url": url, "mode": mode, "html": html})})
+            except (ValueError, OSError, TimeoutError) as exc:
+                send_json(self, 400, {"error": str(exc)})
         else:
             send_json(self, 404, {"error": "Not found"})
 

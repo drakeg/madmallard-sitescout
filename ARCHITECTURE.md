@@ -29,3 +29,5 @@ Web content is untrusted. Browser and code execution jobs require isolation, lim
 `POST /api/analyze` accepts JSON `{"mode":"inventory|directory","url":"https://…","html":"…"}` and returns `{"result":…}` or `{"error":…}`. Shared implementation in `app/analyze.py` and `app/http_api.py` runs on Vercel Python Functions and the Docker HTTP server. The request is size-limited and performs no network I/O.
 
 `app/findings.py` generates deterministic, explainable summaries of parsed HTML. Browser rendering uses DOM `textContent` for untrusted values, never injected HTML. Example inputs are embedded locally in the dashboard and are not live crawls.
+
+Live capture is Docker-only and opt-in. `app/capture.py` validates public HTTPS targets and pins DNS-resolved addresses to prevent redirect/rebinding access to internal networks. The capture endpoint is intentionally omitted from Vercel's `api/` directory. Never enable on a publicly accessible host without authentication and abuse controls.
