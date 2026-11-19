@@ -25,3 +25,4 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | ID | Priority | Sprint | Story | Acceptance criteria | Status |
 |---|---|---|---|---|---|
 | SS-014 | P0 | 0 | Vercel/Docker dashboard parity | Root homepage and health endpoints work in both environments; docs and tests updated | IN PROGRESS |
+| SS-015 | P0 | 1 | Dashboard offline HTML analyzer | Paste saved HTML, select inventory/directory, view JSON in both runtimes; no outbound fetch | IN PROGRESS |

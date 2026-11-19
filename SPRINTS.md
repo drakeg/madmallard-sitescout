@@ -25,3 +25,6 @@ Code reviewed, CI green, tests pass, docs and release notes updated, no unreview
 
 ## Sprint 0 deployment recovery
 SS-014: restore the Vercel homepage, add a serverless health route, and retain Docker dashboard parity. Exit requires green unit tests, container smoke tests, and a verified Vercel deployment URL. No AI generation capability is implied by this milestone.
+
+## Sprint 1 increment
+SS-015 provides a usable browser workflow for the existing offline parsers, sharing a size-limited POST API across Vercel and Docker. Next: human-readable findings, test fixtures in the UI, and authorized capture via a separately secured worker.

@@ -8,3 +8,4 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added offline HTML inventory CLI, demo fixture, and tests for Sprint 1.
 - Added an offline tenant-directory external-link extractor and an Optimist Hall pilot plan.
 - Added a Vercel-compatible SiteScout homepage and Python health function, with matching Docker dashboard and route tests.
+- Added browser-based offline HTML inventory and directory analysis with a shared Vercel/Docker JSON endpoint.
