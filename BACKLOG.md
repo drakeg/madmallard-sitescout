@@ -31,3 +31,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-018 | P0 | 2 | Authenticated capture jobs | Authentication, rate limits, queue and audit log before any public exposure | BACKLOG |
 
 | SS-019 | P1 | 2 | Verified README badge maintenance | Actual-stack badges, dynamic CI/issues/PR badges, documented convention and CI validation; no fabricated release/license | IN PROGRESS |
+| SS-020 | P0 | 2 | Capture access guard | Token auth, default-off, per-worker rate limit, security tests and deployment instructions | IN PROGRESS |
+| SS-021 | P0 | 2 | Durable capture queue and audit | Per-user identity, shared throttling, durable jobs and logs for public exposure | BACKLOG |

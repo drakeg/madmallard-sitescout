@@ -63,10 +63,12 @@
     const url=document.getElementById('url').value;
     if(!url){results.textContent='Enter a public HTTPS URL first.';return}
     if(!confirm('Confirm you are authorized to inspect this public website. Live capture is available only when enabled on a trusted Docker host.'))return;
+    const token=prompt('Docker capture access token (not stored):');
+    if(!token){results.textContent='Capture cancelled: token required.';return}
     results.textContent='Capturing authorized page…';
     renderSummary(null);
     try{
-      const response=await fetch('/api/capture',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url,mode:document.getElementById('mode').value})});
+      const response=await fetch('/api/capture',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({url,mode:document.getElementById('mode').value})});
       const data=await response.json();
       results.textContent=JSON.stringify(response.ok?data.result:data,null,2);
       if(response.ok)renderSummary(data.result.summary);
