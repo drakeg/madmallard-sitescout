@@ -15,3 +15,7 @@ Use type hints and small modules. Avoid vendor lock-in. Include unit, integratio
 
 ## Code of conduct
 Be respectful, constructive, and security-conscious. Report vulnerabilities privately as described in SECURITY.md.
+
+## Badge review gate
+
+Every PR changing stack, supported versions, CI workflows, release policy, license or deployment configuration must inspect the README badges and run `python3 scripts/check_readme_badges.py`. The CI workflow enforces badge placement, links, supported runtime claims and dynamic workflow/status conventions. Refer to `AGENTS.md` and the central repository standards for the full policy.

@@ -33,3 +33,5 @@ SS-016 increment: explainable findings, example inputs and safe browser renderin
 
 ## Sprint 2 increment
 SS-017 introduces opt-in Docker-only public HTTPS capture with strict network safety controls and explicit authorization confirmation. SS-018 will add authentication, rate limiting and job isolation before the feature can be exposed beyond a trusted host.
+
+SS-019 repository-maintenance increment: verified technology, deployment and dynamic GitHub badges immediately below the README title; document the ongoing contributor/agent policy and enforce with CI. This accompanies normal Sprint 2 delivery.
