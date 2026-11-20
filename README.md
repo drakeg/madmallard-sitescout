@@ -1,5 +1,15 @@
 # Mad Mallard SiteScout
 
+<!-- badges:start -->
+[![Python 3.15](https://img.shields.io/badge/Python-3.15-3776AB?logo=python&logoColor=white)](Dockerfile)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](compose.yaml)
+[![Vercel](https://img.shields.io/badge/Vercel-Deployment-000000?logo=vercel&logoColor=white)](vercel.json)
+
+[![CI](https://github.com/drakeg/madmallard-sitescout/actions/workflows/ci.yml/badge.svg)](https://github.com/drakeg/madmallard-sitescout/actions/workflows/ci.yml)
+[![Open issues](https://img.shields.io/github/issues/drakeg/madmallard-sitescout)](https://github.com/drakeg/madmallard-sitescout/issues)
+[![Open PRs](https://img.shields.io/github/issues-pr/drakeg/madmallard-sitescout)](https://github.com/drakeg/madmallard-sitescout/pulls)
+<!-- badges:end -->
+
 Free-software-first platform for evaluating existing small-business websites, producing **functional** redesign concepts, and preparing permission-conscious sales previews.
 
 ## Principles

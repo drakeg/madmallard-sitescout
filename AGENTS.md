@@ -16,3 +16,7 @@ Read README.md, ARCHITECTURE.md, SPRINTS.md, BACKLOG.md, CONTRIBUTING.md, SECURI
 
 ## Definition of done
 Acceptance criteria met; tests and security checks pass; documentation updated; reviewer approval; CI green. No claim of success without evidence.
+
+## README badges — mandatory repository maintenance
+
+Follow the centralized standards at [drakeg/madmallard-repository-standards](https://github.com/drakeg/madmallard-repository-standards) when published. Keep a compact Shields.io badge section immediately below the README title and before its description. Derive stack and version badges from real manifests, Dockerfiles and deployment config; link badges to relevant workflows/docs. GitHub Actions, issue and PR badges must use dynamic endpoints. Include release/license badges only after an actual published release or license file exists. Never hardcode successful CI/security results. When workflows, supported runtimes, license, deployment or releases change, update the badges in the same PR and run `python3 scripts/check_readme_badges.py`.

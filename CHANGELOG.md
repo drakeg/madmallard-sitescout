@@ -11,3 +11,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added browser-based offline HTML inventory and directory analysis with a shared Vercel/Docker JSON endpoint.
 - Added human-readable static findings and self-contained dashboard examples for website inventory and directory discovery.
 - Added opt-in Docker-only authorized public HTTPS capture with DNS pinning and SSRF protection.
+
+- Standardized verified README technology/deployment badges and dynamic GitHub CI/activity badges, with automated validation and contributor guidance.
