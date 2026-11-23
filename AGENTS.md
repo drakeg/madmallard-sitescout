@@ -20,3 +20,6 @@ Acceptance criteria met; tests and security checks pass; documentation updated; 
 ## README badges — mandatory repository maintenance
 
 Follow the centralized standards at [drakeg/madmallard-repository-standards](https://github.com/drakeg/madmallard-repository-standards) when published. Keep a compact Shields.io badge section immediately below the README title and before its description. Derive stack and version badges from real manifests, Dockerfiles and deployment config; link badges to relevant workflows/docs. GitHub Actions, issue and PR badges must use dynamic endpoints. Include release/license badges only after an actual published release or license file exists. Never hardcode successful CI/security results. When workflows, supported runtimes, license, deployment or releases change, update the badges in the same PR and run `python3 scripts/check_readme_badges.py`.
+
+## Capture security gate
+Never enable capture by default or expose the capture worker on a public interface without TLS, authenticated user sessions, shared rate limits and audit logging. Validate SSRF protections and token rejection in CI. Treat all captured HTML as untrusted data.

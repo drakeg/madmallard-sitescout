@@ -2,6 +2,7 @@
 import json
 import os
 from app.capture import capture
+from app.capture_guard import capture_access
 from app.analyze import analyze
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -18,6 +19,10 @@ class Handler(BaseHTTPRequestHandler):
         elif urlsplit(self.path).path == "/api/capture":
             if os.environ.get("SITESCOUT_CAPTURE_ENABLED") != "true":
                 send_json(self, 403, {"error": "Live capture is disabled. Enable explicitly on a trusted Docker host."})
+                return
+            status, error = capture_access(self.headers)
+            if error:
+                send_json(self, status, {"error": error})
                 return
             try:
                 length = int(self.headers.get("Content-Length", "0"))

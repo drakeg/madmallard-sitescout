@@ -13,3 +13,4 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added opt-in Docker-only authorized public HTTPS capture with DNS pinning and SSRF protection.
 
 - Standardized verified README technology/deployment badges and dynamic GitHub CI/activity badges, with automated validation and contributor guidance.
+- Hardened Docker-only live capture with mandatory bearer token, fail-closed configuration and in-memory request throttling.
