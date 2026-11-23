@@ -18,3 +18,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Validate live capture request parameters before any outbound request.
 
 - Added a durable SQLite capture-job metadata store with atomic queue admission, owner-scoped lookup, sanitized audit events and retention cleanup; HTTP integration is deferred until authentication and worker isolation are ready.
+
+- Added a single-job capture worker prototype with sanitized failure logging and explicit recovery of interrupted job metadata; not yet connected to the HTTP service.
