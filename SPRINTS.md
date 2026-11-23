@@ -39,3 +39,6 @@ SS-019 repository-maintenance increment: verified technology, deployment and dyn
 SS-020: harden the trusted Docker capture prototype with a bearer token, per-process throttling and negative security tests. This does not close SS-018's public-exposure requirements: SS-021 retains durable jobs, identity and audit logging.
 
 SS-022: reject malformed capture input before external requests; negative tests guard this prerequisite for SS-021.
+
+### SS-021 increment A — persistent capture metadata store
+SQLite-backed job lifecycle and audit metadata, owner-scoped lookup, transaction-safe shared admission, bounded pending queue, and completed-job pruning. Unit tests cover concurrent admission and restart persistence. **Not yet wired into the capture HTTP route:** still required are authenticated user sessions, a bounded background worker, secure result storage, timeout recovery, TLS and operational testing. This increment does not make public capture safe.
