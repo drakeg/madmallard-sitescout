@@ -11,6 +11,18 @@ from app.http_api import respond, send_json
 
 DASHBOARD = Path(__file__).resolve().parent.parent / "index.html"
 
+def validate_capture_payload(payload):
+    """Reject invalid capture parameters before outbound network requests."""
+    if not isinstance(payload, dict):
+        raise ValueError("Capture request must be a JSON object")
+    url = payload.get("url")
+    if not isinstance(url, str) or not url.strip() or len(url) > 2048:
+        raise ValueError("A valid HTTPS URL is required")
+    mode = payload.get("mode", "inventory")
+    if not isinstance(mode, str) or mode not in ("inventory", "directory"):
+        raise ValueError("Mode must be inventory or directory")
+    return url, mode
+
 
 class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
@@ -29,8 +41,7 @@ class Handler(BaseHTTPRequestHandler):
                 if not 0 < length <= 4096:
                     raise ValueError("Invalid request size")
                 payload = json.loads(self.rfile.read(length))
-                url = payload.get("url")
-                mode = payload.get("mode", "inventory")
+                url, mode = validate_capture_payload(payload)
                 html = capture(url)
                 send_json(self, 200, {"result": analyze({"url": url, "mode": mode, "html": html})})
             except (ValueError, OSError, TimeoutError) as exc:
