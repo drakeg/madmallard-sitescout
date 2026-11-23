@@ -4,7 +4,6 @@ This module is intentionally not exposed as an HTTP endpoint. The current
 capture route remains private, default-off and synchronous until actor
 authentication, worker isolation and TLS requirements are implemented.
 """
-import json
 import sqlite3
 import time
 import uuid
@@ -136,6 +135,30 @@ class CaptureJobStore:
                 "INSERT INTO audit_events(job_id,actor,event,created_at) VALUES(?,?,?,?)",
                 (job_id, row["actor"], state, stamp),
             )
+
+    def recover_stale(self, *, before, now=None):
+        """Return interrupted running jobs to the queue, preserving audit history.
+
+        Only use on a single dedicated worker, or when a lease coordinator can
+        establish that these jobs are no longer actively executing.
+        """
+        stamp = time.time() if now is None else now
+        with self._connect() as conn:
+            conn.execute("BEGIN IMMEDIATE")
+            rows = conn.execute(
+                "SELECT id,actor FROM jobs WHERE status='running' AND updated_at<?",
+                (before,),
+            ).fetchall()
+            for row in rows:
+                conn.execute(
+                    "UPDATE jobs SET status='queued',updated_at=? WHERE id=?",
+                    (stamp, row["id"]),
+                )
+                conn.execute(
+                    "INSERT INTO audit_events(job_id,actor,event,created_at) VALUES(?,?,?,?)",
+                    (row["id"], row["actor"], "requeued", stamp),
+                )
+            return len(rows)
 
     def get(self, job_id, actor):
         with self._connect() as conn:
