@@ -37,3 +37,5 @@ SS-017 introduces opt-in Docker-only public HTTPS capture with strict network sa
 SS-019 repository-maintenance increment: verified technology, deployment and dynamic GitHub badges immediately below the README title; document the ongoing contributor/agent policy and enforce with CI. This accompanies normal Sprint 2 delivery.
 
 SS-020: harden the trusted Docker capture prototype with a bearer token, per-process throttling and negative security tests. This does not close SS-018's public-exposure requirements: SS-021 retains durable jobs, identity and audit logging.
+
+SS-022: reject malformed capture input before external requests; negative tests guard this prerequisite for SS-021.

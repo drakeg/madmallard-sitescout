@@ -14,3 +14,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 
 - Standardized verified README technology/deployment badges and dynamic GitHub CI/activity badges, with automated validation and contributor guidance.
 - Hardened Docker-only live capture with mandatory bearer token, fail-closed configuration and in-memory request throttling.
+
+- Validate live capture request parameters before any outbound request.
