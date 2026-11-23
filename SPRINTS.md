@@ -42,3 +42,6 @@ SS-022: reject malformed capture input before external requests; negative tests 
 
 ### SS-021 increment A — persistent capture metadata store
 SQLite-backed job lifecycle and audit metadata, owner-scoped lookup, transaction-safe shared admission, bounded pending queue, and completed-job pruning. Unit tests cover concurrent admission and restart persistence. **Not yet wired into the capture HTTP route:** still required are authenticated user sessions, a bounded background worker, secure result storage, timeout recovery, TLS and operational testing. This increment does not make public capture safe.
+
+### SS-021 increment B — bounded worker and explicit recovery
+Single-job execution path, injected capture/analyze functions for offline tests, sanitized failure audit, and explicit stale-running requeue. This remains a library-only prototype. Do not wire recovery to a recurring timer until worker leases and ownership are implemented; jobs can otherwise be processed twice.
