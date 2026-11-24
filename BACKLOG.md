@@ -71,3 +71,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-039 | P0 | 1 | End-to-end offline site report smoke | Verify real Docker HTTP site report and functional checklist with synthetic saved HTML | IN PROGRESS |
 
 | SS-040 | P0 | 1 | Offline report JSON import/export | Import authorized saved-page JSON, edit, analyze, download full report, reject bad/oversized input and test browser flow | IN PROGRESS |
+
+| SS-041 | P0 | 1 | Form verification checklist CSV | Convert saved form inventory into editable per-test CSV, prevent formula injection and keep untested evidence explicit | IN PROGRESS |

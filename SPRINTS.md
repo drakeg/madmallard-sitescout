@@ -105,3 +105,6 @@ Run the actual Docker API with a synthetic two-page saved-HTML request; assert p
 
 ### SS-040 — Import/export usability for offline site reports
 Add a local JSON file picker for saved-page manifests, preserve an editable manifest field, and offer downloadable complete report JSON only after successful analysis. Reject oversized and malformed imports, revoke temporary blob URLs, and test actual browser event workflows in CI using a dependency-free Node harness. No web crawling or external page requests.
+
+### SS-041 — Commercially useful form verification checklist
+Add a second, optional browser download for an editable CSV testing checklist derived only from static captured-form metadata. Include synthetic valid/invalid/mobile verification cases, owner and evidence columns, untested default statuses, proper spreadsheet CSV quoting, formula-injection protection, and integration tests of the complete browser workflow. No real form submissions or unverified customer outcomes.

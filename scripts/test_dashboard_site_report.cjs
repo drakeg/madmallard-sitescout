@@ -43,7 +43,14 @@ async function main() {
       if (url === '/api/health') return { ok: true, json: async () => ({ status: 'ok' }) };
       if (url === '/api/site_report') {
         responses.push(JSON.parse(config.body));
-        return { ok: true, json: async () => ({ report: { page_count: responses.at(-1).length, functional_requirements: { forms_to_test: [] } } }) };
+        return { ok: true, json: async () => ({ report: { page_count: responses.at(-1).length,
+          functional_requirements: { forms_to_test: [{
+            page: '=HYPERLINK("untrusted")',
+            action: 'https://example.org/?q="hello",world',
+            method: 'POST',
+            required_fields: ['email'],
+            test_cases: ['Submit valid form, verify "receipt"'],
+          }] } } }) };
       }
       throw new Error('Unexpected network call: ' + url);
     },
@@ -70,10 +77,19 @@ async function main() {
   element('site-report-export').listeners.click();
   assert.equal(downloads.length, 1);
   assert.equal(downloads[0].download, 'sitescout-site-report.json');
-  assert.deepEqual(JSON.parse(await urls[0].text()), { page_count: 2, functional_requirements: { forms_to_test: [] } });
+  assert.equal(JSON.parse(await urls[0].text()).functional_requirements.forms_to_test.length, 1);
+  assert.equal(element('site-report-checklist-export').disabled, false);
+  element('site-report-checklist-export').listeners.click();
+  assert.equal(downloads[1].download, 'sitescout-form-verification-checklist.csv');
+  const csv=await urls[1].text();
+  assert.match(csv, /"Page URL","Form action","Method"/);
+  assert.ok(csv.includes("\"'=HYPERLINK(\"\"untrusted\"\")\""), 'Formula-like cell must be escaped');
+  assert.ok(csv.includes("\"Submit valid form, verify \"\"receipt\"\"\""), 'CSV quotes and commas must be escaped');
+  assert.match(csv, /"Not tested"/);
 
   element('site-report-json').listeners.input();
   assert.equal(element('site-report-export').disabled, true);
+  assert.equal(element('site-report-checklist-export').disabled, true);
   file.files = [{ size: 2100001, text: async () => { throw new Error('Too large file was read'); } }];
   await file.listeners.change({ target: file });
   assert.match(element('site-report-results').textContent, /exceeds/);
