@@ -61,6 +61,18 @@
     <h3>Raw results</h3>
     <pre id="results" role="status" aria-live="polite">No analysis yet.</pre>
   </section>
+  <section aria-labelledby="site-report-title">
+    <h2 id="site-report-title">Multi-page saved website report</h2>
+    <p>Combine up to 20 authorized, saved HTML pages into a navigation and form inventory. This never crawls, visits or submits to a website.</p>
+    <form id="site-report-form">
+      <label for="site-report-json">Saved pages JSON</label>
+      <textarea id="site-report-json" spellcheck="false" required placeholder='[{"url":"https://example.org/","html":"<title>Home</title>"}]'></textarea>
+      <p class="hint">JSON array of URL/HTML objects. Maximum 500 KiB per page and 2 MB total.</p>
+      <button type="submit">Generate site report</button>
+      <button type="button" class="secondary" id="site-report-demo">Load three-page demo</button>
+    </form>
+    <pre id="site-report-results" role="status" aria-live="polite">No site report yet.</pre>
+  </section>
   <footer><p>Service health: <span id="health" role="status">Checking…</span> · <a href="/api/health">API health JSON</a> · <a href="https://github.com/drakeg/madmallard-sitescout">Source repository</a></p></footer>
 </main>
 <script>
@@ -144,6 +156,29 @@
         }
       }else{results.textContent=JSON.stringify(data,null,2)}
     }catch(error){results.textContent='Private jobs unavailable: '+error.message}
+  });
+  const sampleSitePages=[
+    {url:'https://sample-cafe.example/',html:'<title>Sample Cafe</title><h1>Welcome</h1><a href="/menu">Menu</a><a href="/contact">Contact</a>'},
+    {url:'https://sample-cafe.example/menu',html:'<title>Menu</title><h1>Food and drink</h1><a href="/contact">Contact us</a>'},
+    {url:'https://sample-cafe.example/contact',html:'<title>Contact</title><h1>Contact us</h1><form method="post" action="/inquiry"><input name="email" required></form>'}
+  ];
+  document.getElementById('site-report-demo').addEventListener('click',()=>{
+    document.getElementById('site-report-json').value=JSON.stringify(sampleSitePages,null,2);
+    document.getElementById('site-report-form').requestSubmit();
+  });
+  document.getElementById('site-report-form').addEventListener('submit',async event=>{
+    event.preventDefault();
+    const output=document.getElementById('site-report-results');
+    const input=document.getElementById('site-report-json').value;
+    if(new TextEncoder().encode(input).length>2100000){output.textContent='Report JSON exceeds the 2.1 MB request limit.';return}
+    let pages;
+    try{pages=JSON.parse(input)}catch(error){output.textContent='Invalid JSON: '+error.message;return}
+    output.textContent='Analyzing saved pages locally on the server…';
+    try{
+      const response=await fetch('/api/site_report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(pages)});
+      const data=await response.json();
+      output.textContent=JSON.stringify(response.ok?data.report:data,null,2);
+    }catch(error){output.textContent='Site report unavailable: '+error.message}
   });
   const demoInventory='<title>Sample Cafe</title><h1>Welcome</h1><a href="/menu">Menu</a><img src="/coffee.jpg"><form action="/contact"><input name="email" required></form>';
   const demoDirectory='<h1>Sample Directory</h1><a href="https://cafe.example/">Cafe</a><a href="https://bakery.example/">Bakery</a>';
