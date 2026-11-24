@@ -41,6 +41,14 @@ async function main() {
     },
     fetch: async (url, config) => {
       if (url === '/api/health') return { ok: true, json: async () => ({ status: 'ok' }) };
+      if (url === '/api/checklist_review') {
+        const supplied = JSON.parse(config.body);
+        assert.ok(supplied.csv.includes('Not tested'), 'Must submit selected CSV content');
+        return { ok: true, json: async () => ({ review: {
+          total_tests: 1, counts: { not_tested: 1, passed: 0, failed: 0, blocked: 0 },
+          evidence_label: 'Self-reported by reviewer; not independently verified',
+        } }) };
+      }
       if (url === '/api/site_report') {
         responses.push(JSON.parse(config.body));
         return { ok: true, json: async () => ({ report: { page_count: responses.at(-1).length,
@@ -86,6 +94,19 @@ async function main() {
   assert.ok(csv.includes("\"'=HYPERLINK(\"\"untrusted\"\")\""), 'Formula-like cell must be escaped');
   assert.ok(csv.includes("\"Submit valid form, verify \"\"receipt\"\"\""), 'CSV quotes and commas must be escaped');
   assert.match(csv, /"Not tested"/);
+
+  const reviewFile=element('site-checklist-file');
+  const reviewButton=element('review-site-checklist');
+  await reviewButton.listeners.click();
+  assert.match(element('site-checklist-review-results').textContent, /Select a completed/);
+  reviewFile.files=[{ size: 100, text: async () => 'Status,Observed result\\nNot tested,\\n' }];
+  await reviewButton.listeners.click();
+  const review=JSON.parse(element('site-checklist-review-results').textContent);
+  assert.equal(review.counts.not_tested, 1);
+  assert.match(review.evidence_label, /not independently verified/);
+  reviewFile.files=[{ size: 600000, text: async () => { throw new Error('Oversized file was read'); } }];
+  await reviewButton.listeners.click();
+  assert.match(element('site-checklist-review-results').textContent, /exceeds/);
 
   element('site-report-json').listeners.input();
   assert.equal(element('site-report-export').disabled, true);
