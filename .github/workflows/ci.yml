@@ -13,6 +13,8 @@ jobs:
       - run: python scripts/check_readme_badges.py
       - run: python -m compileall -q app api scripts tests
       - run: python -m unittest discover -s tests -v
+      - name: Test browser report import and export workflow
+        run: node scripts/test_dashboard_site_report.cjs
       - name: Validate worker Compose profile
         run: docker compose --profile capture-worker config --quiet
       - name: Validate opt-in continuous runner Compose profile
