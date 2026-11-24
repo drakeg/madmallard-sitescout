@@ -78,3 +78,6 @@ Add explicit-authorization job submission and manual status lookup controls to t
 
 ### SS-021 increment M — server-side permission assertion
 Require private job submissions to include literal boolean `authorized: true` and verify missing/non-boolean assertions are denied before DNS or queue admission.
+
+### SS-021 increment N — owner-scoped private result retrieval
+Enable an experimental Docker-only, default-off owner-authenticated result read for completed jobs, enforcing private file permissions, regular-file and size limits, and no cross-operator leakage. Tests cover incomplete, missing and other-owner result access. Public access remains blocked until TLS, user-session controls, storage threat review and lifecycle hardening are complete.

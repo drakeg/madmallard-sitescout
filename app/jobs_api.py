@@ -13,6 +13,7 @@ from app.capture import validate_target
 from app.capture_jobs import CaptureJobStore, QueueFullError, RateLimitedError
 from app.http_api import send_json
 from app.operator_auth import authenticate_operator
+from app.result_store import load_analysis_result
 
 JOB_ID = re.compile(r"^[0-9a-f]{32}$")
 MAX_BODY = 4096
@@ -74,10 +75,22 @@ def dispatch(handler, method):
             send_json(handler, 404, {"error": "Job not found"})
             return True
         if len(parts) == 2:
-            if parts[1] != "audit":
-                send_json(handler, 404, {"error": "Job not found"})
+            if parts[1] == "audit":
+                send_json(handler, 200, {"events": store.audit(job_id, actor)})
                 return True
-            send_json(handler, 200, {"events": store.audit(job_id, actor)})
+            if parts[1] == "result":
+                if job["status"] != "succeeded":
+                    send_json(handler, 409, {"error": "Job has no completed result"})
+                    return True
+                result = load_analysis_result(
+                    os.environ.get("SITESCOUT_RESULTS_DIR", "/data/results"), job_id
+                )
+                if result is None:
+                    send_json(handler, 404, {"error": "Result is not retained"})
+                else:
+                    send_json(handler, 200, {"result": result})
+                return True
+            send_json(handler, 404, {"error": "Job not found"})
             return True
         visible = {key: job[key] for key in
                    ("id", "mode", "status", "created_at", "updated_at", "error")}
@@ -91,6 +104,8 @@ def dispatch(handler, method):
         send_json(handler, 429, {"error": "Capture admission limit exceeded"})
     except QueueFullError:
         send_json(handler, 503, {"error": "Capture queue capacity reached"})
+    except (OSError, UnicodeError):
+        send_json(handler, 503, {"error": "Capture result unavailable"})
     except sqlite3.Error:
         send_json(handler, 503, {"error": "Capture job store unavailable"})
     return True

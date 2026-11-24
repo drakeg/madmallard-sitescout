@@ -120,6 +120,25 @@ class JobsApiTests(unittest.TestCase):
                     resolver.assert_not_called()
         self.assertEqual(self.request("/api/jobs", token=self.token).body()["jobs"], [])
 
+    def test_result_requires_ownership_completion_and_safe_export(self):
+        from app.capture_jobs import CaptureJobStore
+        from app.result_store import save_analysis_result
+        store = CaptureJobStore(os.environ["SITESCOUT_JOBS_DB"])
+        job_id = store.enqueue("alice", "https://example.org")
+        result_path = "/api/jobs/" + job_id + "/result"
+        self.assertEqual(self.request(result_path, token=self.bob).status, 404)
+        self.assertEqual(self.request(result_path, token=self.token).status, 409)
+        store.claim()
+        store.complete(job_id, True)
+        self.assertEqual(self.request(result_path, token=self.token).status, 404)
+        private_dir = Path(self.temp.name) / "results"
+        save_analysis_result(private_dir, job_id, {"summary": "private content"})
+        with patch.dict(os.environ, {"SITESCOUT_RESULTS_DIR": str(private_dir)}):
+            self.assertEqual(self.request(result_path, token=self.bob).status, 404)
+            owned = self.request(result_path, token=self.token)
+            self.assertEqual(owned.status, 200)
+            self.assertEqual(owned.body()["result"], {"summary": "private content"})
+
     def test_rate_limit_is_shared_for_same_actor(self):
         with patch("app.jobs_api.validate_target", return_value=(None, "93.184.215.14")):
             for _ in range(5):

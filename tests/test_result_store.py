@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from app.result_store import MAX_RESULT_BYTES, save_analysis_result, prune_analysis_results
+from app.result_store import MAX_RESULT_BYTES, save_analysis_result, prune_analysis_results, load_analysis_result
 from app.capture_jobs import CaptureJobStore
 from app.capture_worker import CaptureWorker
 
@@ -58,6 +58,30 @@ class PrivateResultExportTests(unittest.TestCase):
         self.dir.chmod(0o755)
         with self.assertRaises(ValueError):
             prune_analysis_results(self.dir, older_than=100)
+
+    def test_reads_only_private_regular_json(self):
+        filename = save_analysis_result(self.dir, self.job_id, {"result": "safe"})
+        self.assertEqual(load_analysis_result(self.dir, self.job_id), {"result": "safe"})
+        self.assertIsNone(load_analysis_result(self.dir, "b" * 32))
+        with self.assertRaises(ValueError):
+            load_analysis_result(self.dir, "../escape")
+        os.chmod(filename, 0o644)
+        with self.assertRaises(ValueError):
+            load_analysis_result(self.dir, self.job_id)
+
+    def test_rejects_result_symlink_and_oversized_file(self):
+        self.dir.mkdir(mode=0o700)
+        external = Path(self.temp.name) / "outside.json"
+        external.write_text('{"secret":"external"}')
+        link = self.dir / (self.job_id + ".json")
+        link.symlink_to(external)
+        with self.assertRaises(OSError):
+            load_analysis_result(self.dir, self.job_id)
+        link.unlink()
+        link.write_bytes(b"x" * (MAX_RESULT_BYTES + 1))
+        link.chmod(0o600)
+        with self.assertRaises(ValueError):
+            load_analysis_result(self.dir, self.job_id)
 
     def test_worker_saves_before_success_and_fails_closed_on_export_error(self):
         store = CaptureJobStore(Path(self.temp.name) / "jobs.sqlite3")
