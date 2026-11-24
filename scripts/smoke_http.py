@@ -54,12 +54,14 @@ def main():
     assert report["functional_requirements"]["forms_to_test"][0]["verified_functional"] is False
     code, body = request("/api/site_report", {"not": "a page list"})
     assert code == 400 and "error" in json.loads(body)
-    from app.checklist_review import HEADERS
+    # Exercise the public CSV contract without importing app through script-relative sys.path.
+    headers=["Page URL", "Form action", "Method", "Required fields",
+             "Verification test", "Observed result", "Status", "Reviewer", "Notes"]
     import csv
     import io
     csv_stream=io.StringIO(newline="")
     writer=csv.writer(csv_stream)
-    writer.writerow(HEADERS)
+    writer.writerow(headers)
     writer.writerow(["https://example.org/contact", "/send", "POST", "email",
                      "Submit synthetic inquiry", "", "Not tested", "", ""])
     code, body = request("/api/checklist_review", {"csv": csv_stream.getvalue()})
