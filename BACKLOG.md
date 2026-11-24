@@ -77,3 +77,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-042 | P0 | 0 | Trusted LAN Docker dashboard | Default all-interface dashboard binding, capture endpoints disabled and no published worker ports; CI Compose check | IN PROGRESS |
 
 | SS-043 | P0 | 1 | Import completed form verification checklist | Upload manually reviewed CSV, validate evidence, count statuses and surface failed/blocked tests without claiming automated verification | IN PROGRESS |
+
+| SS-044 | P1 | 1 | Site report overview | Display pages, forms needing tests, uncaptured links and contact candidates without claiming live verification | IN PROGRESS |
