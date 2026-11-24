@@ -69,3 +69,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-038 | P0 | 1 | Multi-page report dashboard | Paste authorized saved pages JSON, generate navigation/form report with Vercel/Docker parity and size limits | IN PROGRESS |
 
 | SS-039 | P0 | 1 | End-to-end offline site report smoke | Verify real Docker HTTP site report and functional checklist with synthetic saved HTML | IN PROGRESS |
+
+| SS-040 | P0 | 1 | Offline report JSON import/export | Import authorized saved-page JSON, edit, analyze, download full report, reject bad/oversized input and test browser flow | IN PROGRESS |
