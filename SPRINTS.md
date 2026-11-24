@@ -63,3 +63,6 @@ Provide manual exclusive-worker cleanup of expired private JSON exports, with st
 
 ### SS-021 increment H — hashed operator identity foundation
 Standalone fail-closed mapping of identity labels to SHA-256 digests of high-entropy bearer tokens, with exact actor derivation and negative security tests. No HTTP wiring or public authorization is claimed. Subsequent acceptance requires authenticated job submission/retrieval, TLS termination and abuse controls.
+
+### SS-021 increment I — private authenticated job API (experimental)
+Connect default-off Docker-only POST/GET job metadata endpoints to the persistent queue with server-derived hashed-token actor identities, request validation, rate limiting, ownership-scoped status/list/audit, and negative tests. No Vercel endpoint, client-supplied actor or raw captured content is permitted. Public use remains blocked by TLS termination, real user sessions, distributed worker fencing, durable protected result delivery, operational hardening and threat review.
