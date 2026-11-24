@@ -38,3 +38,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added CI smoke coverage for the live Docker API's homepage, health and disabled-by-default capture/job endpoints.
 
 - Added synthetic-token Docker smoke tests validating private job identity, worker/API shared persistence and owner isolation.
+
+- Added manual private Docker-only job queue and status controls to the dashboard without persisting operator tokens.
