@@ -131,3 +131,7 @@ On the **default-off, trusted-host Docker jobs API**, `GET /api/jobs/JOB_ID/resu
 ### Viewing completed private capture results
 
 After manually processing a queued job with `docker compose --profile capture-worker run --rm capture-worker work-once --save-results`, enter its job ID and click **View completed private result (trusted Docker only)**. The dashboard prompts for an operator token for that request, retrieves only the authenticated owner's completed protected JSON, and renders result data using `textContent` rather than injecting page HTML. No bearer token is saved in browser storage. Results that were not explicitly exported cannot be retrieved, and a job must be completed successfully. This remains **default-off, Docker-only, and unsuitable for public access** without TLS and real account sessions.
+
+### Browsing private recent jobs
+
+The dashboard's **Show my recent private jobs** control calls the default-off Docker-only `GET /api/jobs` endpoint with a freshly requested operator token and displays the server's owner-scoped, redacted metadata. The newest returned job ID is copied into the job-ID field for convenient status/result lookup. Target URLs and captured HTML are not included in the listing and the token is never stored in browser storage. This is a trusted-host operator workflow, not a public multi-user login.

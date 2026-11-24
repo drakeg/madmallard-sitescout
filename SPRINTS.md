@@ -84,3 +84,6 @@ Enable an experimental Docker-only, default-off owner-authenticated result read 
 
 ### SS-021 increment O — manual private result display
 Add dashboard retrieval for protected completed-job JSON, prompting for operator identity each time, safely rendering source data as text, and preserving Vercel's lack of capture-job APIs.
+
+### SS-021 increment P — private recent-job dashboard
+Expose existing owner-authenticated job-history listing through a manual dashboard action with short-lived in-memory token use and redacted text rendering. Do not auto-poll or expose on Vercel.

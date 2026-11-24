@@ -46,3 +46,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added owner-scoped, default-off Docker retrieval of completed protected analysis JSON, refusing unauthorized, unfinished and unsafe result files.
 
 - Added owner-authenticated private capture result lookup and safe manual display in the Docker dashboard.
+
+- Added manual owner-scoped recent capture job listing in the Docker dashboard, prefilling the latest job ID.
