@@ -30,3 +30,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added explicit operator-only capture result export to restricted local JSON files with limits, exclusive creation and sanitized failure states.
 
 - Added guarded manual expiry cleanup of protected JSON capture exports, preserving recent and unrelated files.
+
+- Added a standalone fail-closed hashed operator bearer-token identity module for future private job APIs; no HTTP routes enabled.
