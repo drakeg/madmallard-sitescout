@@ -68,3 +68,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added offline review of human-completed form-checklist CSV, with evidence requirements, status counts, blocked/failed follow-up and Vercel/Docker parity.
 
 - Added an accessible at-a-glance summary for offline site inventory reports and automatic reset of stale metrics.
+
+- Reconciled delivered Sprint 1 and private capture infrastructure story statuses with merged CI evidence and clarified remaining public-security and hosting gates.
