@@ -36,3 +36,29 @@ def save_analysis_result(directory, job_id, result):
         target.unlink(missing_ok=True)
         raise
     return str(target)
+
+
+def prune_analysis_results(directory, *, older_than):
+    """Delete only expired, regular result JSON files with trusted job ID names.
+
+    This intentionally does not touch files from other applications, symlinks,
+    or active recent exports. Requires an owner-private local results directory.
+    """
+    root = Path(directory)
+    if not root.exists():
+        return 0
+    if root.is_symlink() or not root.is_dir() or root.stat().st_mode & 0o077:
+        raise ValueError("Result directory must be owner-private (0700)")
+    removed = 0
+    with os.scandir(root) as entries:
+        for entry in entries:
+            name = entry.name
+            if not name.endswith(".json") or JOB_ID.fullmatch(name[:-5]) is None:
+                continue
+            if not entry.is_file(follow_symlinks=False):
+                continue
+            if entry.stat(follow_symlinks=False).st_mtime >= older_than:
+                continue
+            os.unlink(entry.path)
+            removed += 1
+    return removed
