@@ -87,3 +87,6 @@ Add dashboard retrieval for protected completed-job JSON, prompting for operator
 
 ### SS-021 increment P — private recent-job dashboard
 Expose existing owner-authenticated job-history listing through a manual dashboard action with short-lived in-memory token use and redacted text rendering. Do not auto-poll or expose on Vercel.
+
+### SS-021 increment Q — opt-in continuous trusted-host worker
+Add a manual-start Compose runner profile that polls the durable queue using the existing exclusive single-host lock and opt-in private result persistence. Tests cover bounded cycles, cancellation and contention; CI validates Compose configuration. It is not a production distributed worker.
