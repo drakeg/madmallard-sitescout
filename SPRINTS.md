@@ -102,3 +102,6 @@ Derive a deterministic form-testing checklist, potential third-party action-host
 
 ### SS-003/SS-004 CI follow-up — live Docker report smoke
 Run the actual Docker API with a synthetic two-page saved-HTML request; assert page count, contact-page candidates, unverified form functionality, and invalid JSON-shape rejection. No external sites are contacted.
+
+### SS-040 — Import/export usability for offline site reports
+Add a local JSON file picker for saved-page manifests, preserve an editable manifest field, and offer downloadable complete report JSON only after successful analysis. Reject oversized and malformed imports, revoke temporary blob URLs, and test actual browser event workflows in CI using a dependency-free Node harness. No web crawling or external page requests.
