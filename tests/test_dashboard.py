@@ -64,7 +64,7 @@ class DashboardTests(unittest.TestCase):
         html = DASHBOARD.read_text()
         self.assertIn('id="site-report-checklist-export" disabled', html)
         self.assertIn('function spreadsheetSafeCell(value)', html)
-        self.assertIn('if(/^[\\s]*[=+\\-@]/.test(text))', html)
+        self.assertIn('if(/^\\s*[=+\\-@]/.test(text))', html)
         self.assertIn('siteChecklistExport.disabled=false', html)
         self.assertIn('sitescout-form-verification-checklist.csv', html)
 
