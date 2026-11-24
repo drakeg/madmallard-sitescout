@@ -30,6 +30,9 @@ def run(argv=None, *, store_factory=CaptureJobStore, worker_factory=CaptureWorke
     commands.add_parser("work-once", help="Execute one queued job, if present")
     recover = commands.add_parser("recover", help="Requeue stale jobs with exclusive worker lock")
     recover.add_argument("--older-than-seconds", type=int, default=120)
+    listing = commands.add_parser("list", help="List operator-owned capture job metadata")
+    listing.add_argument("--actor", required=True)
+    listing.add_argument("--limit", type=int, default=25)
     status = commands.add_parser("status", help="Read a job as its authorized operator")
     status.add_argument("--actor", required=True)
     status.add_argument("--job-id", required=True)
@@ -71,6 +74,8 @@ def run(argv=None, *, store_factory=CaptureJobStore, worker_factory=CaptureWorke
             with exclusive_worker_lock(args.database):
                 recovered = store.recover_stale(before=time.time() - args.older_than_seconds)
             output = {"requeued": recovered}
+        elif args.operation == "list":
+            output = {"jobs": store.list_for_actor(args.actor, limit=args.limit)}
         elif args.operation == "status":
             job = store.get(args.job_id, args.actor)
             if job is None:
