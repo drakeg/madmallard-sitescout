@@ -24,6 +24,14 @@ jobs:
         run: docker compose up -d --build api
       - name: Smoke health, homepage and disabled capture endpoints
         run: python scripts/smoke_http.py
+      - name: Smoke authenticated private job API across Docker containers
+        run: |
+          export SITESCOUT_CAPTURE_ENABLED=true
+          export SITESCOUT_JOBS_ENABLED=true
+          export SITESCOUT_OPERATOR_TOKEN_HASHES="$(python -c 'import hashlib,json; names={"smoke":"sitescout-smoke-only-operator-token-1234567890","other":"sitescout-smoke-only-outsider-token-1234567890"}; print(json.dumps({name:hashlib.sha256(token.encode()).hexdigest() for name,token in names.items()}))')"
+          docker compose up -d --force-recreate api
+          docker compose --profile capture-worker run --rm capture-worker python -c 'from app.capture_jobs import CaptureJobStore; CaptureJobStore("/data/capture_jobs.sqlite3").enqueue("smoke", "https://example.org")'
+          python scripts/smoke_private_jobs.py
       - name: Stop local Docker API
         if: always()
         run: docker compose down
