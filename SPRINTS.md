@@ -114,3 +114,6 @@ Bind the offline Docker dashboard to all host interfaces by default for trusted 
 
 ### SS-043 — Evidence review for completed CSV checklists
 Accept the exported CSV after a human performs synthetic verification. Use Python's strict CSV parser to require the generated columns, bounded size and row counts, valid review states and reviewer/observation evidence for status changes. Return a self-reported summary and failed/blocked follow-up list without claiming delivery verification. Add both Vercel/Docker endpoints, browser import controls, unit and browser-flow tests; do not persist or send outreach.
+
+### SS-044 — actionable offline report overview
+Expose a simple, accessible summary of static site-report counts in the dashboard, keeping form delivery and navigation explicitly unverified. Clear prior summaries on manifest edits and reimports, and cover both success and reset behavior in the browser workflow test.

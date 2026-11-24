@@ -75,6 +75,8 @@
       <button type="button" class="secondary" id="site-report-export" disabled>Download report JSON</button>
       <button type="button" class="secondary" id="site-report-checklist-export" disabled>Download form verification checklist CSV</button>
     </form>
+    <h3>Report at a glance</h3>
+    <p id="site-report-highlights" role="status" aria-live="polite">Analyze saved pages to see the review priorities.</p>
     <pre id="site-report-results" role="status" aria-live="polite">No site report yet.</pre>
     <h3>Review completed form tests</h3>
     <p>After testing permitted synthetic submissions, fill in the downloaded CSV's Status, Observed result, and Reviewer columns. The review counts are reviewer-reported, not independent delivery verification.</p>
@@ -169,6 +171,18 @@
   });
   const siteReportInput=document.getElementById('site-report-json');
   const siteReportOutput=document.getElementById('site-report-results');
+  const siteReportHighlights=document.getElementById('site-report-highlights');
+  function showSiteReportHighlights(report){
+    const needsReview=report.functional_requirements&&report.functional_requirements.forms_to_test||[];
+    const pageCount=Number(report.page_count)||0;
+    const unresolved=Array.isArray(report.uncaptured_internal_links)?report.uncaptured_internal_links.length:0;
+    const candidates=Array.isArray(report.candidate_contact_booking_pages)?report.candidate_contact_booking_pages.length:0;
+    siteReportHighlights.textContent='Pages analyzed: '+pageCount+
+      ' · Forms needing delivery tests: '+needsReview.length+
+      ' · Uncaptured internal links: '+unresolved+
+      ' · Contact/booking page candidates: '+candidates+
+      '. Static findings only; submissions and live behavior remain unverified.';
+  }
   const siteReportExport=document.getElementById('site-report-export');
   const siteChecklistExport=document.getElementById('site-report-checklist-export');
   let latestSiteReport=null;
@@ -176,6 +190,7 @@
     latestSiteReport=null;
     siteReportExport.disabled=true;
     siteChecklistExport.disabled=true;
+    siteReportHighlights.textContent='Analyze saved pages to see the review priorities.';
   }
   document.getElementById('site-report-file').addEventListener('change',async event=>{
     clearSiteReport();
@@ -293,6 +308,7 @@
         latestSiteReport=data.report;
         siteReportExport.disabled=false;
         siteChecklistExport.disabled=false;
+        showSiteReportHighlights(data.report);
       }
       output.textContent=JSON.stringify(response.ok?data.report:data,null,2);
     }catch(error){output.textContent='Site report unavailable: '+error.message}
