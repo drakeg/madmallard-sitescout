@@ -12,6 +12,7 @@ import time
 from app.capture_jobs import CaptureJobStore, QueueFullError, RateLimitedError
 from app.capture_worker import CaptureWorker
 from app.capture import validate_target
+from app.worker_lock import WorkerBusyError, exclusive_worker_lock
 
 DEFAULT_DB = "/data/capture_jobs.sqlite3"
 RETENTION_SECONDS = 7 * 24 * 60 * 60
@@ -27,6 +28,8 @@ def run(argv=None, *, store_factory=CaptureJobStore, worker_factory=CaptureWorke
     submit.add_argument("--mode", choices=("inventory", "directory"), default="inventory")
     submit.add_argument("--authorized", action="store_true", help="Operator confirms authorization")
     commands.add_parser("work-once", help="Execute one queued job, if present")
+    recover = commands.add_parser("recover", help="Requeue stale jobs with exclusive worker lock")
+    recover.add_argument("--older-than-seconds", type=int, default=120)
     status = commands.add_parser("status", help="Read a job as its authorized operator")
     status.add_argument("--actor", required=True)
     status.add_argument("--job-id", required=True)
@@ -57,9 +60,17 @@ def run(argv=None, *, store_factory=CaptureJobStore, worker_factory=CaptureWorke
             identifier = store.enqueue(args.actor, args.url, args.mode)
             output = {"job_id": identifier, "status": "queued"}
         elif args.operation == "work-once":
-            result = worker_factory(store).process_one()
+            with exclusive_worker_lock(args.database):
+                result = worker_factory(store).process_one()
             # Results can contain untrusted page data; never echo them in logs.
             output = {"job_id": result["id"], "status": result["status"]} if result else {"status": "empty"}
+        elif args.operation == "recover":
+            if args.older_than_seconds < 60:
+                print("Recovery threshold must be at least 60 seconds", file=sys.stderr)
+                return 2
+            with exclusive_worker_lock(args.database):
+                recovered = store.recover_stale(before=time.time() - args.older_than_seconds)
+            output = {"requeued": recovered}
         elif args.operation == "status":
             job = store.get(args.job_id, args.actor)
             if job is None:
@@ -77,6 +88,9 @@ def run(argv=None, *, store_factory=CaptureJobStore, worker_factory=CaptureWorke
                 return 2
             removed = store.prune(older_than=time.time() - args.older_than_days * 86400)
             output = {"removed": removed}
+    except WorkerBusyError:
+        print("Another capture worker is active", file=sys.stderr)
+        return 7
     except RateLimitedError:
         print("Actor rate limit exceeded", file=sys.stderr)
         return 5
