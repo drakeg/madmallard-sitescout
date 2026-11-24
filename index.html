@@ -183,7 +183,7 @@
       if(!Array.isArray(pages)||pages.length<1||pages.length>20){
         throw new Error('Expected an array of 1–20 saved pages');
       }
-      siteReportInput.value=JSON.stringify(pages,null,2);
+      siteReportInput.value=text;
       siteReportOutput.textContent='Manifest imported. Select Generate site report to analyze.';
     }catch(error){
       siteReportInput.value='';
@@ -193,7 +193,7 @@
   siteReportInput.addEventListener('input',clearSiteReport);
   siteReportExport.addEventListener('click',()=>{
     if(!latestSiteReport)return;
-    const file=new Blob([JSON.stringify(latestSiteReport,null,2)+'\\n'],{type:'application/json'});
+    const file=new Blob([JSON.stringify(latestSiteReport,null,2)+String.fromCharCode(10)],{type:'application/json'});
     const url=URL.createObjectURL(file);
     const link=document.createElement('a');
     link.href=url;
@@ -225,9 +225,11 @@
     if(!Array.isArray(pages)||pages.length<1||pages.length>20){
       output.textContent='Provide between 1 and 20 saved pages.';return;
     }
+    const payload=JSON.stringify(pages);
+    if(new TextEncoder().encode(payload).length>2100000){output.textContent='Serialized report JSON exceeds the 2.1 MB request limit.';return}
     output.textContent='Analyzing saved pages locally on the server…';
     try{
-      const response=await fetch('/api/site_report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(pages)});
+      const response=await fetch('/api/site_report',{method:'POST',headers:{'Content-Type':'application/json'},body:payload});
       const data=await response.json();
       if(response.ok&&data.report){
         latestSiteReport=data.report;
