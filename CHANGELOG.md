@@ -40,3 +40,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added synthetic-token Docker smoke tests validating private job identity, worker/API shared persistence and owner isolation.
 
 - Added manual private Docker-only job queue and status controls to the dashboard without persisting operator tokens.
+
+- Require explicit server-side authorization assertion for queued HTTPS captures before DNS resolution.

@@ -88,7 +88,7 @@
     results.textContent='Submitting private capture job…';
     renderSummary(null);
     try{
-      const response=await fetch('/api/jobs',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({url,mode:document.getElementById('mode').value})});
+      const response=await fetch('/api/jobs',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({url,mode:document.getElementById('mode').value,authorized:true})});
       const data=await response.json();
       if(response.ok && data.job_id){
         document.getElementById('capture-job-id').value=data.job_id;

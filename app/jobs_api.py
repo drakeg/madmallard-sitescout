@@ -46,6 +46,9 @@ def dispatch(handler, method):
                 payload = json.loads(handler.rfile.read(size))
                 if not isinstance(payload, dict):
                     raise ValueError("Request must be a JSON object")
+                # An authenticated operator must still affirm permission to inspect.
+                if payload.get("authorized") is not True:
+                    raise PermissionError("Authorization confirmation required")
                 url = payload.get("url")
                 mode = payload.get("mode", "inventory")
                 if not isinstance(url, str) or not url or len(url) > 2048:
@@ -80,6 +83,8 @@ def dispatch(handler, method):
                    ("id", "mode", "status", "created_at", "updated_at", "error")}
         send_json(handler, 200, {"job": visible})
         return True
+    except PermissionError:
+        send_json(handler, 403, {"error": "Explicit site authorization confirmation required"})
     except (ValueError, TypeError, json.JSONDecodeError):
         send_json(handler, 400, {"error": "Invalid job request"})
     except RateLimitedError:
