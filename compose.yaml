@@ -2,7 +2,7 @@ services:
   api:
     build: .
     ports:
-      - "${SITESCOUT_BIND:-127.0.0.1}:${SITESCOUT_PORT:-8087}:8080"
+      - "${SITESCOUT_BIND:-0.0.0.0}:${SITESCOUT_PORT:-8087}:8080"
     environment:
       SITESCOUT_CAPTURE_ENABLED: "${SITESCOUT_CAPTURE_ENABLED:-false}"
       SITESCOUT_CAPTURE_TOKEN: "${SITESCOUT_CAPTURE_TOKEN:-}"
