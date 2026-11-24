@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from app.result_store import MAX_RESULT_BYTES, save_analysis_result
+from app.result_store import MAX_RESULT_BYTES, save_analysis_result, prune_analysis_results
 from app.capture_jobs import CaptureJobStore
 from app.capture_worker import CaptureWorker
 
@@ -37,6 +37,27 @@ class PrivateResultExportTests(unittest.TestCase):
         self.dir.chmod(0o755)
         with self.assertRaises(ValueError):
             save_analysis_result(self.dir, self.job_id, {"ok": True})
+
+    def test_expiry_only_deletes_old_regular_results(self):
+        old = Path(save_analysis_result(self.dir, self.job_id, {"title": "old"}))
+        new = Path(save_analysis_result(self.dir, "b" * 32, {"title": "new"}))
+        unknown = self.dir / "operator-notes.json"
+        unknown.write_text("retain")
+        symlink = self.dir / ("c" * 32 + ".json")
+        symlink.symlink_to(unknown)
+        os.utime(old, (10, 10))
+        self.assertEqual(prune_analysis_results(self.dir, older_than=100), 1)
+        self.assertFalse(old.exists())
+        self.assertTrue(new.exists())
+        self.assertTrue(unknown.exists())
+        self.assertTrue(symlink.is_symlink())
+        self.assertEqual(prune_analysis_results(self.dir, older_than=100), 0)
+
+    def test_expiry_refuses_world_readable_result_directory(self):
+        self.dir.mkdir()
+        self.dir.chmod(0o755)
+        with self.assertRaises(ValueError):
+            prune_analysis_results(self.dir, older_than=100)
 
     def test_worker_saves_before_success_and_fails_closed_on_export_error(self):
         store = CaptureJobStore(Path(self.temp.name) / "jobs.sqlite3")

@@ -57,3 +57,6 @@ Expose a private CLI listing limited to a specific operator label with no target
 
 ### SS-021 increment F — opt-in private results
 Add explicit opt-in local JSON analysis-result export in a restricted persistent-volume directory; secure file creation, no overwrite, byte caps and fail-closed job lifecycle tests. Future requirements: controlled retrieval, result deletion/retention, authentication, worker leases, encryption/backup policy and public exposure safety.
+
+### SS-021 increment G — result-export retention
+Provide manual exclusive-worker cleanup of expired private JSON exports, with strict filename/type validation and tests that preserve recent files, symlinks and unrelated content. Production automation, identity and customer retention policies remain future acceptance gates.

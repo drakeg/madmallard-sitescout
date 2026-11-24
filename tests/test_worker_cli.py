@@ -80,6 +80,19 @@ class WorkerCliTests(unittest.TestCase):
         self.assertIn("worker is active", stderr)
         self.assertEqual(store.get(identifier, "alice")["status"], "queued")
 
+    def test_private_result_pruning_respects_retention(self):
+        from app.result_store import save_analysis_result
+        import json
+        import time
+        directory = Path(self.temp.name) / "results"
+        filename = save_analysis_result(directory, "a" * 32, {"summary": "sample"})
+        os.utime(filename, (10, 10))
+        with patch.dict(os.environ, {"SITESCOUT_RESULTS_DIR": str(directory)}):
+            code, output, _ = self.call("prune-results", "--older-than-days", "1")
+        self.assertEqual(code, 0)
+        self.assertEqual(json.loads(output)["result_files_removed"], 1)
+        self.assertFalse(Path(filename).exists())
+
     def test_listing_is_owner_scoped_and_excludes_urls(self):
         store = CaptureJobStore(self.database)
         owned = store.enqueue("alice", "https://example.org/private-path")
