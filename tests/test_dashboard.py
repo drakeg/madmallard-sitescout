@@ -42,6 +42,15 @@ class DashboardTests(unittest.TestCase):
         self.assertNotIn("localStorage", html)
         self.assertNotIn("sessionStorage", html)
 
+    def test_offline_site_report_upload_form_and_demo(self):
+        html = DASHBOARD.read_text()
+        self.assertIn('id="site-report-form"', html)
+        self.assertIn('id="site-report-json"', html)
+        self.assertIn('id="site-report-demo"', html)
+        self.assertIn("fetch('/api/site_report'", html)
+        self.assertIn("output.textContent=JSON.stringify(response.ok?data.report:data,null,2)", html)
+        self.assertIn("sampleSitePages", html)
+
     def test_docker_routes(self):
         for route, expected in (("/", b"SiteScout"), ("/health", b'"status": "ok"'), ("/api/health", b'"status": "ok"')):
             instance = Handler.__new__(Handler)
