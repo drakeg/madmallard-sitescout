@@ -5,7 +5,7 @@ Cadence: 2-week planning cycles (targets, not deadlines). Each sprint has planni
 | Sprint | Goal | Exit criteria | Status |
 |---|---|---|---|
 | 0 | Repository and engineering foundation | Docs, Compose, status API, CI tests, release policy | In progress |
-| 1 | Existing-site functional inventory | Authorized URL/fixture capture; navigation, forms, content inventory; structured JSON and tests | Planned |
+| 1 | Existing-site functional inventory | Authorized URL/fixture capture; navigation, forms, content inventory; structured JSON and tests | In progress (offline inventory, report import/export, QA review working; live journey QA pending) |
 | 2 | Free builder evaluation | Benchmark Open Lovable, OpenPage, Onlook, local coding agent; license/cost matrix; decision record | Planned |
 | 3 | Design generation | Three differentiated design directions; brand tokens; responsive concept previews | Planned |
 | 4 | Working site generation | Generate Astro/React pages and functional form workflows; reproducible builds | Planned |
@@ -117,3 +117,7 @@ Accept the exported CSV after a human performs synthetic verification. Use Pytho
 
 ### SS-044 — actionable offline report overview
 Expose a simple, accessible summary of static site-report counts in the dashboard, keeping form delivery and navigation explicitly unverified. Clear prior summaries on manifest edits and reimports, and cover both success and reset behavior in the browser workflow test.
+
+### Status reconciliation — 2026-11-24
+
+Merged CI-verified product increments through SiteScout PR #41, with a subsequent documentation reconciliation. The offline report workflow now supports multi-page manifests, human-readable metrics, full JSON exports, form verification checklist CSV and reimport of human-reviewed evidence. The trusted-host capture-job infrastructure includes a default-off Docker API, restricted result files, an opt-in worker, authenticated operator token mapping and Docker integration smoke tests. These achievements do **not** establish live third-party form delivery, Vercel production availability, full user-session authentication, distributed worker fencing or safe public capture. Keep those operational acceptance requirements open and prioritize real authorized SMB pilot workflow testing and the website builder evaluation next.
