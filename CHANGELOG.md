@@ -50,3 +50,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added manual owner-scoped recent capture job listing in the Docker dashboard, prefilling the latest job ID.
 
 - Added a manual-start continuous Docker capture worker profile with exclusive single-host execution and protected result exports.
+
+- Added an offline multi-page site inventory report with navigation graph, form catalog, contact/booking candidate paths, and bounded synthetic fixture.
