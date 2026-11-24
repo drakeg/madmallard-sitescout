@@ -37,6 +37,22 @@ services:
     read_only: true
     cap_drop:
       - ALL
+  capture-runner:
+    build: .
+    profiles: ["capture-runner"]
+    command: ["python", "-m", "app.worker_cli", "work-loop", "--interval-seconds", "3", "--save-results"]
+    environment:
+      SITESCOUT_CAPTURE_ENABLED: "${SITESCOUT_CAPTURE_ENABLED:-false}"
+      SITESCOUT_JOBS_DB: /data/capture_jobs.sqlite3
+      SITESCOUT_RESULTS_DIR: /data/results
+    volumes:
+      - capture-jobs:/data
+    restart: "no"
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    cap_drop:
+      - ALL
 volumes:
   capture-jobs:
 networks:

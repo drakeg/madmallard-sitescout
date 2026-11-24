@@ -48,3 +48,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added owner-authenticated private capture result lookup and safe manual display in the Docker dashboard.
 
 - Added manual owner-scoped recent capture job listing in the Docker dashboard, prefilling the latest job ID.
+
+- Added a manual-start continuous Docker capture worker profile with exclusive single-host execution and protected result exports.

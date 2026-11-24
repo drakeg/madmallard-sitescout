@@ -15,6 +15,8 @@ jobs:
       - run: python -m unittest discover -s tests -v
       - name: Validate worker Compose profile
         run: docker compose --profile capture-worker config --quiet
+      - name: Validate opt-in continuous runner Compose profile
+        run: docker compose --profile capture-runner config --quiet
       - name: Build opt-in capture worker image
         run: docker compose --profile capture-worker build capture-worker
       - name: Verify nonroot worker persistent-volume permissions

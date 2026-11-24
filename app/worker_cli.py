@@ -13,6 +13,7 @@ from app.capture_jobs import CaptureJobStore, QueueFullError, RateLimitedError
 from app.capture_worker import CaptureWorker
 from app.capture import validate_target
 from app.worker_lock import WorkerBusyError, exclusive_worker_lock
+from app.worker_loop import run_worker_loop
 from app.result_store import save_analysis_result, prune_analysis_results
 
 DEFAULT_DB = "/data/capture_jobs.sqlite3"
@@ -28,6 +29,10 @@ def run(argv=None, *, store_factory=CaptureJobStore, worker_factory=CaptureWorke
     submit.add_argument("--url", required=True)
     submit.add_argument("--mode", choices=("inventory", "directory"), default="inventory")
     submit.add_argument("--authorized", action="store_true", help="Operator confirms authorization")
+    runner = commands.add_parser("work-loop", help="Continuously run private queued captures")
+    runner.add_argument("--interval-seconds", type=float, default=3.0)
+    runner.add_argument("--save-results", action="store_true",
+                        help="Persist protected analysis JSON for successful jobs")
     work = commands.add_parser("work-once", help="Execute one queued job, if present")
     work.add_argument("--save-results", action="store_true",
                       help="Store protected analysis JSON in local results directory")
@@ -67,6 +72,23 @@ def run(argv=None, *, store_factory=CaptureJobStore, worker_factory=CaptureWorke
         if args.operation == "submit":
             identifier = store.enqueue(args.actor, args.url, args.mode)
             output = {"job_id": identifier, "status": "queued"}
+        elif args.operation == "work-loop":
+            if not 1 <= args.interval_seconds <= 60:
+                print("Poll interval must be between 1 and 60 seconds", file=sys.stderr)
+                return 2
+            try:
+                if args.save_results:
+                    output_dir = os.environ.get("SITESCOUT_RESULTS_DIR", "/data/results")
+                    saver = lambda job_id, result: save_analysis_result(output_dir, job_id, result)
+                    runner_factory = lambda active_store: worker_factory(active_store, save=saver)
+                else:
+                    runner_factory = worker_factory
+                run_worker_loop(store, args.database,
+                                interval=args.interval_seconds,
+                                worker_factory=runner_factory)
+            except KeyboardInterrupt:
+                return 0
+            return 0
         elif args.operation == "work-once":
             with exclusive_worker_lock(args.database):
                 if args.save_results:
