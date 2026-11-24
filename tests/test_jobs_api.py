@@ -77,7 +77,7 @@ class JobsApiTests(unittest.TestCase):
 
     def test_submit_list_owned_status_and_audit(self):
         with patch("app.jobs_api.validate_target", return_value=(None, "93.184.215.14")):
-            response = self.request("/api/jobs", "POST", {"url": "https://example.org", "mode": "inventory"}, self.token)
+            response = self.request("/api/jobs", "POST", {"url": "https://example.org", "mode": "inventory", "authorized": True}, self.token)
         self.assertEqual(response.status, 202)
         job_id = response.body()["job_id"]
         owned = self.request("/api/jobs", token=self.token)
@@ -98,25 +98,37 @@ class JobsApiTests(unittest.TestCase):
         for payload in ([], {}, {"url": None}, {"url": "https://example.org", "mode": []}):
             with self.subTest(payload=payload):
                 self.assertEqual(self.request("/api/jobs", "POST", payload, self.token).status, 400)
-        self.assertEqual(self.request("/api/jobs/no", "POST", {"url": "https://example.org"}, self.token).status, 405)
+        self.assertEqual(self.request("/api/jobs/no", "POST", {"url": "https://example.org", "authorized": True}, self.token).status, 405)
         self.assertEqual(self.request("/api/jobs/bad-id", token=self.token).status, 404)
 
     def test_disallows_private_dns_before_enqueue(self):
         with patch("app.jobs_api.validate_target", side_effect=ValueError("unsafe")):
             self.assertEqual(
-                self.request("/api/jobs", "POST", {"url": "https://internal.example"}, self.token).status, 400
+                self.request("/api/jobs", "POST", {"url": "https://internal.example", "authorized": True}, self.token).status, 400
             )
+        self.assertEqual(self.request("/api/jobs", token=self.token).body()["jobs"], [])
+
+    def test_server_rejects_missing_or_nonboolean_authorization(self):
+        for asserted in (None, False, 1, "true", {}, []):
+            with self.subTest(asserted=asserted):
+                with patch("app.jobs_api.validate_target") as resolver:
+                    response = self.request(
+                        "/api/jobs", "POST",
+                        {"url": "https://example.org", "authorized": asserted}, self.token
+                    )
+                    self.assertEqual(response.status, 403)
+                    resolver.assert_not_called()
         self.assertEqual(self.request("/api/jobs", token=self.token).body()["jobs"], [])
 
     def test_rate_limit_is_shared_for_same_actor(self):
         with patch("app.jobs_api.validate_target", return_value=(None, "93.184.215.14")):
             for _ in range(5):
                 self.assertEqual(
-                    self.request("/api/jobs", "POST", {"url": "https://example.org"}, self.token).status, 202
+                    self.request("/api/jobs", "POST", {"url": "https://example.org", "authorized": True}, self.token).status, 202
                 )
             self.assertEqual(
-                self.request("/api/jobs", "POST", {"url": "https://example.org"}, self.token).status, 429
+                self.request("/api/jobs", "POST", {"url": "https://example.org", "authorized": True}, self.token).status, 429
             )
             self.assertEqual(
-                self.request("/api/jobs", "POST", {"url": "https://example.org"}, self.bob).status, 202
+                self.request("/api/jobs", "POST", {"url": "https://example.org", "authorized": True}, self.bob).status, 202
             )
