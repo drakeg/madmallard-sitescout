@@ -29,6 +29,10 @@ def run(argv=None, *, store_factory=CaptureJobStore, worker_factory=CaptureWorke
     submit.add_argument("--url", required=True)
     submit.add_argument("--mode", choices=("inventory", "directory"), default="inventory")
     submit.add_argument("--authorized", action="store_true", help="Operator confirms authorization")
+    runner = commands.add_parser("work-loop", help="Continuously run private queued captures")
+    runner.add_argument("--interval-seconds", type=float, default=3.0)
+    runner.add_argument("--save-results", action="store_true",
+                        help="Persist protected analysis JSON for successful jobs")
     work = commands.add_parser("work-once", help="Execute one queued job, if present")
     work.add_argument("--save-results", action="store_true",
                       help="Store protected analysis JSON in local results directory")
@@ -73,9 +77,15 @@ def run(argv=None, *, store_factory=CaptureJobStore, worker_factory=CaptureWorke
                 print("Poll interval must be between 1 and 60 seconds", file=sys.stderr)
                 return 2
             try:
+                if args.save_results:
+                    output_dir = os.environ.get("SITESCOUT_RESULTS_DIR", "/data/results")
+                    saver = lambda job_id, result: save_analysis_result(output_dir, job_id, result)
+                    runner_factory = lambda active_store: worker_factory(active_store, save=saver)
+                else:
+                    runner_factory = worker_factory
                 run_worker_loop(store, args.database,
                                 interval=args.interval_seconds,
-                                worker_factory=worker_factory)
+                                worker_factory=runner_factory)
             except KeyboardInterrupt:
                 return 0
             return 0
