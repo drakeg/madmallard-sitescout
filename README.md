@@ -77,3 +77,17 @@ Capture remains **disabled by default**. To enable on a trusted Docker test host
 ### Capture worker prototype (not connected to HTTP)
 
 `app/capture_worker.py` processes one persisted job per call using the existing HTTPS capture and HTML analyzer with injected test doubles. It returns a result to the trusted caller but **does not persist captured HTML or analysis output**. Normal capture failures are recorded without error details; unexpected programming errors are audited and re-raised. `CaptureJobStore.recover_stale(before=...)` can requeue interrupted jobs only when an operator has established that no previous worker is still processing them. Neither this worker nor the SQLite queue is automatically started in Docker, and no new API endpoints or public-capture permissions are enabled. Multi-worker leases, sessions, durable results, persistent volume and TLS are still required before public deployment.
+
+### Opt-in private worker CLI (SS-021 incremental)
+
+An isolated, manual Docker Compose profile now supplies a **persistent SQLite volume** for capture-job metadata without exposing an HTTP job API. The operator must control local Docker access; `--actor` is an operator-supplied audit label, **not an authenticated user session**. Keep `SITESCOUT_CAPTURE_ENABLED=false` unless performing an explicitly authorized capture on a trusted machine. Example trusted-host operations after setting `SITESCOUT_CAPTURE_ENABLED=true` in a local, untracked `.env`:
+
+```sh
+docker compose --profile capture-worker run --rm capture-worker submit --actor operator --url https://example.org/ --authorized
+docker compose --profile capture-worker run --rm capture-worker work-once
+docker compose --profile capture-worker run --rm capture-worker status --actor operator --job-id JOB_ID
+docker compose --profile capture-worker run --rm capture-worker audit --actor operator --job-id JOB_ID
+docker compose --profile capture-worker run --rm capture-worker prune --older-than-days 7
+```
+
+The `capture-jobs` volume survives container replacement; it stores URLs, audit actor labels and lifecycle data, **not HTML or analysis results**. CLI execution is one job at a time and does not start automatically. The separate dashboard still uses the prior private bearer-token capture path; it does **not** enqueue jobs. Output deliberately excludes captured HTML. Docker host access is privileged and must remain trusted. The worker requires outbound DNS/HTTPS access. Public or multi-user deployment still requires authenticated sessions, ownership binding, bounded workers/leases, TLS termination and durable protected results. For local verification run `python -m unittest discover -s tests -v` and `docker compose --profile capture-worker config`.
