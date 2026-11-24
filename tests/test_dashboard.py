@@ -76,6 +76,14 @@ class DashboardTests(unittest.TestCase):
         self.assertIn("fetch('/api/checklist_review'", html)
         self.assertIn("output.textContent=JSON.stringify(response.ok?data.review:data,null,2)", html)
 
+    def test_site_report_overview_is_evidence_based_and_resets_on_edit(self):
+        html = DASHBOARD.read_text()
+        self.assertIn('id="site-report-highlights"', html)
+        self.assertIn("function showSiteReportHighlights(report)", html)
+        self.assertIn("showSiteReportHighlights(data.report)", html)
+        self.assertIn("live behavior remain unverified", html)
+        self.assertIn("siteReportHighlights.textContent='Analyze saved pages", html)
+
     def test_docker_routes(self):
         for route, expected in (("/", b"SiteScout"), ("/health", b'"status": "ok"'), ("/api/health", b'"status": "ok"')):
             instance = Handler.__new__(Handler)
