@@ -51,6 +51,7 @@
       <label for="capture-job-id">Queued capture job ID</label>
       <input id="capture-job-id" type="text" maxlength="32" autocomplete="off" spellcheck="false" placeholder="Job ID returned after queueing">
       <button type="button" class="secondary" id="check-capture-job">Check queued capture status</button>
+      <button type="button" class="secondary" id="view-capture-result">View completed private result (trusted Docker only)</button>
       <button type="button" class="secondary" id="demo-inventory">Load inventory example</button>
       <button type="button" class="secondary" id="demo-directory">Load directory example</button>
     </form>
@@ -108,6 +109,23 @@
       const data=await response.json();
       results.textContent=JSON.stringify(data,null,2);
     }catch(error){results.textContent='Job status unavailable: '+error.message}
+  });
+  document.getElementById('view-capture-result').addEventListener('click',async()=>{
+    const results=document.getElementById('results');
+    const id=document.getElementById('capture-job-id').value.trim();
+    if(!/^[a-f0-9]{32}$/.test(id)){results.textContent='Enter the 32-character capture job ID.';return}
+    const token=prompt('Private Docker operator token (not stored):');
+    if(!token){results.textContent='Private result lookup cancelled: token required.';return}
+    results.textContent='Retrieving protected result…';
+    renderSummary(null);
+    try{
+      const response=await fetch('/api/jobs/'+id+'/result',{headers:{'Authorization':'Bearer '+token},cache:'no-store'});
+      const data=await response.json();
+      if(response.ok && data.result){
+        results.textContent=JSON.stringify(data.result,null,2);
+        if(data.result.summary)renderSummary(data.result.summary);
+      }else{results.textContent=JSON.stringify(data,null,2)}
+    }catch(error){results.textContent='Private result unavailable: '+error.message}
   });
   const demoInventory='<title>Sample Cafe</title><h1>Welcome</h1><a href="/menu">Menu</a><img src="/coffee.jpg"><form action="/contact"><input name="email" required></form>';
   const demoDirectory='<h1>Sample Directory</h1><a href="https://cafe.example/">Cafe</a><a href="https://bakery.example/">Bakery</a>';
