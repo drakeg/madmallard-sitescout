@@ -60,6 +60,14 @@ class DashboardTests(unittest.TestCase):
         self.assertIn("siteReportExport.disabled=false", html)
         self.assertIn("URL.revokeObjectURL(url)", html)
 
+    def test_form_checklist_csv_export_is_available_and_spreadsheet_safe(self):
+        html = DASHBOARD.read_text()
+        self.assertIn('id="site-report-checklist-export" disabled', html)
+        self.assertIn('function spreadsheetSafeCell(value)', html)
+        self.assertIn('if(/^[\\s]*[=+\\-@]/.test(text))', html)
+        self.assertIn('siteChecklistExport.disabled=false', html)
+        self.assertIn('sitescout-form-verification-checklist.csv', html)
+
     def test_docker_routes(self):
         for route, expected in (("/", b"SiteScout"), ("/health", b'"status": "ok"'), ("/api/health", b'"status": "ok"')):
             instance = Handler.__new__(Handler)
