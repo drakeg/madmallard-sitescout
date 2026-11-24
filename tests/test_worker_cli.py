@@ -64,6 +64,22 @@ class WorkerCliTests(unittest.TestCase):
         self.assertIn("succeeded", self.call("audit", "--actor", "alice", "--job-id", job_id)[1])
         self.assertEqual(self.call("prune", "--older-than-days", "0")[0], 2)
 
+
+    def test_recovery_rejects_too_short_threshold(self):
+        code, _, stderr = self.call("recover", "--older-than-seconds", "0")
+        self.assertEqual(code, 2)
+        self.assertIn("at least 60", stderr)
+
+    def test_worker_busy_fails_without_claiming_job(self):
+        from app.worker_lock import exclusive_worker_lock
+        store = CaptureJobStore(self.database)
+        identifier = store.enqueue("alice", "https://example.org")
+        with exclusive_worker_lock(self.database):
+            code, _, stderr = self.call("work-once")
+        self.assertEqual(code, 7)
+        self.assertIn("worker is active", stderr)
+        self.assertEqual(store.get(identifier, "alice")["status"], "queued")
+
     def test_invalid_public_target_is_rejected(self):
         with patch("app.worker_cli.validate_target", side_effect=ValueError("private")):
             code, _, stderr = self.call("submit", "--actor", "alice",

@@ -48,3 +48,6 @@ Single-job execution path, injected capture/analyze functions for offline tests,
 
 ### SS-021 increment C — operator-only CLI and persistent Compose volume
 Add a default-off manual `capture-worker` Compose profile and dedicated named SQLite volume, with fail-closed operator commands for authorized job submission, work-once, owner-label-scoped metadata/audit inspection and retention pruning. No HTTP job API, server-side sessions, automatic scheduling, or public capture enablement; those remain acceptance blockers for full SS-021 completion. Test profile configuration and storage ownership in an actual Docker engine before release.
+
+### SS-021 increment D — exclusive worker and recovery
+Use advisory single-host locks for the private operator CLI to prevent concurrent `work-once` invocations and guard explicit stale-job recovery. Add contention tests and retain the public-deployment block pending authenticated sessions, distributed leases, durable result access, and TLS.
