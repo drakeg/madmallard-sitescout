@@ -65,11 +65,14 @@
     <h2 id="site-report-title">Multi-page saved website report</h2>
     <p>Combine up to 20 authorized, saved HTML pages into a navigation and form inventory. This never crawls, visits or submits to a website.</p>
     <form id="site-report-form">
-      <label for="site-report-json">Saved pages JSON</label>
+      <label for="site-report-file">Import saved pages manifest (.json)</label>
+      <input id="site-report-file" type="file" accept=".json,application/json">
+      <label for="site-report-json">Saved pages JSON (editable after import)</label>
       <textarea id="site-report-json" spellcheck="false" required placeholder='[{"url":"https://example.org/","html":"<title>Home</title>"}]'></textarea>
-      <p class="hint">JSON array of URL/HTML objects. Maximum 500 KiB per page and 2 MB total.</p>
+      <p class="hint">JSON array of URL/HTML objects. Maximum 500 KiB per page and 2 MB total. Files are read in your browser; results are never automatically stored.</p>
       <button type="submit">Generate site report</button>
       <button type="button" class="secondary" id="site-report-demo">Load three-page demo</button>
+      <button type="button" class="secondary" id="site-report-export" disabled>Download report JSON</button>
     </form>
     <pre id="site-report-results" role="status" aria-live="polite">No site report yet.</pre>
   </section>
@@ -157,26 +160,79 @@
       }else{results.textContent=JSON.stringify(data,null,2)}
     }catch(error){results.textContent='Private jobs unavailable: '+error.message}
   });
+  const siteReportInput=document.getElementById('site-report-json');
+  const siteReportOutput=document.getElementById('site-report-results');
+  const siteReportExport=document.getElementById('site-report-export');
+  let latestSiteReport=null;
+  function clearSiteReport(){
+    latestSiteReport=null;
+    siteReportExport.disabled=true;
+  }
+  document.getElementById('site-report-file').addEventListener('change',async event=>{
+    clearSiteReport();
+    const file=event.target.files&&event.target.files[0];
+    if(!file)return;
+    if(file.size>2100000){
+      siteReportOutput.textContent='Manifest exceeds the 2.1 MB request limit.';
+      event.target.value='';
+      return;
+    }
+    try{
+      const text=await file.text();
+      const pages=JSON.parse(text);
+      if(!Array.isArray(pages)||pages.length<1||pages.length>20){
+        throw new Error('Expected an array of 1–20 saved pages');
+      }
+      siteReportInput.value=JSON.stringify(pages,null,2);
+      siteReportOutput.textContent='Manifest imported. Select Generate site report to analyze.';
+    }catch(error){
+      siteReportInput.value='';
+      siteReportOutput.textContent='Could not import manifest: '+error.message;
+    }
+  });
+  siteReportInput.addEventListener('input',clearSiteReport);
+  siteReportExport.addEventListener('click',()=>{
+    if(!latestSiteReport)return;
+    const file=new Blob([JSON.stringify(latestSiteReport,null,2)+'\\n'],{type:'application/json'});
+    const url=URL.createObjectURL(file);
+    const link=document.createElement('a');
+    link.href=url;
+    link.download='sitescout-site-report.json';
+    document.body.append(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  });
   const sampleSitePages=[
     {url:'https://sample-cafe.example/',html:'<title>Sample Cafe</title><h1>Welcome</h1><a href="/menu">Menu</a><a href="/contact">Contact</a>'},
     {url:'https://sample-cafe.example/menu',html:'<title>Menu</title><h1>Food and drink</h1><a href="/contact">Contact us</a>'},
     {url:'https://sample-cafe.example/contact',html:'<title>Contact</title><h1>Contact us</h1><form method="post" action="/inquiry"><input name="email" required></form>'}
   ];
   document.getElementById('site-report-demo').addEventListener('click',()=>{
-    document.getElementById('site-report-json').value=JSON.stringify(sampleSitePages,null,2);
+    clearSiteReport();
+    siteReportInput.value=JSON.stringify(sampleSitePages,null,2);
+    document.getElementById('site-report-file').value='';
     document.getElementById('site-report-form').requestSubmit();
   });
   document.getElementById('site-report-form').addEventListener('submit',async event=>{
     event.preventDefault();
-    const output=document.getElementById('site-report-results');
-    const input=document.getElementById('site-report-json').value;
+    clearSiteReport();
+    const output=siteReportOutput;
+    const input=siteReportInput.value;
     if(new TextEncoder().encode(input).length>2100000){output.textContent='Report JSON exceeds the 2.1 MB request limit.';return}
     let pages;
     try{pages=JSON.parse(input)}catch(error){output.textContent='Invalid JSON: '+error.message;return}
+    if(!Array.isArray(pages)||pages.length<1||pages.length>20){
+      output.textContent='Provide between 1 and 20 saved pages.';return;
+    }
     output.textContent='Analyzing saved pages locally on the server…';
     try{
       const response=await fetch('/api/site_report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(pages)});
       const data=await response.json();
+      if(response.ok&&data.report){
+        latestSiteReport=data.report;
+        siteReportExport.disabled=false;
+      }
       output.textContent=JSON.stringify(response.ok?data.report:data,null,2);
     }catch(error){output.textContent='Site report unavailable: '+error.message}
   });
