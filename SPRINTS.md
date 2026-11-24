@@ -75,3 +75,6 @@ CI boots the real API container with synthetic local tokens, seeds an offline fi
 
 ### SS-021 increment L — manual private job UI
 Add explicit-authorization job submission and manual status lookup controls to the existing dashboard. Prompt for operator token on each request without persisting it, render untrusted responses as text, and preserve default-off backend behavior. No automatic polling or publicly exposed queues.
+
+### SS-021 increment M — server-side permission assertion
+Require private job submissions to include literal boolean `authorized: true` and verify missing/non-boolean assertions are denied before DNS or queue admission.
