@@ -47,6 +47,10 @@
       <p class="hint">Maximum HTML size: 500 KiB. Results are not stored.</p>
       <button type="submit">Analyze HTML</button>
       <button type="button" class="secondary" id="capture-live">Capture authorized HTTPS page (Docker only)</button>
+      <button type="button" class="secondary" id="queue-capture">Queue authorized capture (trusted Docker only)</button>
+      <label for="capture-job-id">Queued capture job ID</label>
+      <input id="capture-job-id" type="text" maxlength="32" autocomplete="off" spellcheck="false" placeholder="Job ID returned after queueing">
+      <button type="button" class="secondary" id="check-capture-job">Check queued capture status</button>
       <button type="button" class="secondary" id="demo-inventory">Load inventory example</button>
       <button type="button" class="secondary" id="demo-directory">Load directory example</button>
     </form>
@@ -73,6 +77,37 @@
       results.textContent=JSON.stringify(response.ok?data.result:data,null,2);
       if(response.ok)renderSummary(data.result.summary);
     }catch(error){results.textContent='Capture unavailable: '+error.message}
+  });
+  document.getElementById('queue-capture').addEventListener('click',async()=>{
+    const results=document.getElementById('results');
+    const url=document.getElementById('url').value;
+    if(!url || !url.startsWith('https://')){results.textContent='Enter an authorized public HTTPS URL.';return}
+    if(!confirm('Confirm you have permission to inspect this public website. Private jobs run only on a trusted Docker host.'))return;
+    const token=prompt('Private Docker operator token (not stored):');
+    if(!token){results.textContent='Queue cancelled: operator token required.';return}
+    results.textContent='Submitting private capture job…';
+    renderSummary(null);
+    try{
+      const response=await fetch('/api/jobs',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({url,mode:document.getElementById('mode').value})});
+      const data=await response.json();
+      if(response.ok && data.job_id){
+        document.getElementById('capture-job-id').value=data.job_id;
+        results.textContent='Queued job '+data.job_id+'. Run the private Docker worker to process it, then check status.';
+      }else{results.textContent=JSON.stringify(data,null,2)}
+    }catch(error){results.textContent='Private queue unavailable: '+error.message}
+  });
+  document.getElementById('check-capture-job').addEventListener('click',async()=>{
+    const results=document.getElementById('results');
+    const id=document.getElementById('capture-job-id').value.trim();
+    if(!/^[a-f0-9]{32}$/.test(id)){results.textContent='Enter the 32-character capture job ID.';return}
+    const token=prompt('Private Docker operator token (not stored):');
+    if(!token){results.textContent='Status check cancelled: token required.';return}
+    results.textContent='Checking private job…';
+    try{
+      const response=await fetch('/api/jobs/'+id,{headers:{'Authorization':'Bearer '+token},cache:'no-store'});
+      const data=await response.json();
+      results.textContent=JSON.stringify(data,null,2);
+    }catch(error){results.textContent='Job status unavailable: '+error.message}
   });
   const demoInventory='<title>Sample Cafe</title><h1>Welcome</h1><a href="/menu">Menu</a><img src="/coffee.jpg"><form action="/contact"><input name="email" required></form>';
   const demoDirectory='<h1>Sample Directory</h1><a href="https://cafe.example/">Cafe</a><a href="https://bakery.example/">Bakery</a>';

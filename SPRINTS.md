@@ -72,3 +72,6 @@ CI starts the actual Compose API container and checks homepage/health plus defau
 
 ### SS-021 increment K — authenticated Compose integration smoke
 CI boots the real API container with synthetic local tokens, seeds an offline fixture job from a separate worker container into the shared SQLite volume, and verifies owner-bound listing/status/audit and rejected credentials over loopback. No third-party fetching or production API exposure.
+
+### SS-021 increment L — manual private job UI
+Add explicit-authorization job submission and manual status lookup controls to the existing dashboard. Prompt for operator token on each request without persisting it, render untrusted responses as text, and preserve default-off backend behavior. No automatic polling or publicly exposed queues.

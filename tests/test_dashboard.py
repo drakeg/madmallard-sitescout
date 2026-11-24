@@ -13,6 +13,18 @@ class DashboardTests(unittest.TestCase):
         self.assertIn('role="status"', html)
         self.assertIn("/api/health", html)
 
+    def test_private_capture_job_controls_do_not_persist_bearer_tokens(self):
+        html = DASHBOARD.read_text()
+        self.assertIn('id="queue-capture"', html)
+        self.assertIn('id="check-capture-job"', html)
+        self.assertIn('id="capture-job-id"', html)
+        self.assertIn("fetch('/api/jobs'", html)
+        self.assertIn("fetch('/api/jobs/'+id", html)
+        self.assertIn("Private Docker operator token (not stored)", html)
+        self.assertNotIn("localStorage", html)
+        self.assertNotIn("sessionStorage", html)
+        self.assertIn("results.textContent", html)
+
     def test_docker_routes(self):
         for route, expected in (("/", b"SiteScout"), ("/health", b'"status": "ok"'), ("/api/health", b'"status": "ok"')):
             instance = Handler.__new__(Handler)
