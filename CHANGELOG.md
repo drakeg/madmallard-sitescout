@@ -22,3 +22,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added a single-job capture worker prototype with sanitized failure logging and explicit recovery of interrupted job metadata; not yet connected to the HTTP service.
 
 - Added a manual operator-only capture worker CLI, opt-in Compose profile and persistent SQLite metadata volume. This does not expose or authenticate an HTTP job API.
+
+- Serialized private CLI capture workers using persistent-volume advisory locks; added explicit guarded stale-job recovery with contention tests.
