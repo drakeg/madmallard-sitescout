@@ -99,3 +99,6 @@ Provide a shared, size-limited Vercel/Docker endpoint for saved multi-page manif
 
 ### SS-004 increment — functional requirements from static site evidence
 Derive a deterministic form-testing checklist, potential third-party action-host list, transport/method cautions, and explicit unknowns from offline multi-page reports. Follow with customer-approved live verification and reporting; never imply that static HTML proves integration delivery.
+
+### SS-003/SS-004 CI follow-up — live Docker report smoke
+Run the actual Docker API with a synthetic two-page saved-HTML request; assert page count, contact-page candidates, unverified form functionality, and invalid JSON-shape rejection. No external sites are contacted.
