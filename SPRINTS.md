@@ -51,3 +51,6 @@ Add a default-off manual `capture-worker` Compose profile and dedicated named SQ
 
 ### SS-021 increment D — exclusive worker and recovery
 Use advisory single-host locks for the private operator CLI to prevent concurrent `work-once` invocations and guard explicit stale-job recovery. Add contention tests and retain the public-deployment block pending authenticated sessions, distributed leases, durable result access, and TLS.
+
+### SS-021 increment E — owner-scoped bounded job listing
+Expose a private CLI listing limited to a specific operator label with no target URLs or raw results. Test isolation across actors, deterministic ordering and bounded record counts. Still requires real user authentication before browser-facing job APIs.
