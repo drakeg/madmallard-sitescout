@@ -13,6 +13,7 @@ from app.capture_jobs import CaptureJobStore, QueueFullError, RateLimitedError
 from app.capture_worker import CaptureWorker
 from app.capture import validate_target
 from app.worker_lock import WorkerBusyError, exclusive_worker_lock
+from app.result_store import save_analysis_result
 
 DEFAULT_DB = "/data/capture_jobs.sqlite3"
 RETENTION_SECONDS = 7 * 24 * 60 * 60
@@ -27,7 +28,9 @@ def run(argv=None, *, store_factory=CaptureJobStore, worker_factory=CaptureWorke
     submit.add_argument("--url", required=True)
     submit.add_argument("--mode", choices=("inventory", "directory"), default="inventory")
     submit.add_argument("--authorized", action="store_true", help="Operator confirms authorization")
-    commands.add_parser("work-once", help="Execute one queued job, if present")
+    work = commands.add_parser("work-once", help="Execute one queued job, if present")
+    work.add_argument("--save-results", action="store_true",
+                      help="Store protected analysis JSON in local results directory")
     recover = commands.add_parser("recover", help="Requeue stale jobs with exclusive worker lock")
     recover.add_argument("--older-than-seconds", type=int, default=120)
     listing = commands.add_parser("list", help="List operator-owned capture job metadata")
@@ -64,7 +67,12 @@ def run(argv=None, *, store_factory=CaptureJobStore, worker_factory=CaptureWorke
             output = {"job_id": identifier, "status": "queued"}
         elif args.operation == "work-once":
             with exclusive_worker_lock(args.database):
-                result = worker_factory(store).process_one()
+                if args.save_results:
+                    output_dir = os.environ.get("SITESCOUT_RESULTS_DIR", "/data/results")
+                    saver = lambda job_id, result: save_analysis_result(output_dir, job_id, result)
+                    result = worker_factory(store, save=saver).process_one()
+                else:
+                    result = worker_factory(store).process_one()
             # Results can contain untrusted page data; never echo them in logs.
             output = {"job_id": result["id"], "status": result["status"]} if result else {"status": "empty"}
         elif args.operation == "recover":
