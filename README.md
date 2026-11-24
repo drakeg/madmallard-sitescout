@@ -26,7 +26,7 @@ cp .env.example .env
 docker compose up --build -d
 curl http://localhost:8087/health
 ```
-Set `SITESCOUT_BIND=0.0.0.0` for LAN testing **only on a trusted network**; add authentication before exposing a real dashboard.
+The Docker dashboard now binds to `0.0.0.0:8087` by default for access from devices on a **trusted LAN**. For loopback-only access set `SITESCOUT_BIND=127.0.0.1`. Do not forward this port to the public Internet.
 
 ## Status
 Sprint 0 scaffold. The service is a health/status API, **not yet a website generator**. See [SPRINTS.md](SPRINTS.md), [BACKLOG.md](BACKLOG.md), [ARCHITECTURE.md](ARCHITECTURE.md), and [RELEASES.md](RELEASES.md).
@@ -52,7 +52,7 @@ All results are unverified external links requiring review; no network requests 
 
 The root `index.html` is the static dashboard for Vercel; `api/health.py` is its Python serverless health function. `vercel.json` aliases `/health` to `/api/health`. Deploy the repository root as an **Other** framework with no custom output directory or build command. Verify `/`, `/api/health`, and `/health` after deployment. Vercel does not run the local Docker/AI worker containers.
 
-For Docker, use `docker compose up -d --build` and visit `http://127.0.0.1:8087/` (or configure `SITESCOUT_BIND=0.0.0.0` for trusted LAN access). The same dashboard and health routes are served by the Python container. Do not expose unauthenticated future worker controls to the public internet.
+For Docker, use `docker compose up -d --build` and visit `http://HOST_LAN_IP:8087/` from a device on your trusted network, or `http://127.0.0.1:8087/` on the host. The same dashboard and health routes are served by the Python container. Do not expose unauthenticated future worker controls to the public internet.
 
 ## Browser-based offline analysis
 
@@ -165,3 +165,7 @@ Use **Import saved pages manifest (.json)** to select a JSON file containing the
 ### Download a form verification checklist (CSV)
 
 After generating a multi-page saved-site report, select **Download form verification checklist CSV**. The spreadsheet lists a separate row for each observed form and each recommended verification test, including the source page, action, HTTP method, required fields, test case, and blank reviewer/observed-result/notes columns. Every status begins **Not tested**: the tool never claims a form was successfully delivered. Open the CSV in a spreadsheet editor, perform agreed synthetic submissions to the real approved destination, and record evidence. The export defends against spreadsheet formula injection by treating risky untrusted HTML-derived cells as text and quotes commas and double quotes correctly. This export is only enabled after a successful offline report; editing the manifest disables stale downloads. The CSV is generated locally in your browser and is not uploaded to SiteScout.
+
+### Trusted-LAN container binding
+
+The API container publishes its dashboard on `0.0.0.0:8087` by default to support development from another device on your local network; configure `SITESCOUT_PORT` for another host port or `SITESCOUT_BIND=127.0.0.1` to restrict to the Docker host. Worker/runner containers publish **no ports**. Both `SITESCOUT_CAPTURE_ENABLED` and `SITESCOUT_JOBS_ENABLED` remain `false` by default. LAN reachability does **not** make the capture/job APIs safe to enable on cleartext HTTP: bearer tokens and downloaded results require HTTPS termination, authenticated access controls, trusted network segmentation and proper operations review before exposure. Do not add public router port forwarding. CI verifies the LAN binding and default-off capture controls.
