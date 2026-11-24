@@ -54,3 +54,6 @@ Use advisory single-host locks for the private operator CLI to prevent concurren
 
 ### SS-021 increment E — owner-scoped bounded job listing
 Expose a private CLI listing limited to a specific operator label with no target URLs or raw results. Test isolation across actors, deterministic ordering and bounded record counts. Still requires real user authentication before browser-facing job APIs.
+
+### SS-021 increment F — opt-in private results
+Add explicit opt-in local JSON analysis-result export in a restricted persistent-volume directory; secure file creation, no overwrite, byte caps and fail-closed job lifecycle tests. Future requirements: controlled retrieval, result deletion/retention, authentication, worker leases, encryption/backup policy and public exposure safety.

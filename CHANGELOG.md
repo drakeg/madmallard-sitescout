@@ -26,3 +26,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Serialized private CLI capture workers using persistent-volume advisory locks; added explicit guarded stale-job recovery with contention tests.
 
 - Added owner-label-scoped, bounded private CLI listing of capture job metadata without target URLs.
+
+- Added explicit operator-only capture result export to restricted local JSON files with limits, exclusive creation and sanitized failure states.
