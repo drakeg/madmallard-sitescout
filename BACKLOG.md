@@ -43,3 +43,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-025 | P1 | 2 | Private capture job listing | Show bounded owner-labelled job history without URLs or captured content | IN PROGRESS |
 
 | SS-026 | P0 | 2 | Optional protected result export | Save bounded local analysis JSON only on explicit opt-in with owner-private permissions and no overwrite | IN PROGRESS |
+
+| SS-027 | P0 | 2 | Protected result retention | Explicit worker-locked removal of expired result JSON; preserve unrelated paths/symlinks | IN PROGRESS |
