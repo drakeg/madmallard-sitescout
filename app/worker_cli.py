@@ -13,7 +13,7 @@ from app.capture_jobs import CaptureJobStore, QueueFullError, RateLimitedError
 from app.capture_worker import CaptureWorker
 from app.capture import validate_target
 from app.worker_lock import WorkerBusyError, exclusive_worker_lock
-from app.result_store import save_analysis_result
+from app.result_store import save_analysis_result, prune_analysis_results
 
 DEFAULT_DB = "/data/capture_jobs.sqlite3"
 RETENTION_SECONDS = 7 * 24 * 60 * 60
@@ -44,6 +44,8 @@ def run(argv=None, *, store_factory=CaptureJobStore, worker_factory=CaptureWorke
     audit.add_argument("--job-id", required=True)
     prune = commands.add_parser("prune", help="Remove completed jobs past retention")
     prune.add_argument("--older-than-days", type=int, default=7)
+    prune_results = commands.add_parser("prune-results", help="Expire protected local JSON exports")
+    prune_results.add_argument("--older-than-days", type=int, default=7)
     args = parser.parse_args(argv)
 
     if os.environ.get("SITESCOUT_CAPTURE_ENABLED") != "true":
@@ -95,6 +97,16 @@ def run(argv=None, *, store_factory=CaptureJobStore, worker_factory=CaptureWorke
                 print("Job not found", file=sys.stderr)
                 return 4
             output = {"events": store.audit(args.job_id, args.actor)}
+        elif args.operation == "prune-results":
+            if args.older_than_days < 1:
+                print("Retention must be at least one day", file=sys.stderr)
+                return 2
+            output_dir = os.environ.get("SITESCOUT_RESULTS_DIR", "/data/results")
+            with exclusive_worker_lock(args.database):
+                removed = prune_analysis_results(
+                    output_dir, older_than=time.time() - args.older_than_days * 86400
+                )
+            output = {"result_files_removed": removed}
         else:
             if args.older_than_days < 1:
                 print("Retention must be at least one day", file=sys.stderr)
