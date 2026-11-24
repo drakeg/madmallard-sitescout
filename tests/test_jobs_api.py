@@ -95,7 +95,7 @@ class JobsApiTests(unittest.TestCase):
         self.assertEqual(self.request("/api/jobs/" + job_id + "/audit", token=self.bob).status, 404)
 
     def test_invalid_body_and_methods_do_not_enqueue(self):
-        for payload in ([], {}, {"url": None}, {"url": "https://example.org", "mode": []}):
+        for payload in ([], {"authorized": True}, {"url": None, "authorized": True}, {"url": "https://example.org", "mode": [], "authorized": True}):
             with self.subTest(payload=payload):
                 self.assertEqual(self.request("/api/jobs", "POST", payload, self.token).status, 400)
         self.assertEqual(self.request("/api/jobs/no", "POST", {"url": "https://example.org", "authorized": True}, self.token).status, 405)
