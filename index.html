@@ -73,6 +73,7 @@
       <button type="submit">Generate site report</button>
       <button type="button" class="secondary" id="site-report-demo">Load three-page demo</button>
       <button type="button" class="secondary" id="site-report-export" disabled>Download report JSON</button>
+      <button type="button" class="secondary" id="site-report-checklist-export" disabled>Download form verification checklist CSV</button>
     </form>
     <pre id="site-report-results" role="status" aria-live="polite">No site report yet.</pre>
   </section>
@@ -163,10 +164,12 @@
   const siteReportInput=document.getElementById('site-report-json');
   const siteReportOutput=document.getElementById('site-report-results');
   const siteReportExport=document.getElementById('site-report-export');
+  const siteChecklistExport=document.getElementById('site-report-checklist-export');
   let latestSiteReport=null;
   function clearSiteReport(){
     latestSiteReport=null;
     siteReportExport.disabled=true;
+    siteChecklistExport.disabled=true;
   }
   document.getElementById('site-report-file').addEventListener('change',async event=>{
     clearSiteReport();
@@ -203,6 +206,38 @@
     link.remove();
     URL.revokeObjectURL(url);
   });
+  function spreadsheetSafeCell(value){
+    let text=String(value==null?'':value);
+    // Prevent CSV formula injection even after leading whitespace.
+    if(/^[\\s]*[=+\\-@]/.test(text))text="'"+text;
+    return '"'+text.replace(/"/g,'""')+'"';
+  }
+  function exportChecklistCSV(report){
+    const headers=['Page URL','Form action','Method','Required fields','Verification test','Observed result','Status','Reviewer','Notes'];
+    const rows=[headers];
+    const forms=report.functional_requirements&&report.functional_requirements.forms_to_test||[];
+    for(const form of forms){
+      const cases=Array.isArray(form.test_cases)?form.test_cases:[];
+      for(const testCase of cases){
+        rows.push([form.page,form.action,form.method,
+          Array.isArray(form.required_fields)?form.required_fields.join('; '):'',
+          testCase,'','Not tested','','']);
+      }
+    }
+    return rows.map(row=>row.map(spreadsheetSafeCell).join(',')).join(String.fromCharCode(13,10))+String.fromCharCode(13,10);
+  }
+  siteChecklistExport.addEventListener('click',()=>{
+    if(!latestSiteReport)return;
+    const file=new Blob([exportChecklistCSV(latestSiteReport)],{type:'text/csv;charset=utf-8'});
+    const url=URL.createObjectURL(file);
+    const link=document.createElement('a');
+    link.href=url;
+    link.download='sitescout-form-verification-checklist.csv';
+    document.body.append(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  });
   const sampleSitePages=[
     {url:'https://sample-cafe.example/',html:'<title>Sample Cafe</title><h1>Welcome</h1><a href="/menu">Menu</a><a href="/contact">Contact</a>'},
     {url:'https://sample-cafe.example/menu',html:'<title>Menu</title><h1>Food and drink</h1><a href="/contact">Contact us</a>'},
@@ -234,6 +269,7 @@
       if(response.ok&&data.report){
         latestSiteReport=data.report;
         siteReportExport.disabled=false;
+        siteChecklistExport.disabled=false;
       }
       output.textContent=JSON.stringify(response.ok?data.report:data,null,2);
     }catch(error){output.textContent='Site report unavailable: '+error.message}
