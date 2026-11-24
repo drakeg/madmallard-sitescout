@@ -139,3 +139,13 @@ The dashboard's **Show my recent private jobs** control calls the default-off Do
 ### Opt-in continuous capture runner (trusted Docker only)
 
 The separate `capture-runner` Compose profile runs an optional polling worker which processes explicitly queued authorized jobs and saves successful JSON reports to the protected persistent volume. It is **never started by normal** `docker compose up`. On an access-controlled Docker host, configure `SITESCOUT_CAPTURE_ENABLED=true`, operator tokens, and `SITESCOUT_JOBS_ENABLED=true` in the untracked environment, then start the API and optionally run `docker compose --profile capture-runner up -d capture-runner`. Stop with `docker compose --profile capture-runner stop capture-runner`. The runner checks every three seconds, uses the existing exclusive local-filesystem worker lock, and does not automatically requeue interrupted jobs or retry failed requests. Its restart policy is `no` to avoid unexpected processing after errors. The profile has no exposed ports, uses a non-root read-only container, and is disabled when capture is disabled. Do **not** deploy for publicly accessible multi-user capture: TLS, real user sessions, per-host isolation, resource management and distributed worker fencing remain required.
+
+## Offline multi-page site inventory (SS-003)
+
+Analyze up to **20 authorized, saved HTML pages** from the same site hostname with no network access, JavaScript execution or form submission:
+
+```sh
+python -m app.site_report fixtures/site-report.json
+```
+
+The JSON manifest is an array of `{"url":"https://site.example/path","html":"<html>…</html>"}` objects. Reports include page titles, headings, internal/external links, form fields/actions, known-page navigation edges, uncaptured internal links and possible paths to saved contact/booking pages. Uncaptured links are **not** reported as broken; a reported form is **not** verified to deliver submissions. Limits: 500 KiB per page, 2 MB total and 20 pages. This is a CLI increment that can later be connected to the web dashboard; it never crawls or contacts a website.
