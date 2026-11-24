@@ -51,3 +51,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-029 | P0 | 2 | Private authenticated queue HTTP API | Default-off Docker-only job create/status/list/audit, derived actor identity, shared limits, ownership tests | IN PROGRESS |
 
 | SS-030 | P0 | 2 | Docker HTTP smoke gates | CI verifies live Docker API homepage/health and fail-closed jobs/capture defaults | IN PROGRESS |
+
+| SS-031 | P0 | 2 | Authenticated Docker integration smoke | CI verifies operator token identity, shared SQLite volume and cross-actor isolation across actual containers | IN PROGRESS |
