@@ -160,6 +160,20 @@ class CaptureJobStore:
                 )
             return len(rows)
 
+    def list_for_actor(self, actor, *, limit=25):
+        """List only owned job metadata, newest first; no raw target URL."""
+        if not isinstance(actor, str) or not actor.strip() or len(actor) > 128:
+            raise ValueError("An actor identifier is required")
+        if not isinstance(limit, int) or isinstance(limit, bool) or not 1 <= limit <= 100:
+            raise ValueError("Limit must be an integer from 1 to 100")
+        with self._connect() as conn:
+            rows = conn.execute(
+                "SELECT id,mode,status,created_at,updated_at,error "
+                "FROM jobs WHERE actor=? ORDER BY created_at DESC,id DESC LIMIT ?",
+                (actor, limit),
+            ).fetchall()
+        return [dict(row) for row in rows]
+
     def get(self, job_id, actor):
         with self._connect() as conn:
             row = conn.execute(

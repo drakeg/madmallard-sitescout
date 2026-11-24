@@ -24,3 +24,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added a manual operator-only capture worker CLI, opt-in Compose profile and persistent SQLite metadata volume. This does not expose or authenticate an HTTP job API.
 
 - Serialized private CLI capture workers using persistent-volume advisory locks; added explicit guarded stale-job recovery with contention tests.
+
+- Added owner-label-scoped, bounded private CLI listing of capture job metadata without target URLs.

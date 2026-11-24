@@ -39,3 +39,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-023 | P0 | 2 | Private capture worker CLI | Opt-in Compose profile, persistent SQLite volume, disabled-by-default manual job submission and safe audit/status output | IN PROGRESS |
 
 | SS-024 | P0 | 2 | Exclusive operator worker | File lock for single-host work-once and explicit guarded stale recovery; contention tests | IN PROGRESS |
+
+| SS-025 | P1 | 2 | Private capture job listing | Show bounded owner-labelled job history without URLs or captured content | IN PROGRESS |

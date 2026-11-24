@@ -95,3 +95,7 @@ The `capture-jobs` volume survives container replacement; it stores URLs, audit 
 ### Exclusive single-host worker safety
 
 The manual `work-once` command now holds a nonblocking advisory `flock` on `/data/capture_jobs.sqlite3.worker.lock` throughout processing. Competing worker processes sharing the same local volume fail closed rather than claiming another job. Operators can explicitly requeue interrupted work with `docker compose --profile capture-worker run --rm capture-worker recover --older-than-seconds 120`; recovery also requires the exclusive lock and a minimum 60-second threshold. A lock file remains in the volume; do not delete it while jobs are running. These guarantees apply to **one host and one shared local filesystem only**. Recovery is not automatically scheduled, and this does not provide distributed worker fencing, identity sessions or an HTTP job API. Operator must ensure any previously crashed worker is no longer running before recovery.
+
+### Private operator job listing
+
+Use `docker compose --profile capture-worker run --rm capture-worker list --actor operator --limit 25` to inspect the newest jobs for an operator audit label. The response contains job IDs, modes, states and timestamps, but not captured HTML or target URLs. Lists are capped at 100 records; this is a trusted-local CLI, not an identity-bound public API. Treat actor labels as untrusted until authenticated sessions are introduced.
