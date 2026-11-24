@@ -69,3 +69,6 @@ Connect default-off Docker-only POST/GET job metadata endpoints to the persisten
 
 ### SS-021 increment J — live Docker smoke gate
 CI starts the actual Compose API container and checks homepage/health plus default-off job/capture HTTP behavior; this is a test-environment contract, not evidence of production authentication or public deployment safety.
+
+### SS-021 increment K — authenticated Compose integration smoke
+CI boots the real API container with synthetic local tokens, seeds an offline fixture job from a separate worker container into the shared SQLite volume, and verifies owner-bound listing/status/audit and rejected credentials over loopback. No third-party fetching or production API exposure.
