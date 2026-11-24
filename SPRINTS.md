@@ -108,3 +108,6 @@ Add a local JSON file picker for saved-page manifests, preserve an editable mani
 
 ### SS-041 — Commercially useful form verification checklist
 Add a second, optional browser download for an editable CSV testing checklist derived only from static captured-form metadata. Include synthetic valid/invalid/mobile verification cases, owner and evidence columns, untested default statuses, proper spreadsheet CSV quoting, formula-injection protection, and integration tests of the complete browser workflow. No real form submissions or unverified customer outcomes.
+
+### SS-042 — trusted LAN dashboard reachability
+Bind the offline Docker dashboard to all host interfaces by default for trusted LAN testing while keeping network capture and job processing disabled, worker containers without published ports, and an explicit localhost override. Add a CI test on the rendered Compose config and update security notes.
