@@ -77,7 +77,7 @@ class WorkerCliTests(unittest.TestCase):
         with exclusive_worker_lock(self.database):
             code, _, stderr = self.call("work-once")
         self.assertEqual(code, 7)
-        self.assertIn("already", stderr)
+        self.assertIn("worker is active", stderr)
         self.assertEqual(store.get(identifier, "alice")["status"], "queued")
 
     def test_invalid_public_target_is_rejected(self):
