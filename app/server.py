@@ -8,6 +8,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlsplit
 from app.http_api import respond, send_json
+from app.jobs_api import dispatch as dispatch_jobs
 
 DASHBOARD = Path(__file__).resolve().parent.parent / "index.html"
 
@@ -26,6 +27,8 @@ def validate_capture_payload(payload):
 
 class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
+        if dispatch_jobs(self, "POST"):
+            return
         if urlsplit(self.path).path == "/api/analyze":
             respond(self)
         elif urlsplit(self.path).path == "/api/capture":
@@ -50,6 +53,8 @@ class Handler(BaseHTTPRequestHandler):
             send_json(self, 404, {"error": "Not found"})
 
     def do_GET(self):
+        if dispatch_jobs(self, "GET"):
+            return
         path = urlsplit(self.path).path
         if path == "/":
             body = DASHBOARD.read_bytes()

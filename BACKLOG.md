@@ -47,3 +47,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-027 | P0 | 2 | Protected result retention | Explicit worker-locked removal of expired result JSON; preserve unrelated paths/symlinks | IN PROGRESS |
 
 | SS-028 | P0 | 2 | Operator identity foundation | Fail-closed high-entropy hashed token mapping, actor derivation, rejection tests; not publicly exposed | IN PROGRESS |
+
+| SS-029 | P0 | 2 | Private authenticated queue HTTP API | Default-off Docker-only job create/status/list/audit, derived actor identity, shared limits, ownership tests | IN PROGRESS |

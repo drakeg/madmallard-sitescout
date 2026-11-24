@@ -6,6 +6,11 @@ services:
     environment:
       SITESCOUT_CAPTURE_ENABLED: "${SITESCOUT_CAPTURE_ENABLED:-false}"
       SITESCOUT_CAPTURE_TOKEN: "${SITESCOUT_CAPTURE_TOKEN:-}"
+      SITESCOUT_JOBS_ENABLED: "${SITESCOUT_JOBS_ENABLED:-false}"
+      SITESCOUT_OPERATOR_TOKEN_HASHES: "${SITESCOUT_OPERATOR_TOKEN_HASHES:-}"
+      SITESCOUT_JOBS_DB: /data/capture_jobs.sqlite3
+    volumes:
+      - capture-jobs:/data
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
