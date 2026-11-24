@@ -13,6 +13,7 @@ from app.capture_jobs import CaptureJobStore, QueueFullError, RateLimitedError
 from app.capture_worker import CaptureWorker
 from app.capture import validate_target
 from app.worker_lock import WorkerBusyError, exclusive_worker_lock
+from app.worker_loop import run_worker_loop
 from app.result_store import save_analysis_result, prune_analysis_results
 
 DEFAULT_DB = "/data/capture_jobs.sqlite3"
@@ -67,6 +68,17 @@ def run(argv=None, *, store_factory=CaptureJobStore, worker_factory=CaptureWorke
         if args.operation == "submit":
             identifier = store.enqueue(args.actor, args.url, args.mode)
             output = {"job_id": identifier, "status": "queued"}
+        elif args.operation == "work-loop":
+            if not 1 <= args.interval_seconds <= 60:
+                print("Poll interval must be between 1 and 60 seconds", file=sys.stderr)
+                return 2
+            try:
+                run_worker_loop(store, args.database,
+                                interval=args.interval_seconds,
+                                worker_factory=worker_factory)
+            except KeyboardInterrupt:
+                return 0
+            return 0
         elif args.operation == "work-once":
             with exclusive_worker_lock(args.database):
                 if args.save_results:
