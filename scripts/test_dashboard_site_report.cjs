@@ -81,6 +81,9 @@ async function main() {
   assert.equal(responses.length, 1);
   assert.equal(element('site-report-export').disabled, false);
   assert.equal(JSON.parse(element('site-report-results').textContent).page_count, 2);
+  assert.match(element('site-report-highlights').textContent, /Pages analyzed: 2/);
+  assert.match(element('site-report-highlights').textContent, /Forms needing delivery tests: 1/);
+  assert.match(element('site-report-highlights').textContent, /remain unverified/);
 
   element('site-report-export').listeners.click();
   assert.equal(downloads.length, 1);
@@ -109,6 +112,7 @@ async function main() {
   assert.match(element('site-checklist-review-results').textContent, /exceeds/);
 
   element('site-report-json').listeners.input();
+  assert.match(element('site-report-highlights').textContent, /Analyze saved pages/);
   assert.equal(element('site-report-export').disabled, true);
   assert.equal(element('site-report-checklist-export').disabled, true);
   file.files = [{ size: 2100001, text: async () => { throw new Error('Too large file was read'); } }];
