@@ -149,3 +149,7 @@ python -m app.site_report fixtures/site-report.json
 ```
 
 The JSON manifest is an array of `{"url":"https://site.example/path","html":"<html>…</html>"}` objects. Reports include page titles, headings, internal/external links, form fields/actions, known-page navigation edges, uncaptured internal links and possible paths to saved contact/booking pages. Uncaptured links are **not** reported as broken; a reported form is **not** verified to deliver submissions. Limits: 500 KiB per page, 2 MB total and 20 pages. This is a CLI increment that can later be connected to the web dashboard; it never crawls or contacts a website.
+
+### Browser multi-page saved HTML report
+
+From the SiteScout dashboard, use **Multi-page saved website report**, paste a JSON array containing up to 20 authorized saved pages with `url` and `html` properties, or click **Load three-page demo**. The browser sends only those pasted pages to `POST /api/site_report`, served by the same offline Python implementation on Vercel and Docker. Results show page inventory, navigation edges, uncaptured links, forms and candidate contact/booking paths. The endpoint never visits sites, executes JavaScript or submits forms; report paths are unverified. The request cap is 2.1 MB and the analyzer separately enforces 500 KiB per page and 2 MB total. Reports are not persisted by this endpoint.

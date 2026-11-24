@@ -93,3 +93,6 @@ Add a manual-start Compose runner profile that polls the durable queue using the
 
 ### SS-003 increment — offline multi-page website relationships
 Deliver a zero-network multi-page manifest analyzer that joins saved page inventories, links, form actions, and candidate paths to contact or booking pages without claiming successful interactions. Use deterministic synthetic fixtures and negative security tests. Follow with a browser upload workflow and deeper form/integration requirements inventory.
+
+### SS-003 increment B — browser and serverless offline site reports
+Provide a shared, size-limited Vercel/Docker endpoint for saved multi-page manifests, a pasted-JSON dashboard form with a synthetic demo, and tests for invalid inputs. Explicitly avoid fetch/crawl/outreach and preserve human review for form functionality.
