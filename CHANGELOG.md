@@ -58,3 +58,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added evidence-based form and potential integration verification checklists to offline multi-page site reports.
 
 - Added real Docker HTTP smoke checks for offline multi-page reports and functional requirements.
+
+- Added client-side JSON manifest import and one-click complete site-report download, with browser-flow tests and safe input limits.

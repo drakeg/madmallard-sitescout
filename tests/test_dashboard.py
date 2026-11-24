@@ -51,6 +51,15 @@ class DashboardTests(unittest.TestCase):
         self.assertIn("output.textContent=JSON.stringify(response.ok?data.report:data,null,2)", html)
         self.assertIn("sampleSitePages", html)
 
+    def test_site_report_manifest_import_and_download_are_available(self):
+        html = DASHBOARD.read_text()
+        self.assertIn('id="site-report-file"', html)
+        self.assertIn('accept=".json,application/json"', html)
+        self.assertIn('id="site-report-export" disabled', html)
+        self.assertIn("file.size>2100000", html)
+        self.assertIn("siteReportExport.disabled=false", html)
+        self.assertIn("URL.revokeObjectURL(url)", html)
+
     def test_docker_routes(self):
         for route, expected in (("/", b"SiteScout"), ("/health", b'"status": "ok"'), ("/api/health", b'"status": "ok"')):
             instance = Handler.__new__(Handler)
