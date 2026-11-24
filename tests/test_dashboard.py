@@ -25,6 +25,15 @@ class DashboardTests(unittest.TestCase):
         self.assertNotIn("sessionStorage", html)
         self.assertIn("results.textContent", html)
 
+    def test_completed_private_results_are_owner_authenticated_and_text_rendered(self):
+        html = DASHBOARD.read_text()
+        self.assertIn('id="view-capture-result"', html)
+        self.assertIn("fetch('/api/jobs/'+id+'/result'", html)
+        self.assertIn("Private Docker operator token (not stored)", html)
+        self.assertIn("results.textContent=JSON.stringify(data.result,null,2)", html)
+        self.assertNotIn("localStorage", html)
+        self.assertNotIn("sessionStorage", html)
+
     def test_docker_routes(self):
         for route, expected in (("/", b"SiteScout"), ("/health", b'"status": "ok"'), ("/api/health", b'"status": "ok"')):
             instance = Handler.__new__(Handler)
