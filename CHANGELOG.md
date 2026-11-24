@@ -60,3 +60,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added real Docker HTTP smoke checks for offline multi-page reports and functional requirements.
 
 - Added client-side JSON manifest import and one-click complete site-report download, with browser-flow tests and safe input limits.
+
+- Added a spreadsheet-safe CSV export of per-form verification tasks, with default untested status and browser integration tests covering formula/quote injection defenses.
