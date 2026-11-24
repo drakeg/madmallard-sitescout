@@ -42,3 +42,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added manual private Docker-only job queue and status controls to the dashboard without persisting operator tokens.
 
 - Require explicit server-side authorization assertion for queued HTTPS captures before DNS resolution.
+
+- Added owner-scoped, default-off Docker retrieval of completed protected analysis JSON, refusing unauthorized, unfinished and unsafe result files.
