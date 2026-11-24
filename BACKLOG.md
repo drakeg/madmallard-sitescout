@@ -7,7 +7,7 @@ Priority order: P0 > P1 > P2. Track implementation in GitHub Issues; this file i
 | SS-001 | P0 | 0 | Project scaffold | Health endpoint, Compose, tests and CI | IN PROGRESS |
 | SS-002 | P0 | 0 | Engineering governance | AGENTS, contributing, security, releases, PR template | IN PROGRESS |
 | SS-003 | P0 | 1 | Site inventory | Extract page list, internal links and contact/booking journeys from authorized fixtures | IN PROGRESS (offline CLI and fixture complete; browser workflow pending) |
-| SS-004 | P0 | 1 | Functional requirements | Structured inventory of forms and integrations, unknowns flagged | TODO |
+| SS-004 | P0 | 1 | Functional requirements | Structured inventory of forms and integrations, unknowns flagged | IN PROGRESS (static checks and test plan; live verification pending) |
 | SS-005 | P0 | 2 | Builder license audit | SPDX, commercial restrictions, required hosted services and model terms documented | TODO |
 | SS-006 | P0 | 2 | Builder benchmark | Same 3 demo briefs, objective scoring, screenshots, repeatable costs | TODO |
 | SS-007 | P0 | 3 | Design directions | Three genuinely different responsive concepts per brief | TODO |

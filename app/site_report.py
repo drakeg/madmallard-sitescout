@@ -8,6 +8,7 @@ from collections import deque
 from urllib.parse import urldefrag, urlparse
 
 from app.inventory import inventory
+from app.requirements import functional_requirements
 
 MAX_PAGES = 20
 MAX_PAGE_BYTES = 512_000
@@ -94,7 +95,7 @@ def site_report(pages):
                 if target not in seen:
                     seen.add(target)
                     frontier.append((target, path + [target]))
-    return {
+    result = {
         "site_hostname": origin,
         "pages": [records[url] for url in sorted(known)],
         "page_count": len(known),
@@ -109,6 +110,8 @@ def site_report(pages):
             "Navigation paths describe HTML links only, not successful user journeys",
         ],
     }
+    result["functional_requirements"] = functional_requirements(result)
+    return result
 
 
 def main():

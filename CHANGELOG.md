@@ -54,3 +54,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added an offline multi-page site inventory report with navigation graph, form catalog, contact/booking candidate paths, and bounded synthetic fixture.
 
 - Added a shared Vercel/Docker offline multi-page site-report API and dashboard workflow with synthetic demo input.
+
+- Added evidence-based form and potential integration verification checklists to offline multi-page site reports.

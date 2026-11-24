@@ -96,3 +96,6 @@ Deliver a zero-network multi-page manifest analyzer that joins saved page invent
 
 ### SS-003 increment B — browser and serverless offline site reports
 Provide a shared, size-limited Vercel/Docker endpoint for saved multi-page manifests, a pasted-JSON dashboard form with a synthetic demo, and tests for invalid inputs. Explicitly avoid fetch/crawl/outreach and preserve human review for form functionality.
+
+### SS-004 increment — functional requirements from static site evidence
+Derive a deterministic form-testing checklist, potential third-party action-host list, transport/method cautions, and explicit unknowns from offline multi-page reports. Follow with customer-approved live verification and reporting; never imply that static HTML proves integration delivery.

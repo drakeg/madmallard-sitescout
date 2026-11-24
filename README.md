@@ -153,3 +153,7 @@ The JSON manifest is an array of `{"url":"https://site.example/path","html":"<ht
 ### Browser multi-page saved HTML report
 
 From the SiteScout dashboard, use **Multi-page saved website report**, paste a JSON array containing up to 20 authorized saved pages with `url` and `html` properties, or click **Load three-page demo**. The browser sends only those pasted pages to `POST /api/site_report`, served by the same offline Python implementation on Vercel and Docker. Results show page inventory, navigation edges, uncaptured links, forms and candidate contact/booking paths. The endpoint never visits sites, executes JavaScript or submits forms; report paths are unverified. The request cap is 2.1 MB and the analyzer separately enforces 500 KiB per page and 2 MB total. Reports are not persisted by this endpoint.
+
+### Functional verification checklist (SS-004)
+
+Each multi-page site report now includes `functional_requirements`, listing every saved-page form with its action, HTTP method, field counts, required-field names, and synthetic end-to-end verification cases. Potential external form destinations, HTTP form actions, GET submissions and missing fields are flagged for human review. Contact/booking pages are listed as **candidates**, not confirmed working customer journeys. This feature never submits forms, inspects external CRM settings or asserts that leads are delivered. Use the checklist to plan a paid, permission-based SMB form-delivery verification pilot.
