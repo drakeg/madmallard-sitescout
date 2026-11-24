@@ -66,3 +66,6 @@ Standalone fail-closed mapping of identity labels to SHA-256 digests of high-ent
 
 ### SS-021 increment I — private authenticated job API (experimental)
 Connect default-off Docker-only POST/GET job metadata endpoints to the persistent queue with server-derived hashed-token actor identities, request validation, rate limiting, ownership-scoped status/list/audit, and negative tests. No Vercel endpoint, client-supplied actor or raw captured content is permitted. Public use remains blocked by TLS termination, real user sessions, distributed worker fencing, durable protected result delivery, operational hardening and threat review.
+
+### SS-021 increment J — live Docker smoke gate
+CI starts the actual Compose API container and checks homepage/health plus default-off job/capture HTTP behavior; this is a test-environment contract, not evidence of production authentication or public deployment safety.
