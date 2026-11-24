@@ -60,3 +60,6 @@ Add explicit opt-in local JSON analysis-result export in a restricted persistent
 
 ### SS-021 increment G — result-export retention
 Provide manual exclusive-worker cleanup of expired private JSON exports, with strict filename/type validation and tests that preserve recent files, symlinks and unrelated content. Production automation, identity and customer retention policies remain future acceptance gates.
+
+### SS-021 increment H — hashed operator identity foundation
+Standalone fail-closed mapping of identity labels to SHA-256 digests of high-entropy bearer tokens, with exact actor derivation and negative security tests. No HTTP wiring or public authorization is claimed. Subsequent acceptance requires authenticated job submission/retrieval, TLS termination and abuse controls.

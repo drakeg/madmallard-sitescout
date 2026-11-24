@@ -45,3 +45,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-026 | P0 | 2 | Optional protected result export | Save bounded local analysis JSON only on explicit opt-in with owner-private permissions and no overwrite | IN PROGRESS |
 
 | SS-027 | P0 | 2 | Protected result retention | Explicit worker-locked removal of expired result JSON; preserve unrelated paths/symlinks | IN PROGRESS |
+
+| SS-028 | P0 | 2 | Operator identity foundation | Fail-closed high-entropy hashed token mapping, actor derivation, rejection tests; not publicly exposed | IN PROGRESS |
