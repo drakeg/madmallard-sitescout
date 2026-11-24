@@ -111,3 +111,6 @@ Add a second, optional browser download for an editable CSV testing checklist de
 
 ### SS-042 — trusted LAN dashboard reachability
 Bind the offline Docker dashboard to all host interfaces by default for trusted LAN testing while keeping network capture and job processing disabled, worker containers without published ports, and an explicit localhost override. Add a CI test on the rendered Compose config and update security notes.
+
+### SS-043 — Evidence review for completed CSV checklists
+Accept the exported CSV after a human performs synthetic verification. Use Python's strict CSV parser to require the generated columns, bounded size and row counts, valid review states and reviewer/observation evidence for status changes. Return a self-reported summary and failed/blocked follow-up list without claiming delivery verification. Add both Vercel/Docker endpoints, browser import controls, unit and browser-flow tests; do not persist or send outreach.

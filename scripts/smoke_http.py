@@ -54,6 +54,22 @@ def main():
     assert report["functional_requirements"]["forms_to_test"][0]["verified_functional"] is False
     code, body = request("/api/site_report", {"not": "a page list"})
     assert code == 400 and "error" in json.loads(body)
+    # Exercise the public CSV contract without importing app through script-relative sys.path.
+    headers=["Page URL", "Form action", "Method", "Required fields",
+             "Verification test", "Observed result", "Status", "Reviewer", "Notes"]
+    import csv
+    import io
+    csv_stream=io.StringIO(newline="")
+    writer=csv.writer(csv_stream)
+    writer.writerow(headers)
+    writer.writerow(["https://example.org/contact", "/send", "POST", "email",
+                     "Submit synthetic inquiry", "", "Not tested", "", ""])
+    code, body = request("/api/checklist_review", {"csv": csv_stream.getvalue()})
+    assert code == 200, f"Offline checklist review returned {code}"
+    review=json.loads(body)["review"]
+    assert review["counts"]["not_tested"] == 1
+    assert "not independently verified" in review["evidence_label"]
+
     print("Docker HTTP smoke passed: homepage, health, offline site report and capture default-off")
 
 

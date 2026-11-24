@@ -76,6 +76,12 @@
       <button type="button" class="secondary" id="site-report-checklist-export" disabled>Download form verification checklist CSV</button>
     </form>
     <pre id="site-report-results" role="status" aria-live="polite">No site report yet.</pre>
+    <h3>Review completed form tests</h3>
+    <p>After testing permitted synthetic submissions, fill in the downloaded CSV's Status, Observed result, and Reviewer columns. The review counts are reviewer-reported, not independent delivery verification.</p>
+    <label for="site-checklist-file">Completed verification checklist (.csv)</label>
+    <input type="file" id="site-checklist-file" accept=".csv,text/csv">
+    <button type="button" class="secondary" id="review-site-checklist">Review completed checklist</button>
+    <pre id="site-checklist-review-results" role="status" aria-live="polite">No checklist reviewed yet.</pre>
   </section>
   <footer><p>Service health: <span id="health" role="status">Checking…</span> · <a href="/api/health">API health JSON</a> · <a href="https://github.com/drakeg/madmallard-sitescout">Source repository</a></p></footer>
 </main>
@@ -237,6 +243,23 @@
     link.click();
     link.remove();
     URL.revokeObjectURL(url);
+  });
+  document.getElementById('review-site-checklist').addEventListener('click',async()=>{
+    const output=document.getElementById('site-checklist-review-results');
+    const file=document.getElementById('site-checklist-file').files[0];
+    if(!file){output.textContent='Select a completed SiteScout verification CSV first.';return}
+    if(file.size>512000){output.textContent='Checklist file exceeds 500 KiB.';return}
+    output.textContent='Reviewing self-reported verification evidence…';
+    try{
+      const csv=await file.text();
+      const body=JSON.stringify({csv});
+      if(new TextEncoder().encode(body).length>516096){
+        output.textContent='Checklist request exceeds the size limit.';return;
+      }
+      const response=await fetch('/api/checklist_review',{method:'POST',headers:{'Content-Type':'application/json'},body});
+      const data=await response.json();
+      output.textContent=JSON.stringify(response.ok?data.review:data,null,2);
+    }catch(error){output.textContent='Checklist review unavailable: '+error.message}
   });
   const sampleSitePages=[
     {url:'https://sample-cafe.example/',html:'<title>Sample Cafe</title><h1>Welcome</h1><a href="/menu">Menu</a><a href="/contact">Contact</a>'},

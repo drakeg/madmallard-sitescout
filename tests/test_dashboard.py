@@ -68,6 +68,14 @@ class DashboardTests(unittest.TestCase):
         self.assertIn('siteChecklistExport.disabled=false', html)
         self.assertIn('sitescout-form-verification-checklist.csv', html)
 
+    def test_offline_completed_checklist_review_controls(self):
+        html = DASHBOARD.read_text()
+        self.assertIn('id="site-checklist-file"', html)
+        self.assertIn('id="review-site-checklist"', html)
+        self.assertIn('id="site-checklist-review-results"', html)
+        self.assertIn("fetch('/api/checklist_review'", html)
+        self.assertIn("output.textContent=JSON.stringify(response.ok?data.review:data,null,2)", html)
+
     def test_docker_routes(self):
         for route, expected in (("/", b"SiteScout"), ("/health", b'"status": "ok"'), ("/api/health", b'"status": "ok"')):
             instance = Handler.__new__(Handler)
