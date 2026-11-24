@@ -29,7 +29,7 @@ curl http://localhost:8087/health
 The Docker dashboard now binds to `0.0.0.0:8087` by default for access from devices on a **trusted LAN**. For loopback-only access set `SITESCOUT_BIND=127.0.0.1`. Do not forward this port to the public Internet.
 
 ## Status
-Sprint 0 scaffold. The service is a health/status API, **not yet a website generator**. See [SPRINTS.md](SPRINTS.md), [BACKLOG.md](BACKLOG.md), [ARCHITECTURE.md](ARCHITECTURE.md), and [RELEASES.md](RELEASES.md).
+Working offline HTML and multi-page site report dashboard with import/export, evidence-based form checklists and manual CSV review. A protected, **default-off Docker-only** capture queue and opt-in worker also exist for trusted environments. SiteScout is **not yet a website generator**, and enabled live capture is not approved for public Internet deployment. See [SPRINTS.md](SPRINTS.md), [BACKLOG.md](BACKLOG.md), [ARCHITECTURE.md](ARCHITECTURE.md), and [RELEASES.md](RELEASES.md).
 
 ## Candidate GitHub tools
 [Open Lovable](https://github.com/firecrawl/open-lovable), [OpenPage](https://github.com/buildingopen/openpage), [Onlook](https://github.com/onlook-dev/onlook), [OpenCode](https://github.com/anomalyco/opencode), [Ollama](https://github.com/ollama/ollama), [Astro](https://github.com/withastro/astro), [Playwright](https://github.com/microsoft/playwright), [axe-core](https://github.com/dequelabs/axe-core). **Candidates only**: no license/runtime approval implied.
