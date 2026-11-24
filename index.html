@@ -209,7 +209,7 @@
   function spreadsheetSafeCell(value){
     let text=String(value==null?'':value);
     // Prevent CSV formula injection even after leading whitespace.
-    if(/^[\\s]*[=+\\-@]/.test(text))text="'"+text;
+    if(/^\s*[=+\-@]/.test(text))text="'"+text;
     return '"'+text.replace(/"/g,'""')+'"';
   }
   function exportChecklistCSV(report){
