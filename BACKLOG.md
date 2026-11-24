@@ -59,3 +59,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-033 | P0 | 2 | Server-side capture authorization assertion | Require boolean authorization acknowledgement before DNS lookup and enqueue | DONE |
 
 | SS-034 | P0 | 2 | Owner-scoped private result retrieval | Authenticated completed-job results only, bounded protected files, negative ownership and symlink tests | IN PROGRESS |
+
+| SS-035 | P1 | 2 | Private result dashboard | Manually retrieve and render completed owner-authenticated capture results without browser token storage | IN PROGRESS |
