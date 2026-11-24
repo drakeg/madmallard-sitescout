@@ -65,3 +65,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-036 | P1 | 2 | Recent capture jobs dashboard | List owner-scoped jobs, prefill most recent ID, avoid token persistence and untrusted HTML injection | IN PROGRESS |
 
 | SS-037 | P0 | 2 | Opt-in private background worker | Manual-start Docker runner profile, exclusive single-host processing, protected results, unit and Compose tests | IN PROGRESS |
+
+| SS-038 | P0 | 1 | Multi-page report dashboard | Paste authorized saved pages JSON, generate navigation/form report with Vercel/Docker parity and size limits | IN PROGRESS |
