@@ -34,6 +34,14 @@ class DashboardTests(unittest.TestCase):
         self.assertNotIn("localStorage", html)
         self.assertNotIn("sessionStorage", html)
 
+    def test_recent_private_jobs_use_owner_authenticated_no_store_fetch(self):
+        html = DASHBOARD.read_text()
+        self.assertIn('id="list-capture-jobs"', html)
+        self.assertIn("fetch('/api/jobs',{headers:{'Authorization':'Bearer '+token},cache:'no-store'})", html)
+        self.assertIn("results.textContent=JSON.stringify(data.jobs,null,2)", html)
+        self.assertNotIn("localStorage", html)
+        self.assertNotIn("sessionStorage", html)
+
     def test_docker_routes(self):
         for route, expected in (("/", b"SiteScout"), ("/health", b'"status": "ok"'), ("/api/health", b'"status": "ok"')):
             instance = Handler.__new__(Handler)
