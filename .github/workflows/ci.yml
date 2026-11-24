@@ -20,3 +20,10 @@ jobs:
       - name: Verify nonroot worker persistent-volume permissions
         run: |
           docker compose --profile capture-worker run --rm capture-worker python -c 'from pathlib import Path; p=Path("/data/.write-check"); p.write_text("ok"); p.unlink()'
+      - name: Start local Docker API for HTTP smoke
+        run: docker compose up -d --build api
+      - name: Smoke health, homepage and disabled capture endpoints
+        run: python scripts/smoke_http.py
+      - name: Stop local Docker API
+        if: always()
+        run: docker compose down
