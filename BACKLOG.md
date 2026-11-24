@@ -61,3 +61,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-034 | P0 | 2 | Owner-scoped private result retrieval | Authenticated completed-job results only, bounded protected files, negative ownership and symlink tests | IN PROGRESS |
 
 | SS-035 | P1 | 2 | Private result dashboard | Manually retrieve and render completed owner-authenticated capture results without browser token storage | IN PROGRESS |
+
+| SS-036 | P1 | 2 | Recent capture jobs dashboard | List owner-scoped jobs, prefill most recent ID, avoid token persistence and untrusted HTML injection | IN PROGRESS |
