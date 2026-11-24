@@ -80,6 +80,17 @@ class WorkerCliTests(unittest.TestCase):
         self.assertIn("worker is active", stderr)
         self.assertEqual(store.get(identifier, "alice")["status"], "queued")
 
+    def test_listing_is_owner_scoped_and_excludes_urls(self):
+        store = CaptureJobStore(self.database)
+        owned = store.enqueue("alice", "https://example.org/private-path")
+        store.enqueue("bob", "https://example.org/other-private-path")
+        code, output, _ = self.call("list", "--actor", "alice", "--limit", "1")
+        self.assertEqual(code, 0)
+        self.assertIn(owned, output)
+        self.assertNotIn("private-path", output)
+        self.assertNotIn("other-private-path", output)
+        self.assertEqual(self.call("list", "--actor", "alice", "--limit", "0")[0], 2)
+
     def test_invalid_public_target_is_rejected(self):
         with patch("app.worker_cli.validate_target", side_effect=ValueError("private")):
             code, _, stderr = self.call("submit", "--actor", "alice",
