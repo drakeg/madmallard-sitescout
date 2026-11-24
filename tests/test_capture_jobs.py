@@ -67,6 +67,21 @@ class CaptureJobStoreTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.store.enqueue("alice", "https://example.org", mode="not-a-mode")
 
+    def test_owner_scoped_job_listing_and_limit(self):
+        first = self.store.enqueue("alice", "https://example.org/one", now=100)
+        second = self.store.enqueue("alice", "https://example.org/two", now=101)
+        self.store.enqueue("bob", "https://private.example.org", now=102)
+        all_alice = self.store.list_for_actor("alice")
+        self.assertEqual([row["id"] for row in all_alice], [second, first])
+        self.assertTrue(all("url" not in row and "actor" not in row for row in all_alice))
+        self.assertEqual(len(self.store.list_for_actor("alice", limit=1)), 1)
+        self.assertEqual(len(self.store.list_for_actor("nobody")), 0)
+        for limit in (0, 101, -1, True, "5"):
+            with self.subTest(limit=limit), self.assertRaises(ValueError):
+                self.store.list_for_actor("alice", limit=limit)
+        with self.assertRaises(ValueError):
+            self.store.list_for_actor("")
+
     def test_concurrent_enqueue_enforces_queue_bound(self):
         results = []
         lock = threading.Lock()
