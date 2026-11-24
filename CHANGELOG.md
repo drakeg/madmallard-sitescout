@@ -64,3 +64,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added a spreadsheet-safe CSV export of per-form verification tasks, with default untested status and browser integration tests covering formula/quote injection defenses.
 
 - Bound the offline Docker dashboard to trusted LAN interfaces by default, with host-only override and CI checks for default-off capture.
+
+- Added offline review of human-completed form-checklist CSV, with evidence requirements, status counts, blocked/failed follow-up and Vercel/Docker parity.
