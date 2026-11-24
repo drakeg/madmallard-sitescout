@@ -90,3 +90,6 @@ Expose existing owner-authenticated job-history listing through a manual dashboa
 
 ### SS-021 increment Q — opt-in continuous trusted-host worker
 Add a manual-start Compose runner profile that polls the durable queue using the existing exclusive single-host lock and opt-in private result persistence. Tests cover bounded cycles, cancellation and contention; CI validates Compose configuration. It is not a production distributed worker.
+
+### SS-003 increment — offline multi-page website relationships
+Deliver a zero-network multi-page manifest analyzer that joins saved page inventories, links, form actions, and candidate paths to contact or booking pages without claiming successful interactions. Use deterministic synthetic fixtures and negative security tests. Follow with a browser upload workflow and deeper form/integration requirements inventory.
