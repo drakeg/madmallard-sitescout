@@ -35,3 +35,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-021 | P0 | 2 | Durable capture queue and audit | Per-user identity, shared throttling, durable jobs and logs for public exposure | IN PROGRESS (SQLite metadata foundation; not connected to HTTP) |
 
 | SS-022 | P0 | 2 | Capture preflight validation | Reject invalid JSON shapes, capture modes, and oversized URLs before outbound requests | DONE |
+
+| SS-023 | P0 | 2 | Private capture worker CLI | Opt-in Compose profile, persistent SQLite volume, disabled-by-default manual job submission and safe audit/status output | IN PROGRESS |

@@ -45,3 +45,6 @@ SQLite-backed job lifecycle and audit metadata, owner-scoped lookup, transaction
 
 ### SS-021 increment B — bounded worker and explicit recovery
 Single-job execution path, injected capture/analyze functions for offline tests, sanitized failure audit, and explicit stale-running requeue. This remains a library-only prototype. Do not wire recovery to a recurring timer until worker leases and ownership are implemented; jobs can otherwise be processed twice.
+
+### SS-021 increment C — operator-only CLI and persistent Compose volume
+Add a default-off manual `capture-worker` Compose profile and dedicated named SQLite volume, with fail-closed operator commands for authorized job submission, work-once, owner-label-scoped metadata/audit inspection and retention pruning. No HTTP job API, server-side sessions, automatic scheduling, or public capture enablement; those remain acceptance blockers for full SS-021 completion. Test profile configuration and storage ownership in an actual Docker engine before release.
