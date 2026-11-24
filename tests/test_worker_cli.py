@@ -1,0 +1,73 @@
+import contextlib
+import io
+import os
+import tempfile
+import unittest
+from pathlib import Path
+from unittest.mock import patch
+
+from app.capture_jobs import CaptureJobStore
+from app.worker_cli import run
+
+
+class WorkerCliTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.database = str(Path(self.temp.name) / "jobs.sqlite3")
+        self.enable = patch.dict(os.environ, {"SITESCOUT_CAPTURE_ENABLED": "true"})
+        self.enable.start()
+        self.addCleanup(self.enable.stop)
+
+    def call(self, *args, worker_factory=None):
+        stdout, stderr = io.StringIO(), io.StringIO()
+        kwargs = {"worker_factory": worker_factory} if worker_factory else {}
+        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+            code = run(["--database", self.database, *args], **kwargs)
+        return code, stdout.getvalue(), stderr.getvalue()
+
+    def test_disabled_is_fail_closed_and_creates_no_db(self):
+        with patch.dict(os.environ, {"SITESCOUT_CAPTURE_ENABLED": "false"}):
+            code, _, _ = self.call("work-once")
+        self.assertEqual(code, 3)
+        self.assertFalse(Path(self.database).exists())
+
+    def test_submission_requires_operator_confirmation(self):
+        code, _, _ = self.call("submit", "--actor", "alice", "--url", "https://example.org")
+        self.assertEqual(code, 2)
+        self.assertFalse(Path(self.database).exists())
+
+    def test_workflow_and_actor_scope(self):
+        with patch("app.worker_cli.validate_target", return_value=(None, "93.184.215.14")):
+            code, stdout, _ = self.call("submit", "--actor", "alice",
+                                        "--url", "https://example.org", "--authorized")
+        self.assertEqual(code, 0)
+        import json
+        job_id = json.loads(stdout)["job_id"]
+        self.assertTrue(job_id)
+        self.assertEqual(self.call("status", "--actor", "bob", "--job-id", job_id)[0], 4)
+        self.assertEqual(self.call("audit", "--actor", "bob", "--job-id", job_id)[0], 4)
+        self.assertIn("queued", self.call("status", "--actor", "alice", "--job-id", job_id)[1])
+
+        class StubWorker:
+            def __init__(self, store):
+                self.store = store
+            def process_one(self):
+                claimed = self.store.claim()
+                self.store.complete(claimed["id"], True)
+                return {"id": claimed["id"], "status": "succeeded",
+                        "result": {"untrusted_page": "do-not-echo"}}
+        code, output, _ = self.call("work-once", worker_factory=StubWorker)
+        self.assertEqual(code, 0)
+        self.assertNotIn("do-not-echo", output)
+        self.assertIn("succeeded", output)
+        self.assertIn("succeeded", self.call("audit", "--actor", "alice", "--job-id", job_id)[1])
+        self.assertEqual(self.call("prune", "--older-than-days", "0")[0], 2)
+
+    def test_invalid_public_target_is_rejected(self):
+        with patch("app.worker_cli.validate_target", side_effect=ValueError("private")):
+            code, _, stderr = self.call("submit", "--actor", "alice",
+                                         "--url", "https://internal.local", "--authorized")
+        self.assertEqual(code, 2)
+        self.assertIn("public HTTPS", stderr)
+        self.assertFalse(Path(self.database).exists())
