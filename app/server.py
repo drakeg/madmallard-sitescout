@@ -9,6 +9,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 from app.http_api import respond, send_json
 from app.jobs_api import dispatch as dispatch_jobs
+from app.site_report_api import respond_site_report
 
 DASHBOARD = Path(__file__).resolve().parent.parent / "index.html"
 
@@ -31,6 +32,8 @@ class Handler(BaseHTTPRequestHandler):
             return
         if urlsplit(self.path).path == "/api/analyze":
             respond(self)
+        elif urlsplit(self.path).path == "/api/site_report":
+            respond_site_report(self)
         elif urlsplit(self.path).path == "/api/capture":
             if os.environ.get("SITESCOUT_CAPTURE_ENABLED") != "true":
                 send_json(self, 403, {"error": "Live capture is disabled. Enable explicitly on a trusted Docker host."})
