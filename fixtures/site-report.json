@@ -1,0 +1,14 @@
+[
+  {
+    "url": "https://sample-cafe.example/",
+    "html": "<title>Sample Cafe</title><h1>Welcome</h1><a href='/menu'>Menu</a><a href='/contact'>Contact</a>"
+  },
+  {
+    "url": "https://sample-cafe.example/menu",
+    "html": "<title>Menu</title><h1>Food and drink</h1><a href='/contact'>Ask a question</a>"
+  },
+  {
+    "url": "https://sample-cafe.example/contact",
+    "html": "<title>Contact</title><h1>Contact us</h1><form method='post' action='/inquiry'><input type='email' name='email' required><textarea name='message'></textarea></form>"
+  }
+]
