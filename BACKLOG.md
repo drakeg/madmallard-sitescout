@@ -57,3 +57,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-032 | P1 | 2 | Manual private queue dashboard | Submit authorized jobs and check status from browser without storing bearer tokens; Docker-only API | IN PROGRESS |
 
 | SS-033 | P0 | 2 | Server-side capture authorization assertion | Require boolean authorization acknowledgement before DNS lookup and enqueue | DONE |
+
+| SS-034 | P0 | 2 | Owner-scoped private result retrieval | Authenticated completed-job results only, bounded protected files, negative ownership and symlink tests | IN PROGRESS |
