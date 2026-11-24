@@ -41,7 +41,20 @@ def main():
         code, body = request(path, payload)
         assert code == 403, f"{path} should be default-off, received {code}"
         assert "disabled" in json.loads(body)["error"].lower()
-    print("Docker HTTP smoke passed: homepage, health, jobs and capture default-off")
+    pages = [
+        {"url": "https://example.org/", "html": '<h1>Home</h1><a href="/contact">Contact</a>'},
+        {"url": "https://example.org/contact", "html":
+         '<h1>Contact</h1><form method="post" action="/submit"><input name="email" required></form>'},
+    ]
+    code, body = request("/api/site_report", pages)
+    assert code == 200, f"Offline site report returned {code}"
+    report = json.loads(body)["report"]
+    assert report["page_count"] == 2
+    assert report["candidate_contact_booking_pages"] == ["https://example.org/contact"]
+    assert report["functional_requirements"]["forms_to_test"][0]["verified_functional"] is False
+    code, body = request("/api/site_report", {"not": "a page list"})
+    assert code == 400 and "error" in json.loads(body)
+    print("Docker HTTP smoke passed: homepage, health, offline site report and capture default-off")
 
 
 if __name__ == "__main__":
