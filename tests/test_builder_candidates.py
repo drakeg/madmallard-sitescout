@@ -18,7 +18,7 @@ class BuilderRegistryTests(unittest.TestCase):
         self.assertIn("Central Icons",lookup["onlook"]["commercial_note"])
         self.assertIn("Firecrawl API key",lookup["open-lovable"]["required_external"])
         self.assertEqual(lookup["openpage"]["required_external"],[])
-        self.assertIn("Model weights",lookup["ollama"]["commercial_note"])
+        self.assertIn("model weights",lookup["ollama"]["commercial_note"])
 
     def test_registry_rejects_duplicate_and_unverified_license(self):
         clone=copy.deepcopy(self.source)
