@@ -10,6 +10,7 @@ from urllib.parse import urldefrag, urlparse
 from app.inventory import inventory
 from app.requirements import functional_requirements
 from app.site_findings import remediation_plan
+from app.review_guidance import review_guidance
 
 MAX_PAGES = 20
 MAX_PAGE_BYTES = 512_000
@@ -113,6 +114,7 @@ def site_report(pages):
     }
     result["functional_requirements"] = functional_requirements(result)
     result["remediation_plan"] = remediation_plan(result)
+    result["review_guidance"] = review_guidance(result)
     return result
 
 
