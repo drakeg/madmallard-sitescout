@@ -1,0 +1,137 @@
+{
+  "reviewed_on": "2026-11-24",
+  "scope": "Top-level upstream source licenses and documented service/configuration prerequisites only; not a dependency audit or approval to deploy.",
+  "candidates": [
+    {
+      "id": "openpage",
+      "repository": "buildingopen/openpage",
+      "ref": "master",
+      "license": "MIT",
+      "license_blob": "67860eecbac1a3ee58dfe0374bc4ed929a6bec57",
+      "role": "visual-json-builder",
+      "local_mode": "Local visual editor runs without required AI keys; AI generation uses optional Gemini",
+      "required_external": [],
+      "optional_external": [
+        "Gemini API for AI generation",
+        "Pexels API for image search",
+        "Vercel token for one-click deploy"
+      ],
+      "commercial_note": "MIT code license permits commercial use with notice preservation. Audit dependencies and generated assets separately; exported HTML may load Tailwind CDN and Google Fonts.",
+      "risk": "medium",
+      "recommendation": "pilot-local-editor",
+      "evidence": [
+        "https://github.com/buildingopen/openpage/blob/master/LICENSE",
+        "https://github.com/buildingopen/openpage/blob/master/README.md",
+        "https://github.com/buildingopen/openpage/blob/master/.env.example"
+      ]
+    },
+    {
+      "id": "open-lovable",
+      "repository": "firecrawl/open-lovable",
+      "ref": "main",
+      "license": "MIT",
+      "license_blob": "5b765c90e0bc6fa718ee6390e49dc3f6ca521f0b",
+      "role": "prompt-to-app-builder",
+      "local_mode": "Development UI can run locally, but documented workflow requires Firecrawl key, AI model provider and Vercel/E2B sandbox",
+      "required_external": [
+        "Firecrawl API key",
+        "AI provider API key",
+        "Vercel Sandbox credentials or E2B API key"
+      ],
+      "optional_external": [
+        "Morph Fast Apply"
+      ],
+      "commercial_note": "MIT code license; commercial hosted APIs, sandbox terms, usage rates and output rights are separately governed by vendors. No approved free/offline end-to-end workflow.",
+      "risk": "high",
+      "recommendation": "defer-hosted-dependency",
+      "evidence": [
+        "https://github.com/firecrawl/open-lovable/blob/main/LICENSE",
+        "https://github.com/firecrawl/open-lovable/blob/main/README.md",
+        "https://github.com/firecrawl/open-lovable/blob/main/.env.example"
+      ]
+    },
+    {
+      "id": "onlook",
+      "repository": "onlook-dev/onlook",
+      "ref": "main",
+      "license": "Apache-2.0",
+      "license_blob": "295f5e1b5c342a1382ca2b54f7a911fdc466149d",
+      "role": "local-visual-editor",
+      "local_mode": "Documented source build runs locally on Mac without Onlook account/cloud keys; AI edits require connecting an external agent",
+      "required_external": [],
+      "optional_external": [
+        "Connected coding agent/account for AI edits",
+        "Optional telemetry; disable via STUDIO_TELEMETRY=0"
+      ],
+      "commercial_note": "Apache-2.0 applies to source, not all assets: Central Icons require separate license or replacement; replace Onlook brand, DMG art, sounds, idea images. Preserve NOTICE.",
+      "risk": "high",
+      "recommendation": "evaluate-source-only-after-asset-replacement",
+      "evidence": [
+        "https://github.com/onlook-dev/onlook/blob/main/LICENSE",
+        "https://github.com/onlook-dev/onlook/blob/main/README.md",
+        "https://github.com/onlook-dev/onlook/blob/main/ASSETS.md",
+        "https://github.com/onlook-dev/onlook/blob/main/NOTICE"
+      ]
+    },
+    {
+      "id": "opencode",
+      "repository": "anomalyco/opencode",
+      "ref": "dev",
+      "license": "MIT",
+      "license_blob": "6439474beed8e0271df9862eff97ffd70ec2464c",
+      "role": "coding-agent",
+      "local_mode": "Open-source coding agent; exact model endpoint and runtime cost depend on operator configuration",
+      "required_external": [],
+      "optional_external": [
+        "Model provider / local inference runtime, independently evaluated"
+      ],
+      "commercial_note": "MIT source license with notice preservation; chosen models and services have separate terms, unverified for customer production.",
+      "risk": "medium",
+      "recommendation": "evaluate-local-agent",
+      "evidence": [
+        "https://github.com/anomalyco/opencode/blob/dev/LICENSE",
+        "https://github.com/anomalyco/opencode/blob/dev/README.md"
+      ]
+    },
+    {
+      "id": "astro",
+      "repository": "withastro/astro",
+      "ref": "main",
+      "license": "MIT",
+      "license_blob": "b3cd0c0f0e01d20109fc8660a4d6b7dc9a22bc49",
+      "role": "site-output-framework",
+      "local_mode": "Open-source web framework for producing static and server-rendered sites",
+      "required_external": [],
+      "optional_external": [
+        "Hosting and optional integrations depend on generated project"
+      ],
+      "commercial_note": "MIT license confirmed in repository LICENSE, although GitHub metadata may return NOASSERTION. Audit selected plugins, themes and fonts separately.",
+      "risk": "low",
+      "recommendation": "output-framework-candidate",
+      "evidence": [
+        "https://github.com/withastro/astro/blob/main/LICENSE",
+        "https://github.com/withastro/astro/blob/main/README.md"
+      ]
+    },
+    {
+      "id": "ollama",
+      "repository": "ollama/ollama",
+      "ref": "main",
+      "license": "MIT",
+      "license_blob": "8e3dc978a7ca8c53f56bbedc5b558116140fc02e",
+      "role": "local-model-runtime",
+      "local_mode": "Runs supported models locally; model availability and hardware capabilities need measurement",
+      "required_external": [],
+      "optional_external": [
+        "Any cloud model or provider deliberately configured"
+      ],
+      "commercial_note": "MIT runtime code does not license model weights. Verify each model's commercial terms, redistribution and use restrictions before use.",
+      "risk": "medium",
+      "recommendation": "local-inference-candidate",
+      "evidence": [
+        "https://github.com/ollama/ollama/blob/main/LICENSE",
+        "https://github.com/ollama/ollama/blob/main/README.md"
+      ]
+    }
+  ]
+}
