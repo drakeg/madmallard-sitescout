@@ -80,3 +80,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added offline reimport and review of human-updated remediation action plans, with evidence requirements, progress counts and unresolved follow-ups.
 
 - Added source-verified licensing and external-service screening for six builder/runtime candidates, with immutable LICENSE blob fingerprints, risk decisions, documentation and CI validation.
+
+- Added three standardized fictional SMB builder briefs, a bounded offline static export benchmark and an explicit unmeasured comparison scorecard for future repeatable evaluation.
