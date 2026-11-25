@@ -83,3 +83,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-044 | P1 | 1 | Site report overview | Display pages, forms needing tests, uncaptured links and contact candidates without claiming live verification | DONE |
 
 | SS-045 | P1 | 0 | Reconcile delivered backlog status | Mark merged and CI-validated scoped increments done while retaining public security/hosting blockers | DONE |
+
+| SS-046 | P0 | 1 | Prioritized site remediation plan | Explainable findings from authorized saved HTML, severity/evidence/fix/test steps, safely rendered in dashboard | IN PROGRESS |
