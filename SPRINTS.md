@@ -157,3 +157,7 @@ Implement an explicitly opt-in allowlist of exact browser Origin/Host combinatio
 ### SS-055 — understandable website inspection and useful on-screen findings
 
 User testing feedback: reports were sparse and the app did not say what it actually checks. Replace generic project cards with an honest four-step explanation, enumerate observed source-based checks versus **not tested** capabilities, render per-page metadata, headings, image/link/form counts and detected form fields, show capture coverage and manual-test caveats, use human-readable finding titles, and expand printable reports with the source inventory. Add missing description, language, mobile viewport and duplicated-title static review rules. Verify markup is rendered as DOM text (never unsafe HTML), preserve complete CSV/JSON evidence and reset stale results on new inputs. Avoid inventing validated UX, conversions, customer feedback or real form delivery.
+
+### SS-056 — evidence-based next actions, not only issue lists
+
+After the page and form inventory, derive at most eight specific next-step actions from observed findings and coverage gaps. Human-friendly priorities must distinguish observed source markup from unknown real-browser behavior; forms must recommend authorized synthetic receipt confirmation rather than claim that the test happened. Include the actions in both dashboard and offline-printable report. Render untrusted evidence with text nodes or HTML escaping, reset stale reports, and test form/no-form and incomplete-capture paths.
