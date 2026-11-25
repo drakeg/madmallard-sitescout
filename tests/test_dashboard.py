@@ -113,6 +113,14 @@ class DashboardTests(unittest.TestCase):
         self.assertIn('printableReportExport.disabled=false', html)
         self.assertIn('printableReportExport.disabled=true', html)
 
+    def test_human_remediation_review_import_is_offline_and_bounded(self):
+        html = DASHBOARD.read_text()
+        self.assertIn('id="site-remediation-review-file"', html)
+        self.assertIn('id="review-site-remediation"', html)
+        self.assertIn('id="site-remediation-review-results"', html)
+        self.assertIn("fetch('/api/remediation_review'", html)
+        self.assertIn("output.textContent=JSON.stringify(response.ok?data.review:data,null,2)", html)
+
     def test_docker_routes(self):
         for route, expected in (("/", b"SiteScout"), ("/health", b'"status": "ok"'), ("/api/health", b'"status": "ok"')):
             instance = Handler.__new__(Handler)

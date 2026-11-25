@@ -76,3 +76,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added downloadable spreadsheet-safe remediation action-plan CSV with reviewer/assignment columns for authorized SMB site audits.
 
 - Added downloadable self-contained printable customer review HTML, with escaped source-derived strings, no external assets and explicit static-evidence limitations.
+
+- Added offline reimport and review of human-updated remediation action plans, with evidence requirements, progress counts and unresolved follow-ups.

@@ -11,6 +11,7 @@ from app.http_api import respond, send_json
 from app.jobs_api import dispatch as dispatch_jobs
 from app.site_report_api import respond_site_report
 from app.checklist_review_api import respond_checklist_review
+from app.remediation_review_api import respond_remediation_review
 
 DASHBOARD = Path(__file__).resolve().parent.parent / "index.html"
 
@@ -37,6 +38,8 @@ class Handler(BaseHTTPRequestHandler):
             respond_site_report(self)
         elif urlsplit(self.path).path == "/api/checklist_review":
             respond_checklist_review(self)
+        elif urlsplit(self.path).path == "/api/remediation_review":
+            respond_remediation_review(self)
         elif urlsplit(self.path).path == "/api/capture":
             if os.environ.get("SITESCOUT_CAPTURE_ENABLED") != "true":
                 send_json(self, 403, {"error": "Live capture is disabled. Enable explicitly on a trusted Docker host."})

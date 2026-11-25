@@ -70,6 +70,19 @@ def main():
     assert review["counts"]["not_tested"] == 1
     assert "not independently verified" in review["evidence_label"]
 
+    remediation_headers=["Priority","Finding","Page URL","Observed evidence",
+        "Recommended fix","Manual verification","Review status","Assigned to","Evidence link","Notes"]
+    review_csv=io.StringIO(newline="")
+    remediation_writer=csv.writer(review_csv)
+    remediation_writer.writerow(remediation_headers)
+    remediation_writer.writerow(["high","missing-title","https://example.org/","No HTML title",
+        "Add title","Inspect browser title","Needs review","","",""])
+    code, body = request("/api/remediation_review", {"csv": review_csv.getvalue()})
+    assert code == 200, f"Remediation review returned {code}"
+    remediation=json.loads(body)["review"]
+    assert remediation["counts"]["needs_review"] == 1
+    assert "not independently verified" in remediation["evidence_label"]
+
     print("Docker HTTP smoke passed: homepage, health, offline site report and capture default-off")
 
 

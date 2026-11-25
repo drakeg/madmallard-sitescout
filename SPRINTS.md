@@ -130,3 +130,6 @@ Build on SS-046 with a downloadable action-plan CSV using the existing spreadshe
 
 ### SS-048 — Customer-ready printable static review
 Provide a self-contained printable HTML artifact for authorized customer reviews: scoped evidence disclaimers, inventory counts, suggested remediation and form verification requirements. Escape all untrusted strings, include a no-network/no-script CSP and ensure integration tests reject executable markup from saved pages. Keep original HTML and sensitive credentials out of exports; preserve manual evidence review before customer delivery.
+
+### SS-049 — Manual remediation plan progress review
+Accept the exported remediation action-plan CSV after a human reviewer assigns owners, documents completed changes or records deferrals. Validate exact columns, strict statuses, reviewer assignment and evidence expectations, reject malformed and oversized inputs, and return unresolved follow-ups with explicit self-reported caveats. Implement shared Vercel/Docker APIs, dashboard file input, Python/unit/browser and real Docker smoke tests. No automatic outreach, customer account access or claims of independent verification.

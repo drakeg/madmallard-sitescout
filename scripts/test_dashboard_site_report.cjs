@@ -44,6 +44,14 @@ async function main() {
     },
     fetch: async (url, config) => {
       if (url === '/api/health') return { ok: true, json: async () => ({ status: 'ok' }) };
+      if (url === '/api/remediation_review') {
+        const body=JSON.parse(config.body);
+        assert.match(body.csv,/Needs review/);
+        return {ok:true,json:async()=>({review:{
+          total:1, counts:{needs_review:1,in_progress:0,implemented:0,deferred:0},
+          evidence_label:'Self-reported progress; implementation and live effectiveness not independently verified'
+        }})};
+      }
       if (url === '/api/checklist_review') {
         const supplied = JSON.parse(config.body);
         assert.ok(supplied.csv.includes('Not tested'), 'Must submit selected CSV content');
@@ -146,6 +154,19 @@ async function main() {
   reviewFile.files=[{ size: 600000, text: async () => { throw new Error('Oversized file was read'); } }];
   await reviewButton.listeners.click();
   assert.match(element('site-checklist-review-results').textContent, /exceeds/);
+
+  const remediationFile=element('site-remediation-review-file');
+  const remediationButton=element('review-site-remediation');
+  await remediationButton.listeners.click();
+  assert.match(element('site-remediation-review-results').textContent,/Select an updated/);
+  remediationFile.files=[{size:99,text:async()=> 'Review status\\nNeeds review\\n'}];
+  await remediationButton.listeners.click();
+  const progress=JSON.parse(element('site-remediation-review-results').textContent);
+  assert.equal(progress.counts.needs_review,1);
+  assert.match(progress.evidence_label,/not independently verified/);
+  remediationFile.files=[{size:512001,text:async()=>{throw Error('oversized file read')}}];
+  await remediationButton.listeners.click();
+  assert.match(element('site-remediation-review-results').textContent,/exceeds/);
 
   element('site-report-json').listeners.input();
   assert.match(element('site-report-highlights').textContent, /Analyze saved pages/);
