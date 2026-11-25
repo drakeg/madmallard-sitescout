@@ -86,3 +86,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added URL-first one-page static website report UI, reusing opt-in authenticated DNS-pinned HTTPS capture; manual saved HTML moved to advanced mode and remains available.
 
 - Added bounded, same-host HTTPS linked-page discovery for URL-first reports, prioritizing contact and booking pages, with maximum five attempted fetches and explicit unverified gaps.
+
+- Added opt-in same-origin trusted-LAN URL reports without repeated bearer-token prompts; token-required mode and private capture/job authentication remain available.
