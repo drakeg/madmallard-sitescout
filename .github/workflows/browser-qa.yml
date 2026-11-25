@@ -26,7 +26,11 @@ jobs:
         run: |
           python -m app.server > /tmp/sitescout-browser-smoke.log 2>&1 &
           echo $! > /tmp/sitescout-browser-smoke.pid
-          python -c 'import time,urllib.request; exec("for attempt in range(30):\\n try:\\n  urllib.request.urlopen(\"http://127.0.0.1:8080/health\",timeout=2);break\\n except Exception:\\n  time.sleep(.5)\\nelse:\\n raise SystemExit(\"Local server never became healthy\")")'
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8080/health >/dev/null; then break; fi
+            sleep 0.5
+          done
+          curl --fail --silent --show-error http://127.0.0.1:8080/health >/dev/null
       - name: Run real Chromium dashboard workflow without external websites
         env:
           SITESCOUT_BROWSER_URL: http://127.0.0.1:8080
