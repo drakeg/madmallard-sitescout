@@ -6,7 +6,7 @@ Cadence: 2-week planning cycles (targets, not deadlines). Each sprint has planni
 |---|---|---|---|
 | 0 | Repository and engineering foundation | Docs, Compose, status API, CI tests, release policy | In progress |
 | 1 | Existing-site functional inventory | Authorized URL/fixture capture; navigation, forms, content inventory; structured JSON and tests | In progress (offline inventory, report import/export, QA review working; live journey QA pending) |
-| 2 | Free builder evaluation | Benchmark Open Lovable, OpenPage, Onlook, local coding agent; license/cost matrix; decision record | Planned |
+| 2 | Free builder evaluation | Benchmark Open Lovable, OpenPage, Onlook, local coding agent; license/cost matrix; decision record | In progress (license/service prerequisite screening; benchmarks not run) |
 | 3 | Design generation | Three differentiated design directions; brand tokens; responsive concept previews | Planned |
 | 4 | Working site generation | Generate Astro/React pages and functional form workflows; reproducible builds | Planned |
 | 5 | QA and visual refinement | Playwright screenshots, accessibility/performance checks, repair loop, approval gate | Planned |
@@ -133,3 +133,7 @@ Provide a self-contained printable HTML artifact for authorized customer reviews
 
 ### SS-049 — Manual remediation plan progress review
 Accept the exported remediation action-plan CSV after a human reviewer assigns owners, documents completed changes or records deferrals. Validate exact columns, strict statuses, reviewer assignment and evidence expectations, reject malformed and oversized inputs, and return unresolved follow-ups with explicit self-reported caveats. Implement shared Vercel/Docker APIs, dashboard file input, Python/unit/browser and real Docker smoke tests. No automatic outreach, customer account access or claims of independent verification.
+
+### SS-005 increment A — source license and hosted-service screening
+
+Checked upstream root LICENSE files, README/setup instructions and environment configuration for OpenPage, Open Lovable, Onlook, OpenCode, Astro and Ollama on 2026-11-24. Recorded documented mandatory services and commercially restricted assets (especially Onlook's Central Icons, branding and bundled art) with source references and LICENSE blob SHA in a machine-readable registry. CI now validates evidence paths, registry completeness and risks. This does not finish SS-005: dependency/asset scan, specific model weight terms, exact paid/free limits and actual reproducible local setup remain open. Proceed with **three identical fictional SMB briefs** for SS-006 before integration approval.
