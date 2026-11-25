@@ -14,6 +14,7 @@ async function main() {
   const urls = [];
   const responses = [];
   let operatorToken = null;
+  let requiresToken = false;
   let authorizedUrlRequests = 0;
   function element(id) {
     if (!elements.has(id)) {
@@ -66,9 +67,11 @@ async function main() {
         const payload=JSON.parse(config.body);
         assert.equal(payload.authorized,true);
         assert.equal(payload.url,'https://sample.example/');
-        assert.equal(config.headers.Authorization,'Bearer transient-secret');
+        if(requiresToken&&!config.headers.Authorization)return {status:401,ok:false,json:async()=>({error:'Token required'})};
+        if(requiresToken)assert.equal(config.headers.Authorization,'Bearer transient-secret');
+        else assert.equal(config.headers.Authorization,undefined);
         authorizedUrlRequests++;
-        return {ok:true,json:async()=>({report:{
+        return {status:200,ok:true,json:async()=>({report:{
           page_count:1,site_hostname:'sample.example',uncaptured_internal_links:['https://sample.example/contact'],
           candidate_contact_booking_pages:[],functional_requirements:{forms_to_test:[]},
           remediation_plan:{findings:[]},
@@ -111,11 +114,16 @@ async function main() {
   assert.equal(authorizedUrlRequests,0);
   element('url-authorized').checked=true;
   await liveForm.listeners.submit({preventDefault(){}});
-  assert.match(liveResult.textContent,/capture token required/);
-  assert.equal(authorizedUrlRequests,0);
+  assert.equal(authorizedUrlRequests,1,'Trusted LAN mode should not prompt for token');
+  assert.match(liveResult.textContent,/Analyzed 1 authorized HTTPS page/);
+  requiresToken=true;
+  operatorToken=null;
+  await liveForm.listeners.submit({preventDefault(){}});
+  assert.match(liveResult.textContent,/requires a capture token/);
+  assert.equal(authorizedUrlRequests,1);
   operatorToken='transient-secret';
   await liveForm.listeners.submit({preventDefault(){}});
-  assert.equal(authorizedUrlRequests,1);
+  assert.equal(authorizedUrlRequests,2);
   assert.match(liveResult.textContent,/Analyzed 1 authorized HTTPS page/);
   assert.match(element('site-report-highlights').textContent,/Pages analyzed: 1/);
   assert.equal(element('site-report-export').disabled,false);
