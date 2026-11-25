@@ -161,3 +161,7 @@ User testing feedback: reports were sparse and the app did not say what it actua
 ### SS-056 — evidence-based next actions, not only issue lists
 
 After the page and form inventory, derive at most eight specific next-step actions from observed findings and coverage gaps. Human-friendly priorities must distinguish observed source markup from unknown real-browser behavior; forms must recommend authorized synthetic receipt confirmation rather than claim that the test happened. Include the actions in both dashboard and offline-printable report. Render untrusted evidence with text nodes or HTML escaping, reset stale reports, and test form/no-form and incomplete-capture paths.
+
+### SS-057 — Chromium regression gate for actual SiteScout dashboard
+
+Add a real local Chromium UI test to cover URL submission, explicit authorization, evidence sections, recommended next steps, printable report download and advanced mode, with all target-site HTTP intercepted using fictional data. Run separately from the production Docker image, pin development-only Playwright dependencies, and add a dedicated CI workflow. Confirm no external target websites are visited, no forms submitted and no fabricated real-world verification claims. This incremental browser QA is a prerequisite to SS-009 and does not yet provide browser-executed customer-site verification.
