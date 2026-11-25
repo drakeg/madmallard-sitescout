@@ -17,6 +17,13 @@
     .status{display:inline-block;padding:.35rem .65rem;border-radius:30px;background:#31485c;color:#e2edf6;font-size:.8rem}
     label{display:block;margin:.8rem 0 .35rem;font-weight:600}input,textarea,select,button{font:inherit;width:100%;padding:.7rem;border-radius:8px;border:1px solid #7890a4;background:#102337;color:#fff}textarea{min-height:170px;resize:vertical}button{width:auto;cursor:pointer;background:#67d7b8;color:#09212b;font-weight:700;margin-top:1rem;border:0}button:hover{background:#8de8d0}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#081623;padding:1rem;border-radius:10px;max-height:500px;overflow:auto} .hint{font-size:.9rem}
     .findings{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.7rem;margin:1rem 0}.finding{border-left:4px solid #76dbc1;background:#1b2d3f;padding:1rem;border-radius:8px}.finding.warning{border-left-color:#ffd180}.finding h4{margin:.2rem 0}.finding p{margin:.3rem 0}.metrics{display:flex;flex-wrap:wrap;gap:1rem}.metrics strong{display:block;font-size:1.4rem}.metrics div{padding:.7rem;background:#1b2d3f;border-radius:8px}.secondary{background:#31485c;color:#fff;margin-right:.5rem}
+    .explainer{border:1px solid #375064;border-radius:14px;padding:1.3rem;margin:1.25rem 0;background:#152839}
+    .explainer h3{margin:.2rem 0}.explainer ul{line-height:1.8;padding-left:1.2rem}
+    .report-card{border-left:4px solid #76dbc1;background:#1b2d3f;border-radius:8px;padding:1rem;margin:.8rem 0}
+    .report-card h4{margin:.1rem 0 .5rem;font-size:1rem}.report-card p{margin:.25rem 0;overflow-wrap:anywhere}
+    .report-card.low{border-left-color:#8293b1}.report-card.medium{border-left-color:#ffd180}.report-card.high{border-left-color:#f09999}
+    .report-card small{color:#b8c8d6}.report-overview{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem}
+    details{margin:1rem 0}details summary{cursor:pointer;font-weight:700}
     footer{border-top:1px solid #375064;padding-top:1.5rem;margin-top:2rem;color:#b8c8d6}
   </style>
 </head>
@@ -27,13 +34,17 @@
   <p>Discover website opportunities, understand existing sites, and build better replacements. The platform is under active development.</p>
 </header>
 <main>
-  <h2>Project workspace</h2>
-  <div class="grid">
-    <article><span class="status">Prototype available</span><h3>Directory discovery</h3><p>Extract potential business websites from saved directory pages for review.</p></article>
-    <article><span class="status">Prototype available</span><h3>Website inventory</h3><p>Inspect saved page content, links, forms, and images with the local Python tools.</p></article>
-    <article><span class="status">Pilot underway</span><h3>Optimist Hall pilot</h3><p>Use the pilot directory to test discovery and qualification workflows.</p></article>
-    <article><span class="status">Planned</span><h3>AI redesign studio</h3><p>Generate responsive designs, functional sites, and testable previews using container-based workers.</p></article>
-  </div>
+  <section class="explainer" aria-labelledby="how-it-works">
+    <h2 id="how-it-works">What SiteScout actually does</h2>
+    <p>SiteScout is an <strong>early-stage website inspection and improvement planner</strong>, not a full website audit or a redesign generator yet. It captures the source HTML of up to three authorized HTTPS pages, examines what's declared in that HTML, and helps you decide what deserves manual testing or improvement.</p>
+    <div class="report-overview">
+      <div><h3>1. Collect pages</h3><p>Start with one authorized public HTTPS URL. It follows a small number of same-host links, prioritizing contact and booking pages.</p></div>
+      <div><h3>2. Inspect evidence</h3><p>Record page titles, descriptions, headings, language, mobile viewport declarations, images, links and form fields/actions.</p></div>
+      <div><h3>3. Prioritize work</h3><p>Flag observable issues, explain why they matter, show the page and evidence, and propose a fix plus a verification step.</p></div>
+      <div><h3>4. Export findings</h3><p>Download a printable customer review, an action-plan CSV, and form testing checklist. Human testing and sign-off are still required.</p></div>
+    </div>
+    <p><strong>Not tested:</strong> rendered layout, mobile usability, Lighthouse performance, WCAG conformance, SEO rankings, broken links, JavaScript, customer journey completion, form delivery, payments, bookings, or CRM integrations. Uncaptured pages are <strong>unknown</strong>, not broken. Findings are review suggestions, not certifications.</p>
+  </section>
   <section aria-labelledby="url-analyzer-title">
     <h2 id="url-analyzer-title">Analyze a website URL</h2>
     <p>Enter an authorized public HTTPS page URL. SiteScout securely retrieves the requested page and up to two same-host linked pages on an enabled, trusted Docker host. You do not need to paste HTML.</p>
@@ -98,9 +109,19 @@
     </form>
     <h3>Report at a glance</h3>
     <p id="site-report-highlights" role="status" aria-live="polite">Analyze saved pages to see the review priorities.</p>
+    <h3>Pages inspected and what was observed</h3>
+    <p class="hint">Each page summary comes from captured source markup. Empty metadata and missing attributes may need review in a rendered browser.</p>
+    <div id="site-pages-detail" aria-live="polite"><p>No pages inspected yet.</p></div>
+    <h3>Forms requiring manual delivery tests</h3>
+    <div id="site-forms-detail" aria-live="polite"><p>No forms inspected yet.</p></div>
+    <h3>Coverage and limitations</h3>
+    <p id="site-coverage-detail" role="status">No live or saved report yet.</p>
     <h3>Prioritized improvements to review</h3>
+    <p class="hint">High = potentially significant issue; medium = targeted review; low = improvement opportunity. Each item includes observed evidence, a suggested change and how to verify it. Nothing is automatically fixed.</p>
     <div id="site-remediation-findings" aria-live="polite"><p>No remediation findings yet.</p></div>
-    <pre id="site-report-results" role="status" aria-live="polite">No site report yet.</pre>
+    <details id="raw-report-details"><summary>Show technical report JSON (advanced)</summary>
+      <pre id="site-report-results" role="status" aria-live="polite">No site report yet.</pre>
+    </details>
     <h3>Review completed form tests</h3>
     <p>After testing permitted synthetic submissions, fill in the downloaded CSV's Status, Observed result, and Reviewer columns. The review counts are reviewer-reported, not independent delivery verification.</p>
     <label for="site-checklist-file">Completed verification checklist (.csv)</label>
