@@ -13,6 +13,8 @@ async function main() {
   const downloads = [];
   const urls = [];
   const responses = [];
+  let operatorToken = null;
+  let authorizedUrlRequests = 0;
   function element(id) {
     if (!elements.has(id)) {
       elements.set(id, {
@@ -60,6 +62,18 @@ async function main() {
           evidence_label: 'Self-reported by reviewer; not independently verified',
         } }) };
       }
+      if (url === '/api/url_report') {
+        const payload=JSON.parse(config.body);
+        assert.equal(payload.authorized,true);
+        assert.equal(payload.url,'https://sample.example/');
+        assert.equal(config.headers.Authorization,'Bearer transient-secret');
+        authorizedUrlRequests++;
+        return {ok:true,json:async()=>({report:{
+          page_count:1,site_hostname:'sample.example',uncaptured_internal_links:['https://sample.example/contact'],
+          candidate_contact_booking_pages:[],functional_requirements:{forms_to_test:[]},
+          remediation_plan:{findings:[]},
+        },capture_scope:'One requested public HTTPS page; no crawling or form submissions'})};
+      }
       if (url === '/api/site_report') {
         responses.push(JSON.parse(config.body));
         return { ok: true, json: async () => ({ report: { page_count: responses.at(-1).length,
@@ -79,10 +93,33 @@ async function main() {
       }
       throw new Error('Unexpected network call: ' + url);
     },
-    confirm: () => false, prompt: () => null, console,
+    confirm: () => false, prompt: () => operatorToken, console,
   };
   vm.runInNewContext(script, ctx, { filename: 'dashboard-inline.js' });
 
+  const liveForm=element('url-analysis-form');
+  const liveResult=element('url-analysis-results');
+  element('website-url').value='http://sample.example/';
+  element('url-authorized').checked=true;
+  await liveForm.listeners.submit({preventDefault(){}});
+  assert.match(liveResult.textContent,/public HTTPS URL/);
+  assert.equal(authorizedUrlRequests,0);
+  element('website-url').value='https://sample.example/';
+  element('url-authorized').checked=false;
+  await liveForm.listeners.submit({preventDefault(){}});
+  assert.match(liveResult.textContent,/Confirm you are authorized/);
+  assert.equal(authorizedUrlRequests,0);
+  element('url-authorized').checked=true;
+  await liveForm.listeners.submit({preventDefault(){}});
+  assert.match(liveResult.textContent,/capture token required/);
+  assert.equal(authorizedUrlRequests,0);
+  operatorToken='transient-secret';
+  await liveForm.listeners.submit({preventDefault(){}});
+  assert.equal(authorizedUrlRequests,1);
+  assert.match(liveResult.textContent,/Analyzed 1 authorized HTTPS page/);
+  assert.match(element('site-report-highlights').textContent,/Pages analyzed: 1/);
+  assert.equal(element('site-report-export').disabled,false);
+  operatorToken=null;
   const manifest = [
     { url: 'https://sample.example/', html: '<h1>Home</h1><a href="/contact">Contact</a>' },
     { url: 'https://sample.example/contact', html: '<h1>Contact</h1><form action="/submit"></form>' },

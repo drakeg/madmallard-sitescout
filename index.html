@@ -34,8 +34,26 @@
     <article><span class="status">Pilot underway</span><h3>Optimist Hall pilot</h3><p>Use the pilot directory to test discovery and qualification workflows.</p></article>
     <article><span class="status">Planned</span><h3>AI redesign studio</h3><p>Generate responsive designs, functional sites, and testable previews using container-based workers.</p></article>
   </div>
+  <section aria-labelledby="url-analyzer-title">
+    <h2 id="url-analyzer-title">Analyze a website URL</h2>
+    <p>Enter an authorized public HTTPS page URL. SiteScout retrieves its HTML securely on an enabled, trusted Docker host and produces a first-page site report. You do not need to paste HTML.</p>
+    <form id="url-analysis-form">
+      <label for="website-url">Website URL</label>
+      <input id="website-url" type="url" required maxlength="2048" placeholder="https://example.com/" autocomplete="url">
+      <label for="url-authorized">
+        <input id="url-authorized" type="checkbox" required style="width:auto">
+        I have permission to inspect this publicly accessible page.
+      </label>
+      <button type="submit" id="analyze-website-url">Analyze website URL</button>
+    </form>
+    <p class="hint">One HTTPS page per request; no automatic crawling, JavaScript execution, forms, or outreach. Available on Docker only when authorized capture and a private token are configured. Do not send a bearer token over an untrusted HTTP network; use localhost or an HTTPS reverse proxy.</p>
+    <pre id="url-analysis-results" role="status" aria-live="polite">Enter an authorized public HTTPS URL to start.</pre>
+    <p><a href="#site-report-title">View site report and downloads</a> once analysis succeeds.</p>
+  </section>
+  <details id="advanced-html-analysis">
+    <summary>Advanced: analyze manually saved HTML</summary>
   <section aria-labelledby="analyzer-title">
-    <h2 id="analyzer-title">Analyze saved HTML</h2>
+    <h2 id="analyzer-title">Analyze saved HTML (advanced)</h2>
     <p>Paste HTML from a page you are authorized to inspect. No website is fetched, and no outreach is sent.</p>
     <form id="analyzer">
       <label for="mode">Analysis type</label>
@@ -61,6 +79,7 @@
     <h3>Raw results</h3>
     <pre id="results" role="status" aria-live="polite">No analysis yet.</pre>
   </section>
+  </details>
   <section aria-labelledby="site-report-title">
     <h2 id="site-report-title">Multi-page saved website report</h2>
     <p>Combine up to 20 authorized, saved HTML pages into a navigation and form inventory. This never crawls, visits or submits to a website.</p>
@@ -178,6 +197,49 @@
         }
       }else{results.textContent=JSON.stringify(data,null,2)}
     }catch(error){results.textContent='Private jobs unavailable: '+error.message}
+  });
+  document.getElementById('url-analysis-form').addEventListener('submit',async event=>{
+    event.preventDefault();
+    const output=document.getElementById('url-analysis-results');
+    const url=document.getElementById('website-url').value.trim();
+    const authorized=document.getElementById('url-authorized').checked===true;
+    if(!url.startsWith('https://')||url.length>2048){
+      output.textContent='Enter an authorized public HTTPS URL (maximum 2048 characters).';return;
+    }
+    if(!authorized){
+      output.textContent='Confirm you are authorized to inspect this website first.';return;
+    }
+    const token=prompt('Private Docker capture token (not stored; use localhost or HTTPS):');
+    if(!token){output.textContent='URL analysis cancelled: capture token required.';return}
+    clearSiteReport();
+    output.textContent='Retrieving one authorized HTTPS page and generating a report…';
+    siteReportOutput.textContent='URL analysis in progress…';
+    try{
+      const response=await fetch('/api/url_report',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+        body:JSON.stringify({url,authorized:true}),
+        cache:'no-store'
+      });
+      const data=await response.json();
+      if(response.ok&&data.report){
+        latestSiteReport=data.report;
+        siteReportExport.disabled=false;
+        siteChecklistExport.disabled=false;
+        remediationExport.disabled=false;
+        printableReportExport.disabled=false;
+        showSiteReportHighlights(data.report);
+        showRemediationFindings(data.report);
+        siteReportOutput.textContent=JSON.stringify(data.report,null,2);
+        output.textContent='Analyzed 1 authorized HTTPS page. Review the findings and downloads below. Uncaptured internal links are not confirmed broken.';
+      }else{
+        siteReportOutput.textContent='No new report available.';
+        output.textContent=String(data.error||'URL analysis unavailable.');
+      }
+    }catch(error){
+      siteReportOutput.textContent='No new report available.';
+      output.textContent='URL analysis unavailable: '+error.message;
+    }
   });
   const siteReportInput=document.getElementById('site-report-json');
   const siteReportOutput=document.getElementById('site-report-results');
