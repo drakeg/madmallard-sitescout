@@ -10,7 +10,7 @@ Priority order: P0 > P1 > P2. Track implementation in GitHub Issues; this file i
 | SS-002 | P0 | 0 | Engineering governance | AGENTS, contributing, security, releases, PR template | IN PROGRESS |
 | SS-003 | P0 | 1 | Site inventory | Extract page list, internal links and contact/booking journeys from authorized fixtures | DONE |
 | SS-004 | P0 | 1 | Functional requirements | Structured inventory of forms and integrations, unknowns flagged | DONE |
-| SS-005 | P0 | 2 | Builder license audit | SPDX, commercial restrictions, required hosted services and model terms documented | TODO |
+| SS-005 | P0 | 2 | Builder license audit | SPDX, commercial restrictions, required hosted services and model terms documented | IN PROGRESS (upstream top-level licenses and service risks; transitive dependencies and model terms pending) |
 | SS-006 | P0 | 2 | Builder benchmark | Same 3 demo briefs, objective scoring, screenshots, repeatable costs | TODO |
 | SS-007 | P0 | 3 | Design directions | Three genuinely different responsive concepts per brief | TODO |
 | SS-008 | P0 | 4 | Functional code generation | Builds reproducibly, navigates, and submits forms to a test endpoint | TODO |
@@ -91,3 +91,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-048 | P0 | 1 | Offline printable client review | Generate self-contained, CSP-restricted HTML with static findings and verification caveats; escape source-derived text and browser-test malicious markup | IN PROGRESS |
 
 | SS-049 | P0 | 1 | Remediation action progress review | Reimport reviewed action-plan CSV, require owners/evidence, report pending work with no unverified completion claims | IN PROGRESS |
+
+| SS-050 | P0 | 2 | Machine-verifiable builder candidate registry | Track LICENSE blob SHA, hosted APIs, assets restrictions and candidate status; enforce sources in CI | DONE |
