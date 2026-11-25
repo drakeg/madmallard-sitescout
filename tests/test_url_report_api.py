@@ -55,7 +55,7 @@ class UrlReportTests(unittest.TestCase):
         ):
             with self.subTest(payload=payload):
                 with patch.dict(os.environ, {"SITESCOUT_CAPTURE_ENABLED":"true"}):
-                    with patch("app.url_report_api.capture_access") as access:
+                    with patch("app.url_report_api.url_report_capture_access") as access:
                         result=request(payload,capture_fn)
                 self.assertEqual(result.status,403)
                 access.assert_not_called()
@@ -66,7 +66,7 @@ class UrlReportTests(unittest.TestCase):
         contact='<title>Contact</title><h1>Contact</h1><form method="post" action="/send"><input name="email"></form>'
         captured=Mock(side_effect=[home,contact])
         with patch.dict(os.environ, {"SITESCOUT_CAPTURE_ENABLED":"true"}):
-            with patch("app.url_report_api.capture_access",return_value=(200,None)):
+            with patch("app.url_report_api.url_report_capture_access",return_value=(200,None)):
                 result=request({"url":"https://example.org/","authorized":True},captured)
         self.assertEqual(result.status,200)
         self.assertEqual(result.body()["report"]["page_count"],2)
@@ -84,14 +84,14 @@ class UrlReportTests(unittest.TestCase):
                 with self.subTest(url=str(url)[:35]):
                     result=request({"url":url,"authorized":True},captured)
                     self.assertEqual(result.status,400)
-            with patch("app.url_report_api.capture_access",return_value=(429,"Too many requests")):
+            with patch("app.url_report_api.url_report_capture_access",return_value=(429,"Too many requests")):
                 result=request({"url":"https://example.org/","authorized":True},captured)
                 self.assertEqual(result.status,429)
         captured.assert_not_called()
 
     def test_captured_nonhtml_failure_and_request_size_bound(self):
         with patch.dict(os.environ, {"SITESCOUT_CAPTURE_ENABLED":"true"}):
-            with patch("app.url_report_api.capture_access",return_value=(200,None)):
+            with patch("app.url_report_api.url_report_capture_access",return_value=(200,None)):
                 result=request({"url":"https://example.org/","authorized":True},
                                Mock(side_effect=ValueError("No HTML")))
                 self.assertEqual(result.status,400)

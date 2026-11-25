@@ -8,7 +8,7 @@ import json
 import os
 
 from app.capture import capture
-from app.capture_guard import capture_access
+from app.capture_guard import url_report_capture_access
 from app.http_api import send_json
 from app.site_discovery import discover_report
 
@@ -35,7 +35,7 @@ def respond_url_report(handler, capture_fn=capture):
         url = payload.get("url")
         if not isinstance(url, str) or not url.startswith("https://") or len(url) > 2048:
             raise ValueError("Enter an authorized public HTTPS URL")
-        status, error = capture_access(handler.headers)
+        status, error = url_report_capture_access(handler.headers)
         if error:
             send_json(handler, status, {"error": error})
             return

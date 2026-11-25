@@ -128,11 +128,12 @@ class DashboardTests(unittest.TestCase):
         self.assertIn('id="url-authorized"', html)
         self.assertIn('id="advanced-html-analysis"', html)
         self.assertIn("fetch('/api/url_report'", html)
-        self.assertIn("body:JSON.stringify({url,authorized:true})", html)
+        self.assertIn("body:JSON.stringify(request)", html)
+        self.assertIn("const request={url,authorized:true}", html)
         self.assertIn("clearSiteReport()", html)
         self.assertIn("showSiteReportHighlights(data.report)", html)
         self.assertIn("showRemediationFindings(data.report)", html)
-        self.assertIn("Private Docker capture token (not stored", html)
+        self.assertIn("This host requires a private capture token", html)
         self.assertNotIn("localStorage", html)
 
     def test_docker_routes(self):

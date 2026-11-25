@@ -149,3 +149,7 @@ Primary workflow: one authorized public HTTPS URL and explicit permission confir
 ### SS-053 — bounded linked-page discovery after authorization
 
 Enhance URL-first analysis to retrieve at most three authorized same-host public HTTPS pages (home plus selected contact/quote/booking candidates) using existing pinned-TLS capture per page. Apply a hard cap of five attempts, skip authentication/account/admin/checkout actions, query URLs, non-HTML assets and third-party domains; record failed secondary capture attempts without claiming broken links. Unit tests cover deterministic link priority, bypass rejection, hard attempt cap and incomplete results. Browser UI states exact page count. Real customer form receipt and browser functionality remain unverified.
+
+### SS-054 — trusted LAN tokenless URL analysis option
+
+Implement an explicitly opt-in allowlist of exact browser Origin/Host combinations for JSON `/api/url_report` requests. The browser automatically tries the bounded URL analyzer without credentials and only offers token fallback after 401. Existing capture/job endpoints remain authenticated; cross-origin browser requests are denied; capture admission, per-request permission, safe HTTPS fetch, page/attempt limits and default-off control remain in force. Add positive/negative origin and rate-limit tests and browser mock coverage. Document that this is a private LAN convenience and not authentication.
