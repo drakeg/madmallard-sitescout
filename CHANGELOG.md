@@ -84,3 +84,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added three standardized fictional SMB builder briefs, a bounded offline static export benchmark and an explicit unmeasured comparison scorecard for future repeatable evaluation.
 
 - Added URL-first one-page static website report UI, reusing opt-in authenticated DNS-pinned HTTPS capture; manual saved HTML moved to advanced mode and remains available.
+
+- Added bounded, same-host HTTPS linked-page discovery for URL-first reports, prioritizing contact and booking pages, with maximum five attempted fetches and explicit unverified gaps.
