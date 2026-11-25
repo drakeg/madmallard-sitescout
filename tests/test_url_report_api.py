@@ -61,17 +61,21 @@ class UrlReportTests(unittest.TestCase):
                 access.assert_not_called()
         capture_fn.assert_not_called()
 
-    def test_valid_one_page_populates_site_report_without_crawling(self):
-        html='<title>Example</title><h1>Home</h1><a href="/contact">Contact</a>'
-        captured=Mock(return_value=html)
+    def test_valid_bounded_multi_page_report_discovers_contact_form(self):
+        home='<title>Example</title><h1>Home</h1><a href="/contact">Contact</a>'
+        contact='<title>Contact</title><h1>Contact</h1><form method="post" action="/send"><input name="email"></form>'
+        captured=Mock(side_effect=[home,contact])
         with patch.dict(os.environ, {"SITESCOUT_CAPTURE_ENABLED":"true"}):
             with patch("app.url_report_api.capture_access",return_value=(200,None)):
                 result=request({"url":"https://example.org/","authorized":True},captured)
         self.assertEqual(result.status,200)
-        self.assertEqual(result.body()["report"]["page_count"],1)
-        self.assertIn("https://example.org/contact", result.body()["report"]["uncaptured_internal_links"])
-        self.assertIn("no crawling",result.body()["capture_scope"])
-        captured.assert_called_once_with("https://example.org/")
+        self.assertEqual(result.body()["report"]["page_count"],2)
+        self.assertEqual(len(result.body()["report"]["forms"]),1)
+        self.assertFalse(result.body()["report"]["forms"][0]["verified_delivery"])
+        self.assertIn("no JavaScript",result.body()["capture_scope"])
+        self.assertEqual(captured.call_count,2)
+        captured.assert_any_call("https://example.org/")
+        captured.assert_any_call("https://example.org/contact")
 
     def test_auth_rate_limit_failure_and_rejects_unsupported_url(self):
         captured=Mock()
