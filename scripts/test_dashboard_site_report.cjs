@@ -30,7 +30,9 @@ async function main() {
     getElementById: element,
     body: { append() {} },
     createElement() {
-      return { href: '', download: '', click() { downloads.push({ href: this.href, download: this.download }); }, remove() {}, append() {} };
+      return { href: '', download: '', children: [], textContent: '',
+        click() { downloads.push({ href: this.href, download: this.download }); },
+        remove() {}, append(...items) { this.children.push(...items); } };
     },
     createTextNode(text) { return { text }; },
   };
