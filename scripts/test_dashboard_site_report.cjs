@@ -64,7 +64,7 @@ async function main() {
           }] },
           remediation_plan: { findings: [{
             code: 'missing-title', priority: 'high', page: '=HYPERLINK("bad")',
-            evidence: 'No HTML title', recommendation: 'Add descriptive title',
+            evidence: '<script>alert("untrusted")</script>', recommendation: 'Add descriptive title',
             verification: 'Inspect rendered title'
           }] }
         } }) };
@@ -121,6 +121,17 @@ async function main() {
   assert.ok(actionsCSV.includes("\"'=HYPERLINK(\"\"bad\"\")\""), 'Malicious formula must be quoted as text');
   assert.match(actionsCSV, /"Needs review"/);
   assert.match(actionsCSV, /"Manual verification"/);
+  assert.equal(element('site-printable-export').disabled, false);
+  element('site-printable-export').listeners.click();
+  assert.equal(downloads[3].download, 'sitescout-printable-client-report.html');
+  const printable=await urls[3].text();
+  assert.match(printable, /Content-Security-Policy/);
+  assert.match(printable, /Live navigation, accessibility compliance/);
+  assert.match(printable, /Forms requiring human verification/);
+  assert.ok(printable.includes('&lt;script&gt;alert(&quot;untrusted&quot;)&lt;/script&gt;'),
+    'Untrusted strings must be escaped as text');
+  assert.ok(!printable.includes('<script>'), 'Downloaded report must never include executable script');
+
 
 
   const reviewFile=element('site-checklist-file');
@@ -143,6 +154,7 @@ async function main() {
   assert.equal(element('site-report-export').disabled, true);
   assert.equal(element('site-report-checklist-export').disabled, true);
   assert.equal(element('site-remediation-export').disabled, true);
+  assert.equal(element('site-printable-export').disabled, true);
   file.files = [{ size: 2100001, text: async () => { throw new Error('Too large file was read'); } }];
   await file.listeners.change({ target: file });
   assert.match(element('site-report-results').textContent, /exceeds/);
