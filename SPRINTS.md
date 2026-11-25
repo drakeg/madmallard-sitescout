@@ -127,3 +127,6 @@ Build a deterministic, bounded set of explainable static-source findings with se
 
 ### SS-047 — Exportable evidence-based remediation action plan
 Build on SS-046 with a downloadable action-plan CSV using the existing spreadsheet-safe CSV serializer, editable assignee/verification fields and explicit review statuses. Verify download behavior with malicious formula-like URLs, quoted content and stale-report reset in browser-flow tests. No live crawling, external outreach or automated compliance claims.
+
+### SS-048 — Customer-ready printable static review
+Provide a self-contained printable HTML artifact for authorized customer reviews: scoped evidence disclaimers, inventory counts, suggested remediation and form verification requirements. Escape all untrusted strings, include a no-network/no-script CSP and ensure integration tests reject executable markup from saved pages. Keep original HTML and sensitive credentials out of exports; preserve manual evidence review before customer delivery.
