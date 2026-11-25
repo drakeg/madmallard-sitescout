@@ -13,6 +13,7 @@ from app.inventory import inventory
 from app.site_report import JOURNEY_HINTS, site_report
 
 MAX_DISCOVERY_PAGES = 3
+MAX_DISCOVERY_ATTEMPTS = 5
 SKIP_PATH_WORDS = (
     "logout", "signout", "delete", "remove", "unsubscribe", "checkout",
     "cart", "account", "login", "signin", "register", "reset-password",
@@ -66,7 +67,9 @@ def discover_report(start_url, fetch=capture, max_pages=MAX_DISCOVERY_PAGES):
     scheduled = {first_url}
     pages = []
     failures = []
-    while pending and len(pages) < max_pages:
+    attempts = 0
+    while pending and len(pages) < max_pages and attempts < MAX_DISCOVERY_ATTEMPTS:
+        attempts += 1
         url = pending.pop(0)
         try:
             html = fetch(url)
@@ -93,12 +96,13 @@ def discover_report(start_url, fetch=capture, max_pages=MAX_DISCOVERY_PAGES):
         ))
         pending.extend(choices)
         # Avoid an attacker creating unbounded in-memory worklists from huge HTML.
-        pending = pending[:100]
+        pending = pending[:20]
 
     report = site_report(pages)
     report["capture_discovery"] = {
         "pages_captured": len(pages),
         "max_pages": max_pages,
+        "fetch_attempts": attempts,
         "additional_page_failures": failures,
         "method": "Bounded, same-host authorized HTTPS links in saved source; no JavaScript or form submission",
         "limitations": [
