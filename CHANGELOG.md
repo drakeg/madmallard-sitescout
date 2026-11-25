@@ -90,3 +90,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added opt-in same-origin trusted-LAN URL reports without repeated bearer-token prompts; token-required mode and private capture/job authentication remain available.
 
 - Clarified SiteScout's actual static inspection scope in the dashboard and expanded per-page, form and coverage evidence, prioritized findings and printable client report; added language, viewport, description and duplicate-title review rules.
+
+- Added readable, evidence-based recommended next actions in SiteScout reports and printouts, with manual verification guidance and no unverified functional claims.
