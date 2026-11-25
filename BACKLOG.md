@@ -105,3 +105,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-055 | P0 | 1 | Explain SiteScout's actual limits and provide detailed in-app/printable reports | Document checks vs unverified behavior, show pages/forms/coverage and actionable findings, add metadata checks | IN PROGRESS |
 
 | SS-056 | P0 | 1 | Evidence-based next steps in dashboard and printable report | Prioritize high source findings, synthetic form verification, uninspected pages, browser checks; cap suggestions and never assert unrun tests | IN PROGRESS |
+
+| SS-057 | P0 | 1 | Real Chromium dashboard smoke | Run real browser against dashboard with mocked URL report, assert visible findings, downloadable report and stale state reset; separate browser QA CI | IN PROGRESS |
