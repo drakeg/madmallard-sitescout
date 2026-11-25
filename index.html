@@ -507,6 +507,7 @@
     const hostname=esc(report.site_hostname||'Website');
     const findings=report.remediation_plan&&report.remediation_plan.findings||[];
     const forms=report.functional_requirements&&report.functional_requirements.forms_to_test||[];
+    const rawForms=Array.isArray(report.forms)?report.forms:[];
     const navigation=Array.isArray(report.uncaptured_internal_links)?report.uncaptured_internal_links.length:0;
     const line=(label,value)=>'<dt>'+esc(label)+'</dt><dd>'+esc(value)+'</dd>';
     const items=findings.map(item=>'<li><strong>'+esc(String(item.priority||'review').toUpperCase())+' — '+esc(item.code)+'</strong>'+
@@ -530,7 +531,7 @@
         ' · Image alt-review candidates: '+esc(images.filter(im=>!String(im.alt||'').trim()).length)+
         ' · Forms: '+esc((page.forms||[]).length)+'</p></li>';
     }).join('');
-    const formDetails=forms.map(form=>'<li><strong>'+esc(form.page)+'</strong>'+
+    const formDetails=rawForms.map(form=>'<li><strong>'+esc(form.page)+'</strong>'+
       '<p>Method: '+esc(form.method)+' · Action: '+esc(form.action)+'</p>'+
       '<p>Fields: '+esc((form.fields||[]).map(field=>(field.name||'[unnamed]')+
         ' ('+(field.type||'field')+(field.required?', required':'')+')').join(', ')||'Not identified')+'</p>'+
@@ -548,7 +549,7 @@
       '.notice{padding:1rem;border:1px solid #8e9da6;background:#f3f7fa}'+
       '@media print{body{margin:0;padding:0}.notice{background:#fff}h2{break-after:avoid}}</style></head><body>'+
       '<h1>Website review: '+hostname+'</h1>'+
-      '<p class="notice"><strong>Scope:</strong> Authorized saved HTML only. Findings are static observations needing manual review. '+
+      '<p class="notice"><strong>Scope:</strong> Authorized captured or saved HTML only. Findings are static observations needing manual review. '+
       'Live navigation, accessibility compliance, submissions, inbox delivery and CRM integrations were not tested. '+
       'This is not an audit certification or proof of a working customer journey.</p>'+
       '<h2>Inventory</h2><dl>'+
