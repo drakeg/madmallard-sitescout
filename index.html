@@ -36,7 +36,7 @@
   </div>
   <section aria-labelledby="url-analyzer-title">
     <h2 id="url-analyzer-title">Analyze a website URL</h2>
-    <p>Enter an authorized public HTTPS page URL. SiteScout retrieves its HTML securely on an enabled, trusted Docker host and produces a first-page site report. You do not need to paste HTML.</p>
+    <p>Enter an authorized public HTTPS page URL. SiteScout securely retrieves the requested page and up to two same-host linked pages on an enabled, trusted Docker host. You do not need to paste HTML.</p>
     <form id="url-analysis-form">
       <label for="website-url">Website URL</label>
       <input id="website-url" type="url" required maxlength="2048" placeholder="https://example.com/" autocomplete="url">
@@ -46,7 +46,7 @@
       </label>
       <button type="submit" id="analyze-website-url">Analyze website URL</button>
     </form>
-    <p class="hint">One HTTPS page per request; no automatic crawling, JavaScript execution, forms, or outreach. Available on Docker only when authorized capture and a private token are configured. Do not send a bearer token over an untrusted HTTP network; use localhost or an HTTPS reverse proxy.</p>
+    <p class="hint">Up to three same-host HTTPS pages per request; limited HTML link discovery, no JavaScript execution, forms, or outreach. Available on Docker only when authorized capture and a private token are configured. Do not send a bearer token over an untrusted HTTP network; use localhost or an HTTPS reverse proxy.</p>
     <pre id="url-analysis-results" role="status" aria-live="polite">Enter an authorized public HTTPS URL to start.</pre>
     <p><a href="#site-report-title">View site report and downloads</a> once analysis succeeds.</p>
   </section>
@@ -231,7 +231,7 @@
         showSiteReportHighlights(data.report);
         showRemediationFindings(data.report);
         siteReportOutput.textContent=JSON.stringify(data.report,null,2);
-        output.textContent='Analyzed 1 authorized HTTPS page. Review the findings and downloads below. Uncaptured internal links are not confirmed broken.';
+        output.textContent='Analyzed '+data.report.page_count+' authorized HTTPS page(s). Review findings and downloads below. Uncaptured links are not confirmed broken.';
       }else{
         siteReportOutput.textContent='No new report available.';
         output.textContent=String(data.error||'URL analysis unavailable.');
