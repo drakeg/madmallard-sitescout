@@ -6,6 +6,7 @@
 [![Vercel](https://img.shields.io/badge/Vercel-Deployment-000000?logo=vercel&logoColor=white)](vercel.json)
 
 [![CI](https://github.com/drakeg/madmallard-sitescout/actions/workflows/ci.yml/badge.svg)](https://github.com/drakeg/madmallard-sitescout/actions/workflows/ci.yml)
+[![Real browser QA](https://github.com/drakeg/madmallard-sitescout/actions/workflows/browser-qa.yml/badge.svg)](https://github.com/drakeg/madmallard-sitescout/actions/workflows/browser-qa.yml)
 [![Open issues](https://img.shields.io/github/issues/drakeg/madmallard-sitescout)](https://github.com/drakeg/madmallard-sitescout/issues)
 [![Open PRs](https://img.shields.io/github/issues-pr/drakeg/madmallard-sitescout)](https://github.com/drakeg/madmallard-sitescout/pulls)
 <!-- badges:end -->
