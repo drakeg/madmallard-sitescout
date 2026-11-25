@@ -95,3 +95,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-050 | P0 | 2 | Machine-verifiable builder candidate registry | Track LICENSE blob SHA, hosted APIs, assets restrictions and candidate status; enforce sources in CI | DONE |
 
 | SS-051 | P0 | 2 | Deterministic static output benchmark harness | Same three fictional SMB briefs and offline HTML checks with zero invented scores or paid providers | DONE |
+
+| SS-052 | P0 | 1 | URL-first authorized website analysis | Public HTTPS URL primary; consent, private opt-in capture token, single-page report and safe default-off route; HTML fallback advanced | IN PROGRESS |
