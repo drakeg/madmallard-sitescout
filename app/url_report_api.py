@@ -10,7 +10,7 @@ import os
 from app.capture import capture
 from app.capture_guard import capture_access
 from app.http_api import send_json
-from app.site_report import site_report
+from app.site_discovery import discover_report
 
 MAX_BODY_BYTES = 4096
 
@@ -39,11 +39,10 @@ def respond_url_report(handler, capture_fn=capture):
         if error:
             send_json(handler, status, {"error": error})
             return
-        html = capture_fn(url)
-        report = site_report([{"url": url, "html": html}])
+        report = discover_report(url, fetch=capture_fn)
         send_json(handler, 200, {
             "report": report,
-            "capture_scope": "One requested public HTTPS page; no crawling or form submissions",
+            "capture_scope": "Up to three authorized, same-host public HTTPS pages; no JavaScript or form submissions",
         })
     except (ValueError, TypeError, UnicodeError, json.JSONDecodeError):
         send_json(handler, 400, {"error": "Invalid URL, inaccessible page, or invalid captured HTML"})
