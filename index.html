@@ -75,6 +75,7 @@
       <button type="button" class="secondary" id="site-report-export" disabled>Download report JSON</button>
       <button type="button" class="secondary" id="site-report-checklist-export" disabled>Download form verification checklist CSV</button>
       <button type="button" class="secondary" id="site-remediation-export" disabled>Download remediation action plan CSV</button>
+      <button type="button" class="secondary" id="site-printable-export" disabled>Download printable client report</button>
     </form>
     <h3>Report at a glance</h3>
     <p id="site-report-highlights" role="status" aria-live="polite">Analyze saved pages to see the review priorities.</p>
@@ -217,12 +218,14 @@
   const siteReportExport=document.getElementById('site-report-export');
   const siteChecklistExport=document.getElementById('site-report-checklist-export');
   const remediationExport=document.getElementById('site-remediation-export');
+  const printableReportExport=document.getElementById('site-printable-export');
   let latestSiteReport=null;
   function clearSiteReport(){
     latestSiteReport=null;
     siteReportExport.disabled=true;
     siteChecklistExport.disabled=true;
     remediationExport.disabled=true;
+    printableReportExport.disabled=true;
     siteReportHighlights.textContent='Analyze saved pages to see the review priorities.';
     remediationFindings.replaceChildren();
     const empty=document.createElement('p');
@@ -318,6 +321,63 @@
     link.remove();
     URL.revokeObjectURL(url);
   });
+  function safeReportText(value){
+    return String(value==null?'':value).replace(/[&<>"']/g,character=>({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[character]));
+  }
+  function printableSiteReport(report){
+    const esc=safeReportText;
+    const hostname=esc(report.site_hostname||'Website');
+    const findings=report.remediation_plan&&report.remediation_plan.findings||[];
+    const forms=report.functional_requirements&&report.functional_requirements.forms_to_test||[];
+    const navigation=Array.isArray(report.uncaptured_internal_links)?report.uncaptured_internal_links.length:0;
+    const line=(label,value)=>'<dt>'+esc(label)+'</dt><dd>'+esc(value)+'</dd>';
+    const items=findings.map(item=>'<li><strong>'+esc(String(item.priority||'review').toUpperCase())+' — '+esc(item.code)+'</strong>'+
+      '<p><b>Page:</b> '+esc(item.page)+'</p>'+
+      '<p><b>Observed:</b> '+esc(item.evidence)+'</p>'+
+      '<p><b>Recommended:</b> '+esc(item.recommendation)+'</p>'+
+      '<p><b>Verify:</b> '+esc(item.verification)+'</p></li>').join('');
+    const formItems=forms.map(form=>'<li><strong>'+esc(form.page)+'</strong><p>Action: '+esc(form.action)+
+      ' · Method: '+esc(form.method)+'</p><p>Required fields: '+esc((form.required_fields||[]).join(', '))+
+      '</p><p>Delivery and integrations: not tested.</p></li>').join('');
+    return '<!doctype html><html lang="en"><head><meta charset="utf-8">'+
+      '<meta http-equiv="Content-Security-Policy" content="default-src &#39;none&#39;; style-src &#39;unsafe-inline&#39;; base-uri &#39;none&#39;; form-action &#39;none&#39;">'+
+      '<meta name="viewport" content="width=device-width,initial-scale=1">'+
+      '<title>SiteScout report — '+hostname+'</title>'+
+      '<style>body{font-family:system-ui,sans-serif;max-width:900px;margin:2rem auto;padding:0 1.5rem;color:#152536;line-height:1.5}'+
+      'h1,h2{color:#173a51}h2{border-bottom:1px solid #bacbd5;padding-bottom:.4rem}'+
+      'dt{font-weight:700}dd{margin:0 0 .7rem}li{break-inside:avoid;margin-bottom:1.2rem}'+
+      '.notice{padding:1rem;border:1px solid #8e9da6;background:#f3f7fa}'+
+      '@media print{body{margin:0;padding:0}.notice{background:#fff}h2{break-after:avoid}}</style></head><body>'+
+      '<h1>Website review: '+hostname+'</h1>'+
+      '<p class="notice"><strong>Scope:</strong> Authorized saved HTML only. Findings are static observations needing manual review. '+
+      'Live navigation, accessibility compliance, submissions, inbox delivery and CRM integrations were not tested. '+
+      'This is not an audit certification or proof of a working customer journey.</p>'+
+      '<h2>Inventory</h2><dl>'+
+      line('Saved pages analyzed',report.page_count||0)+
+      line('Uncaptured internal destinations (not confirmed broken)',navigation)+
+      line('Forms requiring delivery testing',forms.length)+
+      line('Suggested improvements requiring review',findings.length)+
+      '</dl><h2>Recommended improvement checks</h2>'+
+      (items?'<ol>'+items+'</ol>':'<p>No static rules flagged in the supplied pages. Live behavior remains unverified.</p>')+
+      '<h2>Forms requiring human verification</h2>'+
+      (formItems?'<ol>'+formItems+'</ol>':'<p>No form elements detected in the supplied pages.</p>')+
+      '<p>Prepared by Mad Mallard SiteScout — review findings against the live authorized site before customer delivery.</p>'+
+      '</body></html>';
+  }
+  printableReportExport.addEventListener('click',()=>{
+    if(!latestSiteReport)return;
+    const file=new Blob([printableSiteReport(latestSiteReport)],{type:'text/html;charset=utf-8'});
+    const url=URL.createObjectURL(file);
+    const link=document.createElement('a');
+    link.href=url;
+    link.download='sitescout-printable-client-report.html';
+    document.body.append(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  });
   document.getElementById('review-site-checklist').addEventListener('click',async()=>{
     const output=document.getElementById('site-checklist-review-results');
     const file=document.getElementById('site-checklist-file').files[0];
@@ -368,6 +428,7 @@
         siteReportExport.disabled=false;
         siteChecklistExport.disabled=false;
         remediationExport.disabled=false;
+        printableReportExport.disabled=false;
         showSiteReportHighlights(data.report);
         showRemediationFindings(data.report);
       }
