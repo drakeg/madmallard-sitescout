@@ -121,6 +121,20 @@ class DashboardTests(unittest.TestCase):
         self.assertIn("fetch('/api/remediation_review'", html)
         self.assertIn("output.textContent=JSON.stringify(response.ok?data.review:data,null,2)", html)
 
+    def test_url_first_analysis_and_advanced_saved_html_mode(self):
+        html = DASHBOARD.read_text()
+        self.assertIn('id="url-analysis-form"', html)
+        self.assertIn('id="website-url"', html)
+        self.assertIn('id="url-authorized"', html)
+        self.assertIn('id="advanced-html-analysis"', html)
+        self.assertIn("fetch('/api/url_report'", html)
+        self.assertIn("body:JSON.stringify({url,authorized:true})", html)
+        self.assertIn("clearSiteReport()", html)
+        self.assertIn("showSiteReportHighlights(data.report)", html)
+        self.assertIn("showRemediationFindings(data.report)", html)
+        self.assertIn("Private Docker capture token (not stored", html)
+        self.assertNotIn("localStorage", html)
+
     def test_docker_routes(self):
         for route, expected in (("/", b"SiteScout"), ("/health", b'"status": "ok"'), ("/api/health", b'"status": "ok"')):
             instance = Handler.__new__(Handler)
