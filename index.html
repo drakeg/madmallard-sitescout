@@ -514,6 +514,27 @@
       '<p><b>Observed:</b> '+esc(item.evidence)+'</p>'+
       '<p><b>Recommended:</b> '+esc(item.recommendation)+'</p>'+
       '<p><b>Verify:</b> '+esc(item.verification)+'</p></li>').join('');
+    const pages=Array.isArray(report.pages)?report.pages:[];
+    const pageItems=pages.map(page=>{
+      const h1s=(page.headings||[]).filter(h=>h.level==='h1'&&h.text).map(h=>h.text);
+      const images=Array.isArray(page.images)?page.images:[];
+      return '<li><strong>'+esc(page.url)+'</strong>'+
+        '<p>HTML title: '+esc(page.title||'Not declared')+'</p>'+
+        '<p>Description: '+esc(page.meta_description||'Not declared')+'</p>'+
+        '<p>Primary heading: '+esc(h1s.join(' / ')||'Not found')+'</p>'+
+        '<p>Page language: '+esc(page.html_language||'Not declared')+
+        ' · Mobile viewport: '+esc(page.viewport||'Not declared')+'</p>'+
+        '<p>Internal links: '+esc((page.internal_links||[]).length)+
+        ' · External links: '+esc((page.external_links||[]).length)+
+        ' · Images: '+esc(images.length)+
+        ' · Image alt-review candidates: '+esc(images.filter(im=>!String(im.alt||'').trim()).length)+
+        ' · Forms: '+esc((page.forms||[]).length)+'</p></li>';
+    }).join('');
+    const formDetails=forms.map(form=>'<li><strong>'+esc(form.page)+'</strong>'+
+      '<p>Method: '+esc(form.method)+' · Action: '+esc(form.action)+'</p>'+
+      '<p>Fields: '+esc((form.fields||[]).map(field=>(field.name||'[unnamed]')+
+        ' ('+(field.type||'field')+(field.required?', required':'')+')').join(', ')||'Not identified')+'</p>'+
+      '<p>Delivery: NOT TESTED. Confirm with a permitted synthetic inquiry and destination receipt.</p></li>').join('');
     const formItems=forms.map(form=>'<li><strong>'+esc(form.page)+'</strong><p>Action: '+esc(form.action)+
       ' · Method: '+esc(form.method)+'</p><p>Required fields: '+esc((form.required_fields||[]).join(', '))+
       '</p><p>Delivery and integrations: not tested.</p></li>').join('');
@@ -535,8 +556,14 @@
       line('Uncaptured internal destinations (not confirmed broken)',navigation)+
       line('Forms requiring delivery testing',forms.length)+
       line('Suggested improvements requiring review',findings.length)+
-      '</dl><h2>Recommended improvement checks</h2>'+
+      '</dl><h2>How this inspection works</h2>'+
+      '<p>SiteScout reads captured source HTML from authorized public HTTPS pages. It checks document metadata, headings, images, links and form markup, flags evidence-based review items and proposes verification steps. It does not execute page JavaScript or independently confirm user journeys, SEO results, performance, compliance or inbox delivery.</p>'+
+      '<h2>Page-by-page evidence</h2>'+
+      (pageItems?'<ol>'+pageItems+'</ol>':'<p>No page metadata available.</p>')+
+      '<h2>Recommended improvement checks</h2>'+
       (items?'<ol>'+items+'</ol>':'<p>No static rules flagged in the supplied pages. Live behavior remains unverified.</p>')+
+      '<h2>Detected form implementation details</h2>'+
+      (formDetails?'<ol>'+formDetails+'</ol>':'<p>No static form markup was detected.</p>')+
       '<h2>Forms requiring human verification</h2>'+
       (formItems?'<ol>'+formItems+'</ol>':'<p>No form elements detected in the supplied pages.</p>')+
       '<p>Prepared by Mad Mallard SiteScout — review findings against the live authorized site before customer delivery.</p>'+
