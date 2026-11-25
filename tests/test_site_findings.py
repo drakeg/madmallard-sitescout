@@ -48,7 +48,7 @@ class EvidenceBasedRemediationTests(unittest.TestCase):
     def test_multiple_h1_is_low_priority_review_only(self):
         report = site_report([{
             "url": "https://example.org/",
-            "html": '<title>Example</title><h1>Title</h1><h1>Secondary</h1>',
+            "html": '<html lang="en"><head><title>Example</title><meta name="description" content="Example"><meta name="viewport" content="width=device-width"></head><body><h1>Title</h1><h1>Secondary</h1></body></html>',
         }])
         finding = report["remediation_plan"]["findings"][0]
         self.assertEqual(finding["code"], "multiple-h1")
