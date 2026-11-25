@@ -80,6 +80,12 @@ async function main() {
       if (url === '/api/site_report') {
         responses.push(JSON.parse(config.body));
         return { ok: true, json: async () => ({ report: { page_count: responses.at(-1).length,
+          pages:[{url:'https://sample.example/',title:'Sample Company',meta_description:'Services and quotes',
+            html_language:'en',viewport:'width=device-width,initial-scale=1',headings:[{level:'h1',text:'Welcome'}],
+            images:[{src:'https://sample.example/img.png',alt:''}],internal_links:['https://sample.example/contact'],
+            external_links:[],forms:[]}],
+          forms:[{page:'https://sample.example/contact',action:'/submit',method:'POST',
+            fields:[{name:'email',type:'email',required:true}],verified_delivery:false}],
           functional_requirements: { forms_to_test: [{
             page: '=HYPERLINK("untrusted")',
             action: 'https://example.org/?q="hello",world',
@@ -144,6 +150,15 @@ async function main() {
   assert.equal(element('site-report-export').disabled, false);
   assert.equal(JSON.parse(element('site-report-results').textContent).page_count, 2);
   assert.match(element('site-report-highlights').textContent, /Pages analyzed: 2/);
+  assert.equal(element('site-pages-detail').children.length,1);
+  const pageSummary=element('site-pages-detail').children[0];
+  assert.match(pageSummary.children[1].textContent,/Page title: Sample Company/);
+  assert.match(pageSummary.children[1].textContent,/Description: Services and quotes/);
+  assert.match(pageSummary.children[2].textContent,/Mobile viewport/);
+  assert.equal(element('site-forms-detail').children.length,1);
+  assert.match(element('site-forms-detail').children[0].children[1].textContent,/email \(email, required\)/);
+  assert.match(element('site-coverage-detail').textContent,/not a browser test/);
+
   assert.match(element('site-report-highlights').textContent, /Forms needing delivery tests: 1/);
   assert.match(element('site-report-highlights').textContent, /remain unverified/);
   const remediation=element('site-remediation-findings');
@@ -181,6 +196,11 @@ async function main() {
   assert.match(printable, /Content-Security-Policy/);
   assert.match(printable, /Live navigation, accessibility compliance/);
   assert.match(printable, /Forms requiring human verification/);
+  assert.match(printable, /Page-by-page evidence/);
+  assert.match(printable, /Sample Company/);
+  assert.match(printable, /Detected form implementation details/);
+  assert.match(printable, /email \(email, required\)/);
+
   assert.ok(printable.includes('&lt;script&gt;alert(&quot;untrusted&quot;)&lt;/script&gt;'),
     'Untrusted strings must be escaped as text');
   assert.ok(!printable.includes('<script>'), 'Downloaded report must never include executable script');
@@ -214,6 +234,10 @@ async function main() {
   assert.match(element('site-remediation-review-results').textContent,/exceeds/);
 
   element('site-report-json').listeners.input();
+  assert.equal(element('site-pages-detail').children.length,0);
+  assert.equal(element('site-forms-detail').children.length,0);
+  assert.match(element('site-coverage-detail').textContent,/No live or saved report/);
+
   assert.match(element('site-report-highlights').textContent, /Analyze saved pages/);
   assert.equal(element('site-remediation-findings').children.length, 1);
   assert.match(element('site-remediation-findings').children[0].textContent, /No remediation/);
