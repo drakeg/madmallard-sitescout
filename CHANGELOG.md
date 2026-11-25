@@ -94,3 +94,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added readable, evidence-based recommended next actions in SiteScout reports and printouts, with manual verification guidance and no unverified functional claims.
 
 - Added a development-only real Chromium regression test for the SiteScout dashboard, with mocked fictional website data and a separate browser QA CI workflow.
+
+- Reconciled scoped completed SiteScout improvements with verified merged CI results and added a dynamic browser QA status badge to the README.

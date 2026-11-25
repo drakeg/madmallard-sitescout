@@ -84,26 +84,28 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 
 | SS-045 | P1 | 0 | Reconcile delivered backlog status | Mark merged and CI-validated scoped increments done while retaining public security/hosting blockers | DONE |
 
-| SS-046 | P0 | 1 | Prioritized site remediation plan | Explainable findings from authorized saved HTML, severity/evidence/fix/test steps, safely rendered in dashboard | IN PROGRESS |
+| SS-046 | P0 | 1 | Prioritized site remediation plan | Explainable findings from authorized saved HTML, severity/evidence/fix/test steps, safely rendered in dashboard | DONE |
 
-| SS-047 | P0 | 1 | Remediation action-plan CSV | Export prioritized findings with fixes, verification tasks, assignee/evidence columns and formula-injection protection | IN PROGRESS |
+| SS-047 | P0 | 1 | Remediation action-plan CSV | Export prioritized findings with fixes, verification tasks, assignee/evidence columns and formula-injection protection | DONE |
 
-| SS-048 | P0 | 1 | Offline printable client review | Generate self-contained, CSP-restricted HTML with static findings and verification caveats; escape source-derived text and browser-test malicious markup | IN PROGRESS |
+| SS-048 | P0 | 1 | Offline printable client review | Generate self-contained, CSP-restricted HTML with static findings and verification caveats; escape source-derived text and browser-test malicious markup | DONE |
 
-| SS-049 | P0 | 1 | Remediation action progress review | Reimport reviewed action-plan CSV, require owners/evidence, report pending work with no unverified completion claims | IN PROGRESS |
+| SS-049 | P0 | 1 | Remediation action progress review | Reimport reviewed action-plan CSV, require owners/evidence, report pending work with no unverified completion claims | DONE |
 
 | SS-050 | P0 | 2 | Machine-verifiable builder candidate registry | Track LICENSE blob SHA, hosted APIs, assets restrictions and candidate status; enforce sources in CI | DONE |
 
 | SS-051 | P0 | 2 | Deterministic static output benchmark harness | Same three fictional SMB briefs and offline HTML checks with zero invented scores or paid providers | DONE |
 
-| SS-052 | P0 | 1 | URL-first authorized website analysis | Public HTTPS URL primary; consent, private opt-in capture token, single-page report and safe default-off route; HTML fallback advanced | IN PROGRESS |
+| SS-052 | P0 | 1 | URL-first authorized website analysis | Public HTTPS URL primary; consent, private opt-in capture token, single-page report and safe default-off route; HTML fallback advanced | DONE |
 
-| SS-053 | P0 | 1 | Bounded URL-linked page discovery | Capture up to 3 same-host HTTPS pages per request, 5-attempt limit, prioritized contact pages, ignore unsafe links and clearly flag unverified failures | IN PROGRESS |
+| SS-053 | P0 | 1 | Bounded URL-linked page discovery | Capture up to 3 same-host HTTPS pages per request, 5-attempt limit, prioritized contact pages, ignore unsafe links and clearly flag unverified failures | DONE |
 
-| SS-054 | P0 | 1 | Trusted-LAN URL analysis without token prompts | Opt-in exact-origin local report requests, strict Host/Origin/JSON checks, preserve rate limits and bearer fallback | IN PROGRESS |
+| SS-054 | P0 | 1 | Trusted-LAN URL analysis without token prompts | Opt-in exact-origin local report requests, strict Host/Origin/JSON checks, preserve rate limits and bearer fallback | DONE |
 
-| SS-055 | P0 | 1 | Explain SiteScout's actual limits and provide detailed in-app/printable reports | Document checks vs unverified behavior, show pages/forms/coverage and actionable findings, add metadata checks | IN PROGRESS |
+| SS-055 | P0 | 1 | Explain SiteScout's actual limits and provide detailed in-app/printable reports | Document checks vs unverified behavior, show pages/forms/coverage and actionable findings, add metadata checks | DONE |
 
-| SS-056 | P0 | 1 | Evidence-based next steps in dashboard and printable report | Prioritize high source findings, synthetic form verification, uninspected pages, browser checks; cap suggestions and never assert unrun tests | IN PROGRESS |
+| SS-056 | P0 | 1 | Evidence-based next steps in dashboard and printable report | Prioritize high source findings, synthetic form verification, uninspected pages, browser checks; cap suggestions and never assert unrun tests | DONE |
 
-| SS-057 | P0 | 1 | Real Chromium dashboard smoke | Run real browser against dashboard with mocked URL report, assert visible findings, downloadable report and stale state reset; separate browser QA CI | IN PROGRESS |
+| SS-057 | P0 | 1 | Real Chromium dashboard smoke | Run real browser against dashboard with mocked URL report, assert visible findings, downloadable report and stale state reset; separate browser QA CI | DONE |
+
+| SS-058 | P1 | 1 | Reconcile merged website QA and README workflow badges | Update closed scope status for confirmed merged and tested stories, add real-browser QA dynamic CI badge, maintain accurate distinction between UI smoke and live-site verification | IN PROGRESS |
