@@ -89,3 +89,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-047 | P0 | 1 | Remediation action-plan CSV | Export prioritized findings with fixes, verification tasks, assignee/evidence columns and formula-injection protection | IN PROGRESS |
 
 | SS-048 | P0 | 1 | Offline printable client review | Generate self-contained, CSP-restricted HTML with static findings and verification caveats; escape source-derived text and browser-test malicious markup | IN PROGRESS |
+
+| SS-049 | P0 | 1 | Remediation action progress review | Reimport reviewed action-plan CSV, require owners/evidence, report pending work with no unverified completion claims | IN PROGRESS |
