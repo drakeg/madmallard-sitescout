@@ -87,3 +87,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-046 | P0 | 1 | Prioritized site remediation plan | Explainable findings from authorized saved HTML, severity/evidence/fix/test steps, safely rendered in dashboard | IN PROGRESS |
 
 | SS-047 | P0 | 1 | Remediation action-plan CSV | Export prioritized findings with fixes, verification tasks, assignee/evidence columns and formula-injection protection | IN PROGRESS |
+
+| SS-048 | P0 | 1 | Offline printable client review | Generate self-contained, CSP-restricted HTML with static findings and verification caveats; escape source-derived text and browser-test malicious markup | IN PROGRESS |
