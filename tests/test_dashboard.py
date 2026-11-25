@@ -93,6 +93,15 @@ class DashboardTests(unittest.TestCase):
         self.assertIn("remediationFindings.replaceChildren()", html)
         self.assertIn("Live behavior still needs verification", html)
 
+    def test_prioritized_remediation_action_plan_csv_is_safe(self):
+        html = DASHBOARD.read_text()
+        self.assertIn('id="site-remediation-export" disabled', html)
+        self.assertIn("function exportRemediationCSV(report)", html)
+        self.assertIn("rows.map(row=>row.map(spreadsheetSafeCell)", html)
+        self.assertIn("remediationExport.disabled=false", html)
+        self.assertIn("remediationExport.disabled=true", html)
+        self.assertIn("sitescout-remediation-action-plan.csv", html)
+
     def test_docker_routes(self):
         for route, expected in (("/", b"SiteScout"), ("/health", b'"status": "ok"'), ("/api/health", b'"status": "ok"')):
             instance = Handler.__new__(Handler)

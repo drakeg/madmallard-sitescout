@@ -72,3 +72,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Reconciled delivered Sprint 1 and private capture infrastructure story statuses with merged CI evidence and clarified remaining public-security and hosting gates.
 
 - Added prioritized, evidence-based static website remediation recommendations and an accessible top-priority dashboard review list.
+
+- Added downloadable spreadsheet-safe remediation action-plan CSV with reviewer/assignment columns for authorized SMB site audits.

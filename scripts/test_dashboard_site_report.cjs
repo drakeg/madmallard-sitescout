@@ -63,7 +63,7 @@ async function main() {
             test_cases: ['Submit valid form, verify "receipt"'],
           }] },
           remediation_plan: { findings: [{
-            code: 'missing-title', priority: 'high', page: '<b>untrusted</b>',
+            code: 'missing-title', priority: 'high', page: '=HYPERLINK("bad")',
             evidence: 'No HTML title', recommendation: 'Add descriptive title',
             verification: 'Inspect rendered title'
           }] }
@@ -97,7 +97,7 @@ async function main() {
   assert.equal(remediation.children.length, 1);
   const entry=remediation.children[0].children[0];
   assert.match(entry.children[0].textContent, /HIGH.*missing-title/);
-  assert.match(entry.children[1].textContent, /<b>untrusted<\/b>/);
+  assert.match(entry.children[1].textContent, /=HYPERLINK/);
   assert.equal(remediation.innerHTML, undefined, 'Remediation display must use safe DOM text nodes');
 
 
@@ -113,6 +113,15 @@ async function main() {
   assert.ok(csv.includes("\"'=HYPERLINK(\"\"untrusted\"\")\""), 'Formula-like cell must be escaped');
   assert.ok(csv.includes("\"Submit valid form, verify \"\"receipt\"\"\""), 'CSV quotes and commas must be escaped');
   assert.match(csv, /"Not tested"/);
+  assert.equal(element('site-remediation-export').disabled, false);
+  element('site-remediation-export').listeners.click();
+  assert.equal(downloads[2].download, 'sitescout-remediation-action-plan.csv');
+  const actionsCSV=await urls[2].text();
+  assert.match(actionsCSV, /"Priority","Finding","Page URL"/);
+  assert.ok(actionsCSV.includes("\"'=HYPERLINK(\"\"bad\"\")\""), 'Malicious formula must be quoted as text');
+  assert.match(actionsCSV, /"Needs review"/);
+  assert.match(actionsCSV, /"Manual verification"/);
+
 
   const reviewFile=element('site-checklist-file');
   const reviewButton=element('review-site-checklist');
@@ -133,6 +142,7 @@ async function main() {
   assert.match(element('site-remediation-findings').children[0].textContent, /No remediation/);
   assert.equal(element('site-report-export').disabled, true);
   assert.equal(element('site-report-checklist-export').disabled, true);
+  assert.equal(element('site-remediation-export').disabled, true);
   file.files = [{ size: 2100001, text: async () => { throw new Error('Too large file was read'); } }];
   await file.listeners.change({ target: file });
   assert.match(element('site-report-results').textContent, /exceeds/);

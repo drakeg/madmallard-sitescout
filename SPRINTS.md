@@ -124,3 +124,6 @@ Merged CI-verified product increments through SiteScout PR #41, with a subsequen
 
 ### SS-046 — Evidence-based remediation plan for SMB website reports
 Build a deterministic, bounded set of explainable static-source findings with severity, observed evidence, suggested improvement and independent manual verification steps. Include it in the report JSON and display a safe top-priorities list. Test false-positive boundaries (decorative images, multiple H1s) and avoid all compliance, customer-conversion or live-delivery claims. This supports the first scoped customer audit pilot without adding paid AI dependencies.
+
+### SS-047 — Exportable evidence-based remediation action plan
+Build on SS-046 with a downloadable action-plan CSV using the existing spreadsheet-safe CSV serializer, editable assignee/verification fields and explicit review statuses. Verify download behavior with malicious formula-like URLs, quoted content and stale-report reset in browser-flow tests. No live crawling, external outreach or automated compliance claims.

@@ -85,3 +85,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-045 | P1 | 0 | Reconcile delivered backlog status | Mark merged and CI-validated scoped increments done while retaining public security/hosting blockers | DONE |
 
 | SS-046 | P0 | 1 | Prioritized site remediation plan | Explainable findings from authorized saved HTML, severity/evidence/fix/test steps, safely rendered in dashboard | IN PROGRESS |
+
+| SS-047 | P0 | 1 | Remediation action-plan CSV | Export prioritized findings with fixes, verification tasks, assignee/evidence columns and formula-injection protection | IN PROGRESS |
