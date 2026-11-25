@@ -20,7 +20,8 @@ async function main() {
         files: [], listeners: {},
         addEventListener(name, fn) { this.listeners[name] = fn; },
         requestSubmit() { return this.listeners.submit?.({ preventDefault() {} }); },
-        replaceChildren() {}, append() {},
+        children: [], replaceChildren() { this.children = []; },
+        append(...items) { this.children.push(...items); },
       });
     }
     return elements.get(id);
@@ -58,7 +59,13 @@ async function main() {
             method: 'POST',
             required_fields: ['email'],
             test_cases: ['Submit valid form, verify "receipt"'],
-          }] } } }) };
+          }] },
+          remediation_plan: { findings: [{
+            code: 'missing-title', priority: 'high', page: '<b>untrusted</b>',
+            evidence: 'No HTML title', recommendation: 'Add descriptive title',
+            verification: 'Inspect rendered title'
+          }] }
+        } }) };
       }
       throw new Error('Unexpected network call: ' + url);
     },
@@ -84,6 +91,13 @@ async function main() {
   assert.match(element('site-report-highlights').textContent, /Pages analyzed: 2/);
   assert.match(element('site-report-highlights').textContent, /Forms needing delivery tests: 1/);
   assert.match(element('site-report-highlights').textContent, /remain unverified/);
+  const remediation=element('site-remediation-findings');
+  assert.equal(remediation.children.length, 1);
+  const entry=remediation.children[0].children[0];
+  assert.match(entry.children[0].textContent, /HIGH.*missing-title/);
+  assert.match(entry.children[1].textContent, /<b>untrusted<\/b>/);
+  assert.equal(remediation.innerHTML, undefined, 'Remediation display must use safe DOM text nodes');
+
 
   element('site-report-export').listeners.click();
   assert.equal(downloads.length, 1);
@@ -113,6 +127,8 @@ async function main() {
 
   element('site-report-json').listeners.input();
   assert.match(element('site-report-highlights').textContent, /Analyze saved pages/);
+  assert.equal(element('site-remediation-findings').children.length, 1);
+  assert.match(element('site-remediation-findings').children[0].textContent, /No remediation/);
   assert.equal(element('site-report-export').disabled, true);
   assert.equal(element('site-report-checklist-export').disabled, true);
   file.files = [{ size: 2100001, text: async () => { throw new Error('Too large file was read'); } }];
