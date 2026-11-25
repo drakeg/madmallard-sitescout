@@ -102,6 +102,17 @@ class DashboardTests(unittest.TestCase):
         self.assertIn("remediationExport.disabled=true", html)
         self.assertIn("sitescout-remediation-action-plan.csv", html)
 
+    def test_printable_customer_report_is_self_contained_and_escaped(self):
+        html = DASHBOARD.read_text()
+        self.assertIn('id="site-printable-export" disabled', html)
+        self.assertIn('function printableSiteReport(report)', html)
+        self.assertIn('function safeReportText(value)', html)
+        self.assertIn('Content-Security-Policy', html)
+        self.assertIn('site-printable-export', html)
+        self.assertIn('sitescout-printable-client-report.html', html)
+        self.assertIn('printableReportExport.disabled=false', html)
+        self.assertIn('printableReportExport.disabled=true', html)
+
     def test_docker_routes(self):
         for route, expected in (("/", b"SiteScout"), ("/health", b'"status": "ok"'), ("/api/health", b'"status": "ok"')):
             instance = Handler.__new__(Handler)
