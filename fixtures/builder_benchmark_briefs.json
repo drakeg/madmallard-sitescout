@@ -1,0 +1,63 @@
+{
+  "revision": "1",
+  "purpose": "Identical, fictional no-customer-data benchmark prompts for all builder candidates",
+  "briefs": [
+    {
+      "id": "contractor",
+      "fictional_business": "Blue Ridge Home Repair (fictional)",
+      "customer": "Local residential contractor",
+      "problem": "Visitors cannot tell which repair services are offered or request a quote quickly",
+      "required_pages": [
+        "index.html",
+        "services/index.html",
+        "quote/index.html"
+      ],
+      "form_page": "quote/index.html",
+      "form_fields": [
+        "name",
+        "email",
+        "message"
+      ],
+      "design_goal": "Mobile-first service list, clear trust cues and prominent quote call to action",
+      "functional_gate": "Synthetic quote inquiry must reach an authorized local test endpoint; client delivery is not assumed"
+    },
+    {
+      "id": "cafe",
+      "fictional_business": "Maple Street Café (fictional)",
+      "customer": "Neighborhood café",
+      "problem": "Customers need menu, hours, location and contact details on mobile",
+      "required_pages": [
+        "index.html",
+        "menu/index.html",
+        "contact/index.html"
+      ],
+      "form_page": "contact/index.html",
+      "form_fields": [
+        "name",
+        "email",
+        "message"
+      ],
+      "design_goal": "Accessible menu navigation, readable food descriptions and easy contact pathway",
+      "functional_gate": "Synthetic contact inquiry must be verified at a test destination; reservations are not promised"
+    },
+    {
+      "id": "rv-repair",
+      "fictional_business": "Trailside RV Service (fictional)",
+      "customer": "Small independent RV service shop",
+      "problem": "Travelers need to request a repair with service type and vehicle notes",
+      "required_pages": [
+        "index.html",
+        "services/index.html",
+        "request-service/index.html"
+      ],
+      "form_page": "request-service/index.html",
+      "form_fields": [
+        "name",
+        "email",
+        "message"
+      ],
+      "design_goal": "Mobile-friendly urgent-service path and clear non-emergency scope",
+      "functional_gate": "Synthetic repair request must be delivered to the agreed test destination; no live dispatch integration inferred"
+    }
+  ]
+}

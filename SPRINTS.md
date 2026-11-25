@@ -137,3 +137,7 @@ Accept the exported remediation action-plan CSV after a human reviewer assigns o
 ### SS-005 increment A — source license and hosted-service screening
 
 Checked upstream root LICENSE files, README/setup instructions and environment configuration for OpenPage, Open Lovable, Onlook, OpenCode, Astro and Ollama on 2026-11-24. Recorded documented mandatory services and commercially restricted assets (especially Onlook's Central Icons, branding and bundled art) with source references and LICENSE blob SHA in a machine-readable registry. CI now validates evidence paths, registry completeness and risks. This does not finish SS-005: dependency/asset scan, specific model weight terms, exact paid/free limits and actual reproducible local setup remain open. Proceed with **three identical fictional SMB briefs** for SS-006 before integration approval.
+
+### SS-006 increment A — zero-provider reproducible benchmark harness
+
+Created three fixed fictional SMB briefs, an offline output preflight that never executes generated code, and a nine-row **Not run** ledger covering OpenPage, Onlook and a local coding agent workflow. The benchmark checks required HTML files, title/H1, viewport and named POST form markup. It does not assert functional navigation, form receipt, responsive design, licensing or measured costs; these are mandatory manual gates. Complete SS-005 source/dependency/model checks and actually run candidate exporters in a safe test environment next. No external model or hosting service was authorized.
