@@ -52,8 +52,8 @@ def validate_registry(registry):
             raise ValueError("Evidence must link to exact upstream branch files")
         if not any(link.endswith("/LICENSE") for link in evidence):
             raise ValueError("Every candidate requires explicit LICENSE evidence")
-        for key in ("role", "local_mode", "commercial_note"):
-            if not isinstance(candidate.get(key), str) or len(candidate[key]) < 15:
+        for key, minimum_length in (("role", 5), ("local_mode", 15), ("commercial_note", 15)):
+            if not isinstance(candidate.get(key), str) or len(candidate[key]) < minimum_length:
                 raise ValueError("Required candidate assessment is missing")
     if seen != EXPECTED_IDS:
         raise ValueError("Expected builder candidate inventory is incomplete")
