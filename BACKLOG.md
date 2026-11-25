@@ -103,3 +103,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-054 | P0 | 1 | Trusted-LAN URL analysis without token prompts | Opt-in exact-origin local report requests, strict Host/Origin/JSON checks, preserve rate limits and bearer fallback | IN PROGRESS |
 
 | SS-055 | P0 | 1 | Explain SiteScout's actual limits and provide detailed in-app/printable reports | Document checks vs unverified behavior, show pages/forms/coverage and actionable findings, add metadata checks | IN PROGRESS |
+
+| SS-056 | P0 | 1 | Evidence-based next steps in dashboard and printable report | Prioritize high source findings, synthetic form verification, uninspected pages, browser checks; cap suggestions and never assert unrun tests | IN PROGRESS |
