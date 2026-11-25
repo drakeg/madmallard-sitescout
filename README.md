@@ -177,3 +177,7 @@ After downloading and filling out `sitescout-form-verification-checklist.csv`, c
 ### Site report overview
 
 Completed multi-page offline reports now present a concise **Report at a glance** line with page count, forms needing delivery tests, uncaptured internal links and candidate contact/booking pages. It uses verified static-analysis counts only and labels live behavior as unverified. Editing or reimporting a manifest immediately clears old metrics and disables stale exports. The detailed raw JSON and the downloadable form-verification CSV remain available.
+
+### Prioritized evidence-based site improvements (SS-046)
+
+The offline multi-page report now includes a `remediation_plan` with prioritized, actionable manual review items. It flags absent HTML titles/H1s, image alternative-text review, explicit HTTP form actions, GET forms containing likely personal-data fields, and uncaptured internal destinations. Every item records evidence, recommended change, a manual verification step, and `Needs review` status. These are **static observations only**, not proof of a live defect, accessibility noncompliance, SEO rankings, broken navigation or failed form delivery. For example, images with empty alt text may be deliberately decorative, and multiple H1 headings are not inherently invalid. The dashboard displays the first ten priorities using safe text nodes; the downloadable full JSON retains all findings (up to a bounded limit).
