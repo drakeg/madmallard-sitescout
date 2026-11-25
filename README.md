@@ -1,8 +1,5 @@
 # Mad Mallard SiteScout
 
-[![License](https://img.shields.io/github/license/drakeg/madmallard-sitescout)](https://github.com/drakeg/madmallard-sitescout/blob/main/LICENSE)
-
-
 <!-- badges:start -->
 [![Python 3.15](https://img.shields.io/badge/Python-3.15-3776AB?logo=python&logoColor=white)](Dockerfile)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](compose.yaml)
@@ -11,7 +8,7 @@
 [![CI](https://github.com/drakeg/madmallard-sitescout/actions/workflows/ci.yml/badge.svg)](https://github.com/drakeg/madmallard-sitescout/actions/workflows/ci.yml)
 [![Real browser QA](https://github.com/drakeg/madmallard-sitescout/actions/workflows/browser-qa.yml/badge.svg)](https://github.com/drakeg/madmallard-sitescout/actions/workflows/browser-qa.yml)
 [![Open issues](https://img.shields.io/github/issues/drakeg/madmallard-sitescout)](https://github.com/drakeg/madmallard-sitescout/issues)
-[![Open PRs](https://img.shields.io/github/issues-pr/drakeg/madmallard-sitescout)](https://github.com/drakeg/madmallard-sitescout/pulls)
+[![Open PRs](https://img.shields.io/github/issues-pr/drakeg/madmallard-sitescout)](https://github.com/drakeg/madmallard-sitescout/pulls) [![License](https://img.shields.io/github/license/drakeg/madmallard-sitescout)](https://github.com/drakeg/madmallard-sitescout/blob/main/LICENSE)
 <!-- badges:end -->
 
 Free-software-first platform for evaluating existing small-business websites, producing **functional** redesign concepts, and preparing permission-conscious sales previews.
