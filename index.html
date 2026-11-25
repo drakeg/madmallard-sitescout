@@ -88,6 +88,12 @@
     <input type="file" id="site-checklist-file" accept=".csv,text/csv">
     <button type="button" class="secondary" id="review-site-checklist">Review completed checklist</button>
     <pre id="site-checklist-review-results" role="status" aria-live="polite">No checklist reviewed yet.</pre>
+    <h3>Review updated remediation actions</h3>
+    <p>After assigning owners and recording implementation evidence in the remediation CSV, import the updated plan to see unresolved work. All progress is human-reported, not independently verified.</p>
+    <label for="site-remediation-review-file">Updated remediation action plan (.csv)</label>
+    <input type="file" id="site-remediation-review-file" accept=".csv,text/csv">
+    <button type="button" class="secondary" id="review-site-remediation">Review remediation progress</button>
+    <pre id="site-remediation-review-results" role="status" aria-live="polite">No remediation action plan reviewed yet.</pre>
   </section>
   <footer><p>Service health: <span id="health" role="status">Checking…</span> · <a href="/api/health">API health JSON</a> · <a href="https://github.com/drakeg/madmallard-sitescout">Source repository</a></p></footer>
 </main>
@@ -394,6 +400,23 @@
       const data=await response.json();
       output.textContent=JSON.stringify(response.ok?data.review:data,null,2);
     }catch(error){output.textContent='Checklist review unavailable: '+error.message}
+  });
+  document.getElementById('review-site-remediation').addEventListener('click',async()=>{
+    const output=document.getElementById('site-remediation-review-results');
+    const file=document.getElementById('site-remediation-review-file').files[0];
+    if(!file){output.textContent='Select an updated remediation action CSV first.';return}
+    if(file.size>512000){output.textContent='Remediation CSV exceeds the 500 KiB limit.';return}
+    output.textContent='Reviewing human-reported remediation work…';
+    try{
+      const csv=await file.text();
+      const body=JSON.stringify({csv});
+      if(new TextEncoder().encode(body).length>516096){
+        output.textContent='Remediation CSV request exceeds the size limit.';return;
+      }
+      const response=await fetch('/api/remediation_review',{method:'POST',headers:{'Content-Type':'application/json'},body});
+      const data=await response.json();
+      output.textContent=JSON.stringify(response.ok?data.review:data,null,2);
+    }catch(error){output.textContent='Remediation review unavailable: '+error.message}
   });
   const sampleSitePages=[
     {url:'https://sample-cafe.example/',html:'<title>Sample Cafe</title><h1>Welcome</h1><a href="/menu">Menu</a><a href="/contact">Contact</a>'},
