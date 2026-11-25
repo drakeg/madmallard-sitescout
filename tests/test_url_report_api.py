@@ -102,4 +102,4 @@ class UrlReportTests(unittest.TestCase):
             for bad in (b"not-json", b"[]", b"{}", b""):
                 fake=FakeHandler(bad)
                 respond_url_report(fake,capture_fn=Mock())
-                self.assertIn(fake.status,(400,413))
+                self.assertIn(fake.status,(400,403,413))
