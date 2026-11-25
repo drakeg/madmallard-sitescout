@@ -82,3 +82,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added source-verified licensing and external-service screening for six builder/runtime candidates, with immutable LICENSE blob fingerprints, risk decisions, documentation and CI validation.
 
 - Added three standardized fictional SMB builder briefs, a bounded offline static export benchmark and an explicit unmeasured comparison scorecard for future repeatable evaluation.
+
+- Added URL-first one-page static website report UI, reusing opt-in authenticated DNS-pinned HTTPS capture; manual saved HTML moved to advanced mode and remains available.
