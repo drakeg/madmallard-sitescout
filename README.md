@@ -235,3 +235,17 @@ The static parser now also records **page language**, **meta description**, and 
 ### Evidence-led next actions (SS-056)
 
 Every static site report now includes a bounded `review_guidance` summary with the number of captured pages, detected forms, unreviewed internal links, high/medium review findings, and up to eight **recommended manual next steps**. The dashboard and printable client report display the reasons, relevant page evidence and suggested next action for each item. Actions prioritize high-priority markup findings, permissioned **synthetic inquiry receipt tests** when a form is detected, unreviewed pages, mobile/desktop browser behavior and deeper optional audits. A site without static forms instead recommends checking whether JavaScript or embedded forms exist. All suggestions remain **Not verified**; no test, conversion, audit certification or security score is invented. This does not perform browser navigation or submit forms automatically.
+
+### SS-057 — real-browser regression coverage (no third-party scans)
+
+The repository now contains a real headless **Chromium** smoke test of the actual SiteScout dashboard. It opens the locally served app, fills an authorized sample URL, intercepts the URL-report request with **fictional data**, checks the rendered page/form/coverage/next-step sections, downloads the printable report, opens the advanced HTML UI and verifies stale report controls clear. This is a **browser-executed UI regression test**, not evidence that a third-party website was loaded, that a contact form delivered, or that real mobile/accessibility/performance conditions have been verified. No external URLs are requested by this smoke (the sample target is mocked). The browser runtime is a pinned dev-only Playwright dependency; the production Docker image remains Python-only and contains no browser or runtime Node dependency.
+
+Run when the local app is available on port 8087:
+
+```sh
+npm ci --ignore-scripts
+npx playwright install chromium
+SITESCOUT_BROWSER_URL=http://127.0.0.1:8087 npm run test:browser
+```
+
+A dedicated [Real browser QA](.github/workflows/browser-qa.yml) GitHub Actions workflow also starts SiteScout on a GitHub runner, installs isolated Chromium, and tests that same user-visible flow. Existing Python/Node/Docker CI tests remain independent. Browser installation and CI runner resources must be available. This only verifies the SiteScout UI with synthetic results, and does not fetch prospect websites or submit inquiries.
