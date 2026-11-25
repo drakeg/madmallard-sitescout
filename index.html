@@ -256,6 +256,7 @@
         printableReportExport.disabled=false;
         showSiteReportHighlights(data.report);
         showRemediationFindings(data.report);
+        renderSiteDetails(data.report);
         siteReportOutput.textContent=JSON.stringify(data.report,null,2);
         output.textContent='Analyzed '+data.report.page_count+' authorized HTTPS page(s). Review findings and downloads below. Uncaptured links are not confirmed broken.';
       }else{
@@ -271,6 +272,84 @@
   const siteReportOutput=document.getElementById('site-report-results');
   const siteReportHighlights=document.getElementById('site-report-highlights');
   const remediationFindings=document.getElementById('site-remediation-findings');
+  const pagesDetail=document.getElementById('site-pages-detail');
+  const formsDetail=document.getElementById('site-forms-detail');
+  const coverageDetail=document.getElementById('site-coverage-detail');
+  function renderSiteDetails(report){
+    pagesDetail.replaceChildren();
+    formsDetail.replaceChildren();
+    const pages=Array.isArray(report.pages)?report.pages:[];
+    const forms=Array.isArray(report.forms)?report.forms:[];
+    for(const page of pages){
+      const card=document.createElement('article');
+      card.className='report-card';
+      const title=document.createElement('h4');
+      title.textContent=page.url||'Captured page';
+      const summary=document.createElement('p');
+      const h1=(page.headings||[]).filter(h=>h.level==='h1'&&h.text).map(h=>h.text);
+      summary.textContent='Page title: '+(page.title||'Not declared')+
+        ' · H1: '+(h1.join(' / ')||'Not found')+
+        ' · Description: '+(page.meta_description||'Not declared');
+      const technical=document.createElement('p');
+      const images=Array.isArray(page.images)?page.images:[];
+      technical.textContent='HTML language: '+(page.html_language||'Not declared')+
+        ' · Mobile viewport: '+(page.viewport||'Not declared')+
+        ' · Internal links: '+((page.internal_links||[]).length)+
+        ' · External links: '+((page.external_links||[]).length)+
+        ' · Images: '+images.length+
+        ' · Images needing alt review: '+images.filter(image=>!String(image.alt||'').trim()).length+
+        ' · Forms: '+((page.forms||[]).length);
+      card.append(title,summary,technical);
+      pagesDetail.append(card);
+    }
+    if(!pages.length){
+      const placeholder=document.createElement('p');
+      placeholder.textContent='No per-page evidence was returned for this report.';
+      pagesDetail.append(placeholder);
+    }
+    for(const form of forms){
+      const card=document.createElement('article');
+      card.className='report-card medium';
+      const title=document.createElement('h4');
+      title.textContent=form.page||'Form detected';
+      const fields=(form.fields||[]).map(field=>(field.name||'[unnamed]')+
+        ' ('+(field.type||'field')+(field.required?', required':'')+')');
+      const detail=document.createElement('p');
+      detail.textContent='Method: '+(form.method||'Not known')+
+        ' · Action: '+(form.action||'Not declared')+
+        ' · Fields: '+(fields.length?fields.join(', '):'No named fields detected');
+      const caution=document.createElement('p');
+      caution.textContent='Delivery: NOT TESTED. Validate the live form with an authorized synthetic inquiry and verify inbox/CRM receipt.';
+      card.append(title,detail,caution);
+      formsDetail.append(card);
+    }
+    if(!forms.length){
+      const placeholder=document.createElement('p');
+      placeholder.textContent='No forms detected in captured HTML. JavaScript-rendered forms may be missing from this inspection.';
+      formsDetail.append(placeholder);
+    }
+    const discovery=report.capture_discovery||{};
+    const missed=Array.isArray(report.uncaptured_internal_links)?report.uncaptured_internal_links.length:0;
+    const fails=Array.isArray(discovery.additional_page_failures)?discovery.additional_page_failures.length:0;
+    coverageDetail.textContent='Captured pages: '+(report.page_count||0)+
+      (discovery.max_pages?' of at most '+discovery.max_pages+' per run':'')+
+      ' · Internal destinations not captured: '+missed+
+      ' · Additional page fetches that did not complete: '+fails+
+      '. This is a source-code review, not a browser test. Uncaptured destinations are unverified, not confirmed broken. Form submissions, mobile rendering, accessibility compliance, speed, SEO outcomes and security testing are not performed.';
+  }
+  const findingTitles={
+    'missing-title':'Missing page title',
+    'missing-description':'Missing page description',
+    'missing-h1':'Missing primary heading',
+    'multiple-h1':'Review heading hierarchy',
+    'image-alt-review':'Review image descriptions',
+    'missing-viewport':'Missing mobile viewport declaration',
+    'missing-language':'Missing page language declaration',
+    'duplicate-page-title':'Same page title used on multiple pages',
+    'insecure-form-action':'Form points to unencrypted HTTP',
+    'get-sensitive-form':'Sensitive form fields use GET',
+    'unreviewed-internal-destinations':'Linked pages not yet inspected'
+  };
   function showRemediationFindings(report){
     remediationFindings.replaceChildren();
     const plan=report.remediation_plan||{};
@@ -282,19 +361,19 @@
       return;
     }
     const list=document.createElement('ol');
-    for(const finding of entries.slice(0,10)){
+    for(const finding of entries.slice(0,40)){
       const item=document.createElement('li');
       const heading=document.createElement('strong');
-      heading.textContent=String(finding.priority||'review').toUpperCase()+' · '+String(finding.code||'Review');
+      heading.textContent=String(finding.priority||'review').toUpperCase()+' · '+String(finding.code||'Review')+' — '+(findingTitles[finding.code]||'Review suggested');
       const detail=document.createElement('p');
       detail.textContent=String(finding.page||'')+' — '+String(finding.evidence||'')+' Recommendation: '+String(finding.recommendation||'')+' Verification: '+String(finding.verification||'');
       item.append(heading,detail);
       list.append(item);
     }
     remediationFindings.append(list);
-    if(entries.length>10){
+    if(entries.length>40){
       const note=document.createElement('p');
-      note.textContent=(entries.length-10)+' additional findings are in the downloadable JSON report.';
+      note.textContent=(entries.length-40)+' more findings are available in the downloadable report.';
       remediationFindings.append(note);
     }
   }
@@ -321,6 +400,9 @@
     remediationExport.disabled=true;
     printableReportExport.disabled=true;
     siteReportHighlights.textContent='Analyze saved pages to see the review priorities.';
+    pagesDetail.replaceChildren();
+    formsDetail.replaceChildren();
+    coverageDetail.textContent='No live or saved report yet.';
     remediationFindings.replaceChildren();
     const empty=document.createElement('p');
     empty.textContent='No remediation findings yet.';
@@ -542,6 +624,7 @@
         printableReportExport.disabled=false;
         showSiteReportHighlights(data.report);
         showRemediationFindings(data.report);
+        renderSiteDetails(data.report);
       }
       output.textContent=JSON.stringify(response.ok?data.report:data,null,2);
     }catch(error){output.textContent='Site report unavailable: '+error.message}
