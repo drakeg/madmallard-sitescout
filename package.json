@@ -1,0 +1,12 @@
+{
+  "name": "madmallard-sitescout-browser-qa",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Dev-only isolated Chromium smoke for SiteScout",
+  "scripts": {
+    "test:browser": "node scripts/browser_smoke.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.58.2"
+  }
+}

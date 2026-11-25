@@ -92,3 +92,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Clarified SiteScout's actual static inspection scope in the dashboard and expanded per-page, form and coverage evidence, prioritized findings and printable client report; added language, viewport, description and duplicate-title review rules.
 
 - Added readable, evidence-based recommended next actions in SiteScout reports and printouts, with manual verification guidance and no unverified functional claims.
+
+- Added a development-only real Chromium regression test for the SiteScout dashboard, with mocked fictional website data and a separate browser QA CI workflow.

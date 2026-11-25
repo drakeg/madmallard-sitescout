@@ -1,0 +1,43 @@
+name: Real browser QA
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  chromium-smoke:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.15'
+      - name: Install locked Playwright dependency
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Install headless Chromium dependencies
+        run: npx playwright install --with-deps chromium
+      - name: Start SiteScout isolated local HTTP server
+        run: |
+          python -m app.server > /tmp/sitescout-browser-smoke.log 2>&1 &
+          echo $! > /tmp/sitescout-browser-smoke.pid
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8080/health >/dev/null; then break; fi
+            sleep 0.5
+          done
+          curl --fail --silent --show-error http://127.0.0.1:8080/health >/dev/null
+      - name: Run real Chromium dashboard workflow without external websites
+        env:
+          SITESCOUT_BROWSER_URL: http://127.0.0.1:8080
+        run: npm run test:browser
+      - name: Show server log if browser test fails
+        if: failure()
+        run: cat /tmp/sitescout-browser-smoke.log || true
+      - name: Stop local HTTP server
+        if: always()
+        run: if test -f /tmp/sitescout-browser-smoke.pid; then kill "$(cat /tmp/sitescout-browser-smoke.pid)" || true; fi
