@@ -132,7 +132,7 @@ class DashboardTests(unittest.TestCase):
         self.assertIn("clearSiteReport()", html)
         self.assertIn("showSiteReportHighlights(data.report)", html)
         self.assertIn("showRemediationFindings(data.report)", html)
-        self.assertIn("Private Docker capture token (not stored", html)
+        self.assertIn("This host requires a private capture token", html)
         self.assertNotIn("localStorage", html)
 
     def test_docker_routes(self):
