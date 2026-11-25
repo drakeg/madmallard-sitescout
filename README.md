@@ -211,3 +211,17 @@ This is **not** a complete site crawler, JavaScript renderer or form delivery ch
 ### Bounded same-site URL discovery (SS-053)
 
 After authorization and token validation, URL-first analysis now retrieves the supplied public HTTPS page plus **up to two linked same-host HTML pages**, prioritizing paths with contact, quote, scheduling or booking hints. Each request independently passes the existing public-DNS pinning, TLS, no-redirect, 500-KiB and timeout checks. No cross-site links, HTTP links, login/account/admin/checkout paths, URL queries, known non-HTML assets, JavaScript, form submissions or external integrations are followed. At most **five** total page fetches are attempted per report, and at most **three** successful pages are analyzed. Failed secondary pages are recorded as **not captured / unverified**, never described as broken. The report includes `capture_discovery` with counts, bounded failure records and limitations. This is not a comprehensive crawl, crawler authorization service, or verification that forms deliver inquiries. Do not point at websites without permission.
+
+### Trusted-LAN URL analysis without repeated token prompts (SS-054)
+
+For an isolated, personally controlled test LAN, the Docker **URL report endpoint only** can be configured to accept same-origin JSON requests without a bearer token. This is opt-in, disabled by default:
+
+```dotenv
+SITESCOUT_CAPTURE_ENABLED=true
+SITESCOUT_TRUSTED_LAN_NO_TOKEN=true
+SITESCOUT_TRUSTED_CAPTURE_ORIGINS=http://localhost:8087,http://192.168.0.155:8087
+```
+
+Change the sample LAN IP to the actual machine's current address, then recreate Docker via `docker compose up -d --build`. The dashboard first attempts same-origin URL analysis automatically and asks for a private capture token **only if the server responds HTTP 401**. Trusted origins must exactly match both the HTTP `Origin` and `Host` headers, requests must be JSON, cross-site browser requests are denied, and the existing strict HTTPS public-IP validation, no redirects, TLS, page/attempt limits and shared five-requests-per-minute capture admission are retained. All other authenticated endpoints, including the standalone capture endpoint and private job queue, continue to require their respective credentials. Vercel has no live URL route.
+
+**Security boundary:** This is an opt-in **trusted-network** convenience, **not login or user authentication**; a client on the LAN capable of forging HTTP headers could invoke the bounded public-HTTPS fetcher. Do not expose port 8087 to the internet or untrusted Wi-Fi, and do not use this option in a public/shared deployment. Choose an authenticated HTTPS deployment if the LAN is not exclusively trusted. No secrets are saved in browser storage.
