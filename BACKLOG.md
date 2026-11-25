@@ -97,3 +97,5 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 | SS-051 | P0 | 2 | Deterministic static output benchmark harness | Same three fictional SMB briefs and offline HTML checks with zero invented scores or paid providers | DONE |
 
 | SS-052 | P0 | 1 | URL-first authorized website analysis | Public HTTPS URL primary; consent, private opt-in capture token, single-page report and safe default-off route; HTML fallback advanced | IN PROGRESS |
+
+| SS-053 | P0 | 1 | Bounded URL-linked page discovery | Capture up to 3 same-host HTTPS pages per request, 5-attempt limit, prioritized contact pages, ignore unsafe links and clearly flag unverified failures | IN PROGRESS |
