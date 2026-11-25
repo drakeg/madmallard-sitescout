@@ -70,3 +70,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added an accessible at-a-glance summary for offline site inventory reports and automatic reset of stale metrics.
 
 - Reconciled delivered Sprint 1 and private capture infrastructure story statuses with merged CI evidence and clarified remaining public-security and hosting gates.
+
+- Added prioritized, evidence-based static website remediation recommendations and an accessible top-priority dashboard review list.
