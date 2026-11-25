@@ -74,3 +74,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added prioritized, evidence-based static website remediation recommendations and an accessible top-priority dashboard review list.
 
 - Added downloadable spreadsheet-safe remediation action-plan CSV with reviewer/assignment columns for authorized SMB site audits.
+
+- Added downloadable self-contained printable customer review HTML, with escaped source-derived strings, no external assets and explicit static-evidence limitations.
