@@ -93,6 +93,10 @@ async function main() {
             required_fields: ['email'],
             test_cases: ['Submit valid form, verify "receipt"'],
           }] },
+          review_guidance:{recommended_next_steps:[{priority:'high',
+            title:'Verify inquiry delivery',why:'<img src=x onerror=alert(1)>',
+            next_action:'Submit a synthetic test',evidence:['https://sample.example/contact'],
+            status:'Not verified'}]},
           remediation_plan: { findings: [{
             code: 'missing-title', priority: 'high', page: '=HYPERLINK("bad")',
             evidence: '<script>alert("untrusted")</script>', recommendation: 'Add descriptive title',
@@ -150,6 +154,12 @@ async function main() {
   assert.equal(element('site-report-export').disabled, false);
   assert.equal(JSON.parse(element('site-report-results').textContent).page_count, 2);
   assert.match(element('site-report-highlights').textContent, /Pages analyzed: 2/);
+  assert.equal(element('site-next-actions').children.length,1);
+  const nextAction=element('site-next-actions').children[0];
+  assert.match(nextAction.children[0].textContent,/Verify inquiry delivery/);
+  assert.match(nextAction.children[1].textContent,/<img src=x onerror=alert\(1\)>/);
+  assert.equal(nextAction.innerHTML,undefined,'Untrusted next-step text must not become HTML');
+
   assert.equal(element('site-pages-detail').children.length,1);
   const pageSummary=element('site-pages-detail').children[0];
   assert.match(pageSummary.children[1].textContent,/Page title: Sample Company/);
@@ -197,6 +207,9 @@ async function main() {
   assert.match(printable, /Live navigation, accessibility compliance/);
   assert.match(printable, /Forms requiring human verification/);
   assert.match(printable, /Page-by-page evidence/);
+  assert.match(printable,/Recommended next steps for the site owner/);
+  assert.match(printable,/&lt;img src=x onerror=alert\(1\)&gt;/);
+
   assert.match(printable, /Sample Company/);
   assert.match(printable, /Detected form implementation details/);
   assert.match(printable, /email \(email, required\)/);
@@ -235,6 +248,7 @@ async function main() {
 
   element('site-report-json').listeners.input();
   assert.equal(element('site-pages-detail').children.length,0);
+  assert.equal(element('site-next-actions').children.length,0);
   assert.equal(element('site-forms-detail').children.length,0);
   assert.match(element('site-coverage-detail').textContent,/No live or saved report/);
 
