@@ -165,3 +165,7 @@ After the page and form inventory, derive at most eight specific next-step actio
 ### SS-057 — Chromium regression gate for actual SiteScout dashboard
 
 Add a real local Chromium UI test to cover URL submission, explicit authorization, evidence sections, recommended next steps, printable report download and advanced mode, with all target-site HTTP intercepted using fictional data. Run separately from the production Docker image, pin development-only Playwright dependencies, and add a dedicated CI workflow. Confirm no external target websites are visited, no forms submitted and no fabricated real-world verification claims. This incremental browser QA is a prerequisite to SS-009 and does not yet provide browser-executed customer-site verification.
+
+### SS-058 — completed story status and browser QA CI badge
+
+After merging #53 and #54 with successful hosted CI, reconcile only completed scoped backlog rows SS-046 through SS-057 with actual merged functionality and verified tests. Add a dynamic GitHub Actions status badge for the newly introduced independent Chromium smoke alongside existing CI; do not hardcode passing outcomes or claim that real third-party sites were tested in a browser. Continue to track full browser-based authorized customer-site QA as pending SS-009.
