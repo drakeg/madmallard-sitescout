@@ -1,5 +1,8 @@
 # Mad Mallard SiteScout
 
+[![License](https://img.shields.io/github/license/drakeg/madmallard-sitescout)](https://github.com/drakeg/madmallard-sitescout/blob/main/LICENSE)
+
+
 <!-- badges:start -->
 [![Python 3.15](https://img.shields.io/badge/Python-3.15-3776AB?logo=python&logoColor=white)](Dockerfile)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](compose.yaml)
