@@ -46,7 +46,7 @@
       </label>
       <button type="submit" id="analyze-website-url">Analyze website URL</button>
     </form>
-    <p class="hint">Up to three same-host HTTPS pages per request; limited HTML link discovery, no JavaScript execution, forms, or outreach. Available on Docker only when authorized capture and a private token are configured. Do not send a bearer token over an untrusted HTTP network; use localhost or an HTTPS reverse proxy.</p>
+    <p class="hint">Up to three same-host HTTPS pages per request; limited HTML link discovery, no JavaScript execution, forms, or outreach. Docker operators can enable restricted trusted-LAN mode without a token prompt. Other installations require a private token; use localhost or an HTTPS reverse proxy before entering credentials.</p>
     <pre id="url-analysis-results" role="status" aria-live="polite">Enter an authorized public HTTPS URL to start.</pre>
     <p><a href="#site-report-title">View site report and downloads</a> once analysis succeeds.</p>
   </section>
@@ -209,18 +209,23 @@
     if(!authorized){
       output.textContent='Confirm you are authorized to inspect this website first.';return;
     }
-    const token=prompt('Private Docker capture token (not stored; use localhost or HTTPS):');
-    if(!token){output.textContent='URL analysis cancelled: capture token required.';return}
     clearSiteReport();
-    output.textContent='Retrieving one authorized HTTPS page and generating a report…';
+    output.textContent='Retrieving authorized HTTPS pages and generating a report…';
     siteReportOutput.textContent='URL analysis in progress…';
     try{
-      const response=await fetch('/api/url_report',{
+      const request={url,authorized:true};
+      const send=token=>fetch('/api/url_report',{
         method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
-        body:JSON.stringify({url,authorized:true}),
+        headers:{'Content-Type':'application/json',...(token?{'Authorization':'Bearer '+token}:{})},
+        body:JSON.stringify(request),
         cache:'no-store'
       });
+      let response=await send(null);
+      if(response.status===401){
+        const token=prompt('This host requires a private capture token. Enter it only on localhost or HTTPS:');
+        if(!token){output.textContent='This host requires a capture token; request cancelled.';return}
+        response=await send(token);
+      }
       const data=await response.json();
       if(response.ok&&data.report){
         latestSiteReport=data.report;
