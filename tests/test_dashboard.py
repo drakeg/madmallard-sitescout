@@ -84,6 +84,15 @@ class DashboardTests(unittest.TestCase):
         self.assertIn("live behavior remain unverified", html)
         self.assertIn("siteReportHighlights.textContent='Analyze saved pages", html)
 
+    def test_site_remediation_ui_is_text_only_and_clears_on_input(self):
+        html = DASHBOARD.read_text()
+        self.assertIn('id="site-remediation-findings"', html)
+        self.assertIn("function showRemediationFindings(report)", html)
+        self.assertIn("showRemediationFindings(data.report)", html)
+        self.assertIn("detail.textContent=", html)
+        self.assertIn("remediationFindings.replaceChildren()", html)
+        self.assertIn("Live behavior still needs verification", html)
+
     def test_docker_routes(self):
         for route, expected in (("/", b"SiteScout"), ("/health", b'"status": "ok"'), ("/api/health", b'"status": "ok"')):
             instance = Handler.__new__(Handler)
