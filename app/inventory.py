@@ -12,11 +12,22 @@ class SiteParser(HTMLParser):
         self.images = []
         self.headings = []
         self.title = ""
+        self.meta_description = ""
+        self.viewport = ""
+        self.html_language = ""
         self._capture = None
         self._form = None
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
+        if tag == "html":
+            self.html_language = attrs.get("lang", "") or ""
+        if tag == "meta":
+            name = (attrs.get("name") or "").strip().lower()
+            if name == "description":
+                self.meta_description = attrs.get("content", "") or ""
+            if name == "viewport":
+                self.viewport = attrs.get("content", "") or ""
         if tag == "title" or tag in ("h1", "h2", "h3"):
             self._capture = [tag, ""]
         if tag == "a" and attrs.get("href"):
@@ -50,7 +61,9 @@ def inventory(html, url):
     parser.feed(html)
     domain = parsed.hostname
     return {
-        "url": url, "title": parser.title, "headings": parser.headings,
+        "url": url, "title": parser.title, "meta_description": parser.meta_description,
+        "viewport": parser.viewport, "html_language": parser.html_language,
+        "headings": parser.headings,
         "internal_links": sorted(set(link for link in parser.links if urlparse(link).hostname == domain)),
         "external_links": sorted(set(link for link in parser.links if urlparse(link).hostname != domain)),
         "forms": parser.forms, "images": parser.images,
