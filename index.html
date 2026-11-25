@@ -74,6 +74,7 @@
       <button type="button" class="secondary" id="site-report-demo">Load three-page demo</button>
       <button type="button" class="secondary" id="site-report-export" disabled>Download report JSON</button>
       <button type="button" class="secondary" id="site-report-checklist-export" disabled>Download form verification checklist CSV</button>
+      <button type="button" class="secondary" id="site-remediation-export" disabled>Download remediation action plan CSV</button>
     </form>
     <h3>Report at a glance</h3>
     <p id="site-report-highlights" role="status" aria-live="polite">Analyze saved pages to see the review priorities.</p>
@@ -215,11 +216,13 @@
   }
   const siteReportExport=document.getElementById('site-report-export');
   const siteChecklistExport=document.getElementById('site-report-checklist-export');
+  const remediationExport=document.getElementById('site-remediation-export');
   let latestSiteReport=null;
   function clearSiteReport(){
     latestSiteReport=null;
     siteReportExport.disabled=true;
     siteChecklistExport.disabled=true;
+    remediationExport.disabled=true;
     siteReportHighlights.textContent='Analyze saved pages to see the review priorities.';
     remediationFindings.replaceChildren();
     const empty=document.createElement('p');
@@ -293,6 +296,28 @@
     link.remove();
     URL.revokeObjectURL(url);
   });
+  function exportRemediationCSV(report){
+    const headings=['Priority','Finding','Page URL','Observed evidence','Recommended fix','Manual verification','Review status','Assigned to','Evidence link','Notes'];
+    const findings=report.remediation_plan&&report.remediation_plan.findings||[];
+    const rows=[headings];
+    for(const item of findings){
+      rows.push([item.priority,item.code,item.page,item.evidence,
+        item.recommendation,item.verification,'Needs review','','','']);
+    }
+    return rows.map(row=>row.map(spreadsheetSafeCell).join(',')).join(String.fromCharCode(13,10))+String.fromCharCode(13,10);
+  }
+  remediationExport.addEventListener('click',()=>{
+    if(!latestSiteReport)return;
+    const file=new Blob([exportRemediationCSV(latestSiteReport)],{type:'text/csv;charset=utf-8'});
+    const url=URL.createObjectURL(file);
+    const link=document.createElement('a');
+    link.href=url;
+    link.download='sitescout-remediation-action-plan.csv';
+    document.body.append(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  });
   document.getElementById('review-site-checklist').addEventListener('click',async()=>{
     const output=document.getElementById('site-checklist-review-results');
     const file=document.getElementById('site-checklist-file').files[0];
@@ -342,6 +367,7 @@
         latestSiteReport=data.report;
         siteReportExport.disabled=false;
         siteChecklistExport.disabled=false;
+        remediationExport.disabled=false;
         showSiteReportHighlights(data.report);
         showRemediationFindings(data.report);
       }
