@@ -310,7 +310,6 @@
   function renderSiteDetails(report){
     pagesDetail.replaceChildren();
     formsDetail.replaceChildren();
-    nextActions.replaceChildren();
     const pages=Array.isArray(report.pages)?report.pages:[];
     const forms=Array.isArray(report.forms)?report.forms:[];
     for(const page of pages){
@@ -435,6 +434,7 @@
     siteReportHighlights.textContent='Analyze saved pages to see the review priorities.';
     pagesDetail.replaceChildren();
     formsDetail.replaceChildren();
+    nextActions.replaceChildren();
     coverageDetail.textContent='No live or saved report yet.';
     remediationFindings.replaceChildren();
     const empty=document.createElement('p');
