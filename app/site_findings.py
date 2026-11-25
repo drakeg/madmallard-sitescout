@@ -34,6 +34,21 @@ def remediation_plan(report):
                 "No nonempty HTML <title> element in saved source.",
                 "Write a descriptive, unique page title.",
                 "Inspect the rendered page title and search preview manually.")
+        if not page.get("meta_description", "").strip():
+            add("missing-description", "low", url,
+                "No nonempty HTML meta description was found in the captured source.",
+                "Write a concise page-specific summary for search results and sharing context.",
+                "Check the rendered document head and how search engines display the page.")
+        if not page.get("viewport", "").strip():
+            add("missing-viewport", "medium", url,
+                "No viewport meta tag was found in the captured source.",
+                "Add a responsive viewport declaration if the page is intended for mobile use.",
+                "Inspect the rendered viewport and test the page on narrow screens.")
+        if not page.get("html_language", "").strip():
+            add("missing-language", "medium", url,
+                "The HTML root has no nonempty lang attribute in captured source.",
+                "Specify the page's primary content language on the HTML element.",
+                "Verify the declared language matches the content and screen reader pronunciation.")
         headings = page.get("headings", [])
         h1s = [item for item in headings if item.get("level") == "h1" and item.get("text", "").strip()]
         if not h1s:
@@ -72,6 +87,18 @@ def remediation_plan(report):
                     "Check whether form values may appear in URLs; use a suitable secure submission method.",
                     "Confirm actual form behavior without submitting real personal data.")
 
+    titles = {}
+    for page in report["pages"]:
+        title = page.get("title", "").strip().casefold()
+        if title:
+            titles.setdefault(title, []).append(page["url"])
+    for urls in titles.values():
+        if len(urls) > 1:
+            for url in urls:
+                add("duplicate-page-title", "medium", url,
+                    f"The same HTML title appears on {len(urls)} captured pages.",
+                    "Give distinct pages descriptive titles that reflect their individual purpose.",
+                    "Verify each rendered page title and confirm intentional duplicates.")
     unknown = report.get("uncaptured_internal_links", [])
     if unknown:
         add("unreviewed-internal-destinations", "medium",
