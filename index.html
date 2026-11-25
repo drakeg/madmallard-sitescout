@@ -17,6 +17,13 @@
     .status{display:inline-block;padding:.35rem .65rem;border-radius:30px;background:#31485c;color:#e2edf6;font-size:.8rem}
     label{display:block;margin:.8rem 0 .35rem;font-weight:600}input,textarea,select,button{font:inherit;width:100%;padding:.7rem;border-radius:8px;border:1px solid #7890a4;background:#102337;color:#fff}textarea{min-height:170px;resize:vertical}button{width:auto;cursor:pointer;background:#67d7b8;color:#09212b;font-weight:700;margin-top:1rem;border:0}button:hover{background:#8de8d0}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#081623;padding:1rem;border-radius:10px;max-height:500px;overflow:auto} .hint{font-size:.9rem}
     .findings{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.7rem;margin:1rem 0}.finding{border-left:4px solid #76dbc1;background:#1b2d3f;padding:1rem;border-radius:8px}.finding.warning{border-left-color:#ffd180}.finding h4{margin:.2rem 0}.finding p{margin:.3rem 0}.metrics{display:flex;flex-wrap:wrap;gap:1rem}.metrics strong{display:block;font-size:1.4rem}.metrics div{padding:.7rem;background:#1b2d3f;border-radius:8px}.secondary{background:#31485c;color:#fff;margin-right:.5rem}
+    .explainer{border:1px solid #375064;border-radius:14px;padding:1.3rem;margin:1.25rem 0;background:#152839}
+    .explainer h3{margin:.2rem 0}.explainer ul{line-height:1.8;padding-left:1.2rem}
+    .report-card{border-left:4px solid #76dbc1;background:#1b2d3f;border-radius:8px;padding:1rem;margin:.8rem 0}
+    .report-card h4{margin:.1rem 0 .5rem;font-size:1rem}.report-card p{margin:.25rem 0;overflow-wrap:anywhere}
+    .report-card.low{border-left-color:#8293b1}.report-card.medium{border-left-color:#ffd180}.report-card.high{border-left-color:#f09999}
+    .report-card small{color:#b8c8d6}.report-overview{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:1rem}
+    details{margin:1rem 0}details summary{cursor:pointer;font-weight:700}
     footer{border-top:1px solid #375064;padding-top:1.5rem;margin-top:2rem;color:#b8c8d6}
   </style>
 </head>
@@ -27,13 +34,17 @@
   <p>Discover website opportunities, understand existing sites, and build better replacements. The platform is under active development.</p>
 </header>
 <main>
-  <h2>Project workspace</h2>
-  <div class="grid">
-    <article><span class="status">Prototype available</span><h3>Directory discovery</h3><p>Extract potential business websites from saved directory pages for review.</p></article>
-    <article><span class="status">Prototype available</span><h3>Website inventory</h3><p>Inspect saved page content, links, forms, and images with the local Python tools.</p></article>
-    <article><span class="status">Pilot underway</span><h3>Optimist Hall pilot</h3><p>Use the pilot directory to test discovery and qualification workflows.</p></article>
-    <article><span class="status">Planned</span><h3>AI redesign studio</h3><p>Generate responsive designs, functional sites, and testable previews using container-based workers.</p></article>
-  </div>
+  <section class="explainer" aria-labelledby="how-it-works">
+    <h2 id="how-it-works">What SiteScout actually does</h2>
+    <p>SiteScout is an <strong>early-stage website inspection and improvement planner</strong>, not a full website audit or a redesign generator yet. It captures the source HTML of up to three authorized HTTPS pages, examines what's declared in that HTML, and helps you decide what deserves manual testing or improvement.</p>
+    <div class="report-overview">
+      <div><h3>1. Collect pages</h3><p>Start with one authorized public HTTPS URL. It follows a small number of same-host links, prioritizing contact and booking pages.</p></div>
+      <div><h3>2. Inspect evidence</h3><p>Record page titles, descriptions, headings, language, mobile viewport declarations, images, links and form fields/actions.</p></div>
+      <div><h3>3. Prioritize work</h3><p>Flag observable issues, explain why they matter, show the page and evidence, and propose a fix plus a verification step.</p></div>
+      <div><h3>4. Export findings</h3><p>Download a printable customer review, an action-plan CSV, and form testing checklist. Human testing and sign-off are still required.</p></div>
+    </div>
+    <p><strong>Not tested:</strong> rendered layout, mobile usability, Lighthouse performance, WCAG conformance, SEO rankings, broken links, JavaScript, customer journey completion, form delivery, payments, bookings, or CRM integrations. Uncaptured pages are <strong>unknown</strong>, not broken. Findings are review suggestions, not certifications.</p>
+  </section>
   <section aria-labelledby="url-analyzer-title">
     <h2 id="url-analyzer-title">Analyze a website URL</h2>
     <p>Enter an authorized public HTTPS page URL. SiteScout securely retrieves the requested page and up to two same-host linked pages on an enabled, trusted Docker host. You do not need to paste HTML.</p>
@@ -98,9 +109,19 @@
     </form>
     <h3>Report at a glance</h3>
     <p id="site-report-highlights" role="status" aria-live="polite">Analyze saved pages to see the review priorities.</p>
+    <h3>Pages inspected and what was observed</h3>
+    <p class="hint">Each page summary comes from captured source markup. Empty metadata and missing attributes may need review in a rendered browser.</p>
+    <div id="site-pages-detail" aria-live="polite"><p>No pages inspected yet.</p></div>
+    <h3>Forms requiring manual delivery tests</h3>
+    <div id="site-forms-detail" aria-live="polite"><p>No forms inspected yet.</p></div>
+    <h3>Coverage and limitations</h3>
+    <p id="site-coverage-detail" role="status">No live or saved report yet.</p>
     <h3>Prioritized improvements to review</h3>
+    <p class="hint">High = potentially significant issue; medium = targeted review; low = improvement opportunity. Each item includes observed evidence, a suggested change and how to verify it. Nothing is automatically fixed.</p>
     <div id="site-remediation-findings" aria-live="polite"><p>No remediation findings yet.</p></div>
-    <pre id="site-report-results" role="status" aria-live="polite">No site report yet.</pre>
+    <details id="raw-report-details"><summary>Show technical report JSON (advanced)</summary>
+      <pre id="site-report-results" role="status" aria-live="polite">No site report yet.</pre>
+    </details>
     <h3>Review completed form tests</h3>
     <p>After testing permitted synthetic submissions, fill in the downloaded CSV's Status, Observed result, and Reviewer columns. The review counts are reviewer-reported, not independent delivery verification.</p>
     <label for="site-checklist-file">Completed verification checklist (.csv)</label>
@@ -235,6 +256,7 @@
         printableReportExport.disabled=false;
         showSiteReportHighlights(data.report);
         showRemediationFindings(data.report);
+        renderSiteDetails(data.report);
         siteReportOutput.textContent=JSON.stringify(data.report,null,2);
         output.textContent='Analyzed '+data.report.page_count+' authorized HTTPS page(s). Review findings and downloads below. Uncaptured links are not confirmed broken.';
       }else{
@@ -250,6 +272,84 @@
   const siteReportOutput=document.getElementById('site-report-results');
   const siteReportHighlights=document.getElementById('site-report-highlights');
   const remediationFindings=document.getElementById('site-remediation-findings');
+  const pagesDetail=document.getElementById('site-pages-detail');
+  const formsDetail=document.getElementById('site-forms-detail');
+  const coverageDetail=document.getElementById('site-coverage-detail');
+  function renderSiteDetails(report){
+    pagesDetail.replaceChildren();
+    formsDetail.replaceChildren();
+    const pages=Array.isArray(report.pages)?report.pages:[];
+    const forms=Array.isArray(report.forms)?report.forms:[];
+    for(const page of pages){
+      const card=document.createElement('article');
+      card.className='report-card';
+      const title=document.createElement('h4');
+      title.textContent=page.url||'Captured page';
+      const summary=document.createElement('p');
+      const h1=(page.headings||[]).filter(h=>h.level==='h1'&&h.text).map(h=>h.text);
+      summary.textContent='Page title: '+(page.title||'Not declared')+
+        ' · H1: '+(h1.join(' / ')||'Not found')+
+        ' · Description: '+(page.meta_description||'Not declared');
+      const technical=document.createElement('p');
+      const images=Array.isArray(page.images)?page.images:[];
+      technical.textContent='HTML language: '+(page.html_language||'Not declared')+
+        ' · Mobile viewport: '+(page.viewport||'Not declared')+
+        ' · Internal links: '+((page.internal_links||[]).length)+
+        ' · External links: '+((page.external_links||[]).length)+
+        ' · Images: '+images.length+
+        ' · Images needing alt review: '+images.filter(image=>!String(image.alt||'').trim()).length+
+        ' · Forms: '+((page.forms||[]).length);
+      card.append(title,summary,technical);
+      pagesDetail.append(card);
+    }
+    if(!pages.length){
+      const placeholder=document.createElement('p');
+      placeholder.textContent='No per-page evidence was returned for this report.';
+      pagesDetail.append(placeholder);
+    }
+    for(const form of forms){
+      const card=document.createElement('article');
+      card.className='report-card medium';
+      const title=document.createElement('h4');
+      title.textContent=form.page||'Form detected';
+      const fields=(form.fields||[]).map(field=>(field.name||'[unnamed]')+
+        ' ('+(field.type||'field')+(field.required?', required':'')+')');
+      const detail=document.createElement('p');
+      detail.textContent='Method: '+(form.method||'Not known')+
+        ' · Action: '+(form.action||'Not declared')+
+        ' · Fields: '+(fields.length?fields.join(', '):'No named fields detected');
+      const caution=document.createElement('p');
+      caution.textContent='Delivery: NOT TESTED. Validate the live form with an authorized synthetic inquiry and verify inbox/CRM receipt.';
+      card.append(title,detail,caution);
+      formsDetail.append(card);
+    }
+    if(!forms.length){
+      const placeholder=document.createElement('p');
+      placeholder.textContent='No forms detected in captured HTML. JavaScript-rendered forms may be missing from this inspection.';
+      formsDetail.append(placeholder);
+    }
+    const discovery=report.capture_discovery||{};
+    const missed=Array.isArray(report.uncaptured_internal_links)?report.uncaptured_internal_links.length:0;
+    const fails=Array.isArray(discovery.additional_page_failures)?discovery.additional_page_failures.length:0;
+    coverageDetail.textContent='Captured pages: '+(report.page_count||0)+
+      (discovery.max_pages?' of at most '+discovery.max_pages+' per run':'')+
+      ' · Internal destinations not captured: '+missed+
+      ' · Additional page fetches that did not complete: '+fails+
+      '. This is a source-code review, not a browser test. Uncaptured destinations are unverified, not confirmed broken. Form submissions, mobile rendering, accessibility compliance, speed, SEO outcomes and security testing are not performed.';
+  }
+  const findingTitles={
+    'missing-title':'Missing page title',
+    'missing-description':'Missing page description',
+    'missing-h1':'Missing primary heading',
+    'multiple-h1':'Review heading hierarchy',
+    'image-alt-review':'Review image descriptions',
+    'missing-viewport':'Missing mobile viewport declaration',
+    'missing-language':'Missing page language declaration',
+    'duplicate-page-title':'Same page title used on multiple pages',
+    'insecure-form-action':'Form points to unencrypted HTTP',
+    'get-sensitive-form':'Sensitive form fields use GET',
+    'unreviewed-internal-destinations':'Linked pages not yet inspected'
+  };
   function showRemediationFindings(report){
     remediationFindings.replaceChildren();
     const plan=report.remediation_plan||{};
@@ -261,19 +361,19 @@
       return;
     }
     const list=document.createElement('ol');
-    for(const finding of entries.slice(0,10)){
+    for(const finding of entries.slice(0,40)){
       const item=document.createElement('li');
       const heading=document.createElement('strong');
-      heading.textContent=String(finding.priority||'review').toUpperCase()+' · '+String(finding.code||'Review');
+      heading.textContent=String(finding.priority||'review').toUpperCase()+' · '+String(finding.code||'Review')+' — '+(findingTitles[finding.code]||'Review suggested');
       const detail=document.createElement('p');
       detail.textContent=String(finding.page||'')+' — '+String(finding.evidence||'')+' Recommendation: '+String(finding.recommendation||'')+' Verification: '+String(finding.verification||'');
       item.append(heading,detail);
       list.append(item);
     }
     remediationFindings.append(list);
-    if(entries.length>10){
+    if(entries.length>40){
       const note=document.createElement('p');
-      note.textContent=(entries.length-10)+' additional findings are in the downloadable JSON report.';
+      note.textContent=(entries.length-40)+' more findings are available in the downloadable report.';
       remediationFindings.append(note);
     }
   }
@@ -300,6 +400,9 @@
     remediationExport.disabled=true;
     printableReportExport.disabled=true;
     siteReportHighlights.textContent='Analyze saved pages to see the review priorities.';
+    pagesDetail.replaceChildren();
+    formsDetail.replaceChildren();
+    coverageDetail.textContent='No live or saved report yet.';
     remediationFindings.replaceChildren();
     const empty=document.createElement('p');
     empty.textContent='No remediation findings yet.';
@@ -404,6 +507,7 @@
     const hostname=esc(report.site_hostname||'Website');
     const findings=report.remediation_plan&&report.remediation_plan.findings||[];
     const forms=report.functional_requirements&&report.functional_requirements.forms_to_test||[];
+    const rawForms=Array.isArray(report.forms)?report.forms:[];
     const navigation=Array.isArray(report.uncaptured_internal_links)?report.uncaptured_internal_links.length:0;
     const line=(label,value)=>'<dt>'+esc(label)+'</dt><dd>'+esc(value)+'</dd>';
     const items=findings.map(item=>'<li><strong>'+esc(String(item.priority||'review').toUpperCase())+' — '+esc(item.code)+'</strong>'+
@@ -411,6 +515,27 @@
       '<p><b>Observed:</b> '+esc(item.evidence)+'</p>'+
       '<p><b>Recommended:</b> '+esc(item.recommendation)+'</p>'+
       '<p><b>Verify:</b> '+esc(item.verification)+'</p></li>').join('');
+    const pages=Array.isArray(report.pages)?report.pages:[];
+    const pageItems=pages.map(page=>{
+      const h1s=(page.headings||[]).filter(h=>h.level==='h1'&&h.text).map(h=>h.text);
+      const images=Array.isArray(page.images)?page.images:[];
+      return '<li><strong>'+esc(page.url)+'</strong>'+
+        '<p>HTML title: '+esc(page.title||'Not declared')+'</p>'+
+        '<p>Description: '+esc(page.meta_description||'Not declared')+'</p>'+
+        '<p>Primary heading: '+esc(h1s.join(' / ')||'Not found')+'</p>'+
+        '<p>Page language: '+esc(page.html_language||'Not declared')+
+        ' · Mobile viewport: '+esc(page.viewport||'Not declared')+'</p>'+
+        '<p>Internal links: '+esc((page.internal_links||[]).length)+
+        ' · External links: '+esc((page.external_links||[]).length)+
+        ' · Images: '+esc(images.length)+
+        ' · Image alt-review candidates: '+esc(images.filter(im=>!String(im.alt||'').trim()).length)+
+        ' · Forms: '+esc((page.forms||[]).length)+'</p></li>';
+    }).join('');
+    const formDetails=rawForms.map(form=>'<li><strong>'+esc(form.page)+'</strong>'+
+      '<p>Method: '+esc(form.method)+' · Action: '+esc(form.action)+'</p>'+
+      '<p>Fields: '+esc((form.fields||[]).map(field=>(field.name||'[unnamed]')+
+        ' ('+(field.type||'field')+(field.required?', required':'')+')').join(', ')||'Not identified')+'</p>'+
+      '<p>Delivery: NOT TESTED. Confirm with a permitted synthetic inquiry and destination receipt.</p></li>').join('');
     const formItems=forms.map(form=>'<li><strong>'+esc(form.page)+'</strong><p>Action: '+esc(form.action)+
       ' · Method: '+esc(form.method)+'</p><p>Required fields: '+esc((form.required_fields||[]).join(', '))+
       '</p><p>Delivery and integrations: not tested.</p></li>').join('');
@@ -424,7 +549,7 @@
       '.notice{padding:1rem;border:1px solid #8e9da6;background:#f3f7fa}'+
       '@media print{body{margin:0;padding:0}.notice{background:#fff}h2{break-after:avoid}}</style></head><body>'+
       '<h1>Website review: '+hostname+'</h1>'+
-      '<p class="notice"><strong>Scope:</strong> Authorized saved HTML only. Findings are static observations needing manual review. '+
+      '<p class="notice"><strong>Scope:</strong> Authorized captured or saved HTML only. Findings are static observations needing manual review. '+
       'Live navigation, accessibility compliance, submissions, inbox delivery and CRM integrations were not tested. '+
       'This is not an audit certification or proof of a working customer journey.</p>'+
       '<h2>Inventory</h2><dl>'+
@@ -432,8 +557,14 @@
       line('Uncaptured internal destinations (not confirmed broken)',navigation)+
       line('Forms requiring delivery testing',forms.length)+
       line('Suggested improvements requiring review',findings.length)+
-      '</dl><h2>Recommended improvement checks</h2>'+
+      '</dl><h2>How this inspection works</h2>'+
+      '<p>SiteScout reads captured source HTML from authorized public HTTPS pages. It checks document metadata, headings, images, links and form markup, flags evidence-based review items and proposes verification steps. It does not execute page JavaScript or independently confirm user journeys, SEO results, performance, compliance or inbox delivery.</p>'+
+      '<h2>Page-by-page evidence</h2>'+
+      (pageItems?'<ol>'+pageItems+'</ol>':'<p>No page metadata available.</p>')+
+      '<h2>Recommended improvement checks</h2>'+
       (items?'<ol>'+items+'</ol>':'<p>No static rules flagged in the supplied pages. Live behavior remains unverified.</p>')+
+      '<h2>Detected form implementation details</h2>'+
+      (formDetails?'<ol>'+formDetails+'</ol>':'<p>No static form markup was detected.</p>')+
       '<h2>Forms requiring human verification</h2>'+
       (formItems?'<ol>'+formItems+'</ol>':'<p>No form elements detected in the supplied pages.</p>')+
       '<p>Prepared by Mad Mallard SiteScout — review findings against the live authorized site before customer delivery.</p>'+
@@ -521,6 +652,7 @@
         printableReportExport.disabled=false;
         showSiteReportHighlights(data.report);
         showRemediationFindings(data.report);
+        renderSiteDetails(data.report);
       }
       output.textContent=JSON.stringify(response.ok?data.report:data,null,2);
     }catch(error){output.textContent='Site report unavailable: '+error.message}

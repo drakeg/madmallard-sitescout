@@ -88,3 +88,5 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added bounded, same-host HTTPS linked-page discovery for URL-first reports, prioritizing contact and booking pages, with maximum five attempted fetches and explicit unverified gaps.
 
 - Added opt-in same-origin trusted-LAN URL reports without repeated bearer-token prompts; token-required mode and private capture/job authentication remain available.
+
+- Clarified SiteScout's actual static inspection scope in the dashboard and expanded per-page, form and coverage evidence, prioritized findings and printable client report; added language, viewport, description and duplicate-title review rules.

@@ -40,7 +40,7 @@ class EvidenceBasedRemediationTests(unittest.TestCase):
     def test_well_structured_saved_page_has_no_automatic_failures(self):
         report = site_report([{
             "url": "https://example.org/",
-            "html": '<title>Example</title><h1>Example</h1><img src="/logo.png" alt="Brand logo">',
+            "html": '<html lang="en"><head><title>Example</title><meta name="description" content="An example"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><h1>Example</h1><img src="/logo.png" alt="Brand logo"></body></html>',
         }])
         self.assertEqual(report["remediation_plan"]["total"], 0)
         self.assertEqual(report["remediation_plan"]["counts"], {"high":0,"medium":0,"low":0})
@@ -48,12 +48,26 @@ class EvidenceBasedRemediationTests(unittest.TestCase):
     def test_multiple_h1_is_low_priority_review_only(self):
         report = site_report([{
             "url": "https://example.org/",
-            "html": '<title>Example</title><h1>Title</h1><h1>Secondary</h1>',
+            "html": '<html lang="en"><head><title>Example</title><meta name="description" content="Example"><meta name="viewport" content="width=device-width"></head><body><h1>Title</h1><h1>Secondary</h1></body></html>',
         }])
         finding = report["remediation_plan"]["findings"][0]
         self.assertEqual(finding["code"], "multiple-h1")
         self.assertEqual(finding["priority"], "low")
         self.assertIn("not inherently invalid", finding["recommendation"])
+
+    def test_missing_metadata_and_duplicate_titles_are_actionable_not_certified(self):
+        report = site_report([
+            {"url":"https://example.org/","html":"<title>Same</title><h1>Home</h1>"},
+            {"url":"https://example.org/services","html":"<title>Same</title><h1>Services</h1>"},
+        ])
+        codes=[finding["code"] for finding in report["remediation_plan"]["findings"]]
+        for expected in ("missing-description","missing-viewport","missing-language","duplicate-page-title"):
+            self.assertIn(expected,codes)
+        duplicates=[finding for finding in report["remediation_plan"]["findings"]
+                    if finding["code"]=="duplicate-page-title"]
+        self.assertEqual(len(duplicates),2)
+        self.assertTrue(all("captured" in item["evidence"] for item in duplicates))
+        self.assertTrue(all("verify" in item["verification"].lower() for item in duplicates))
 
     def test_rejects_invalid_report_shape(self):
         for value in (None, [], {}, {"pages": "wrong"}):
