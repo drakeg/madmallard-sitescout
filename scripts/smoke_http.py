@@ -41,6 +41,10 @@ def main():
         code, body = request(path, payload)
         assert code == 403, f"{path} should be default-off, received {code}"
         assert "disabled" in json.loads(body)["error"].lower()
+    code, body = request("/api/url_report", {"url": "https://example.org/", "authorized": True})
+    assert code == 403, f"URL-first live report must be default-off: {code}"
+    assert "disabled" in json.loads(body)["error"].lower()
+
     pages = [
         {"url": "https://example.org/", "html": '<h1>Home</h1><a href="/contact">Contact</a>'},
         {"url": "https://example.org/contact", "html":
