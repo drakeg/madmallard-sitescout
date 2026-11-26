@@ -108,4 +108,4 @@ Bulk unsolicited emailing, impersonation, unlicensed content copying, paid-only 
 
 | SS-057 | P0 | 1 | Real Chromium dashboard smoke | Run real browser against dashboard with mocked URL report, assert visible findings, downloadable report and stale state reset; separate browser QA CI | DONE |
 
-| SS-058 | P1 | 1 | Reconcile merged website QA and README workflow badges | Update closed scope status for confirmed merged and tested stories, add real-browser QA dynamic CI badge, maintain accurate distinction between UI smoke and live-site verification | IN PROGRESS |
+| SS-058 | P1 | 1 | Reconcile merged website QA and README workflow badges | Update closed scope status for confirmed merged and tested stories, add real-browser QA dynamic CI badge, maintain accurate distinction between UI smoke and live-site verification | DONE (dynamic browser QA badge present; CI validation guard added; live third-party verification remains out of scope) |
