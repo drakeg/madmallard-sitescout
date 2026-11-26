@@ -169,3 +169,7 @@ Add a real local Chromium UI test to cover URL submission, explicit authorizatio
 ### SS-058 — completed story status and browser QA CI badge
 
 After merging #53 and #54 with successful hosted CI, reconcile only completed scoped backlog rows SS-046 through SS-057 with actual merged functionality and verified tests. Add a dynamic GitHub Actions status badge for the newly introduced independent Chromium smoke alongside existing CI; do not hardcode passing outcomes or claim that real third-party sites were tested in a browser. Continue to track full browser-based authorized customer-site QA as pending SS-009.
+
+### SS-058 — browser QA status badge enforcement
+
+The README links the dynamic real-Chromium workflow badge alongside CI. The offline badge validator now fails when the browser workflow or its linked live-status badge is removed. The badge reports GitHub Actions status, **not** evidence of third-party site performance, real form delivery, or production readiness. Continue SS-005/SS-006 license and benchmark evaluation, and keep SS-021 public-capture security gates open.

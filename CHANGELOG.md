@@ -96,3 +96,7 @@ All notable changes will be documented here. Format follows Keep a Changelog; ve
 - Added a development-only real Chromium regression test for the SiteScout dashboard, with mocked fictional website data and a separate browser QA CI workflow.
 
 - Reconciled scoped completed SiteScout improvements with verified merged CI results and added a dynamic browser QA status badge to the README.
+
+## Unreleased — SS-058
+
+- Strengthen offline README badge validation to require the existing linked, dynamic real-browser QA workflow status badge. Reconcile the backlog and sprint record without claiming live website verification.
