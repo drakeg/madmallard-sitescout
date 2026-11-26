@@ -28,6 +28,9 @@ def validate():
     assert (ROOT / "vercel.json").is_file() and "Vercel-Deployment-" in badges
     assert (ROOT / ".github/workflows/ci.yml").is_file()
     assert "actions/workflows/ci.yml/badge.svg" in badges
+    assert (ROOT / ".github/workflows/browser-qa.yml").is_file(), "Browser QA workflow missing"
+    assert "github.com/drakeg/madmallard-sitescout/actions/workflows/browser-qa.yml/badge.svg" in badges, "Dynamic browser QA status badge missing"
+    assert "](https://github.com/drakeg/madmallard-sitescout/actions/workflows/browser-qa.yml)" in badges, "Browser QA badge must link to its workflow"
     assert "img.shields.io/github/issues/" in badges
     assert "img.shields.io/github/issues-pr/" in badges
     assert not re.search(r'(?i)(passing|failing|license-mit|release-v\d)', badges), "Unsupported hardcoded status"
